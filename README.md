@@ -52,6 +52,7 @@ Pava is in very early stage of development. Next steps are:
 - Fix stack underflow
 - Implement native Java methods in Python, such as System.out.println needs.
 - Handle clinit to properly intialize static fields.
+- Make module loading more lazy, HelloWorld now loads 170 thousand methods.
 - Handle overloaded Java methods.
 - Write a lot of tests for rudimentary long/double/float/math operations.
 - Generate Python *source*, rather than bytecodes, to more easily debug the transpiler.
