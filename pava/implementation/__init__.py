@@ -1,11 +1,15 @@
+import new
 import sys
+
+DEBUG = False
 
 method_count = 0
 
 def method(argcount, nlocals, stacksize, flags, codestring, constants, names,
              varnames, filename, name, firstlineno, lnotab, modules, static):
     global method_count
-    print 'define', name, method_count
+    if DEBUG:
+        print 'define', name, method_count
     method_count += 1
     globals_dict = {}
     for module_name in modules:
