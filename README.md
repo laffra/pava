@@ -1,4 +1,4 @@
-# pava
+# Pava
 Run code written in the Java Language on a Python VM
 
 # Goals
@@ -27,15 +27,15 @@ This prints:
 
 Pava execution happens in two steps:
 1. The Java classpath is processed. For each class file found on the classpath:
-  * Loaded the class file
-  * If needed create a placeholder Python module with the same name as the Java package
+  * Load the class file
+  * If needed, create a Python module with the same name as the Java package
   * Generate a Python class in the module
   * Add a Python method for each Java method found
   * Transpile each of the Java bytecodes into the corresponding Python bytecodes
   * Add a Python class attribute for each Java field found
   * Handle &lt;init&gt; and &lt;clinit&gt; to properly initialize the Python fields
 2. During runtime execution of the code:
-  * Simply run the generated code.
+  * Simply run the generated code, which is now regular Python code.
   * Mimic the Java classloading behavior of triggering classes/modules
   
 # Dependencies
