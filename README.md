@@ -48,6 +48,8 @@ See:
 # Next steps
 Pava is in very early stage of development. Next steps are:
 
+- Implement remaining bytecodes, such as multianewarray
+- Fix stack underflow
 - Implement native Java methods in Python, such as System.out.println needs.
 - Handle clinit to properly intialize static fields.
 - Handle overloaded Java methods.
