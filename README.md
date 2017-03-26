@@ -88,7 +88,7 @@ This is why a POP_TOP is inserted at bytecode 21.
 
 # Sample Transpilation Rules
 
-Here are just a few examples from implementation/opcodes.py that impement the actual
+Here are just a few examples from [implementation/opcodes.py](https://github.com/laffra/pava/blob/master/pava/implementation/opcodes.py) that implement the actual
 transpilation from Java bytecodes to Python bytecodes:
 
     def convert_ldc(code, java_pos, java_locals, value):
@@ -141,7 +141,7 @@ Pava is in very early stage of development. Next steps are:
 - Implement remaining bytecodes, such as multianewarray
 - Fix stack underflow
 - Implement native Java methods in Python, such as System.out.println needs.
-- Handle clinit to properly intialize static fields.
+- Handle clinit to properly initialize static fields.
 - Make module loading more lazy, HelloWorld now loads 170 thousand methods.
 - Handle overloaded Java methods.
 - Write a lot of tests for rudimentary long/double/float/math operations.
