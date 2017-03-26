@@ -32,8 +32,10 @@ This prints:
     
 # How does Pava work?
 
-Pava execution happens in two steps:
-1. The Java classpath is processed. For each class file found on the classpath:
+Pava execution happens in two steps. In the first phase, before anything really runs,
+the Java classpath is processed and classfiles are transpiled. During this phase,
+for each class file found on the classpath, Pava performs the following steps:
+
   * Load the class file
   * If needed, create a Python module with the same name as the Java package
   * Generate a Python class in the module
@@ -41,9 +43,11 @@ Pava execution happens in two steps:
   * Transpile each of the Java bytecodes into the corresponding Python bytecodes
   * Add a Python class attribute for each Java field found
   * Handle &lt;init&gt; and &lt;clinit&gt; to properly initialize the Python fields
-2. During runtime execution of the code:
-  * Simply run the generated code, which is now regular Python code.
-  * Mimic the Java classloading behavior of triggering classes/modules
+  
+During phase two, which is really during runtime execution of the code, nothing really happens:
+
+  * The generated code is simply run, which is now regular Python code
+  * The Java classloading behavior is mimiced by triggering Python module activation
  
 # Compilation of HelloWorld
 
