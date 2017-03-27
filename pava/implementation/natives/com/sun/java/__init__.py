@@ -1,13 +1,7 @@
-# This is Java package com.sun.java.browser.dom
+# This is Java package com.sun.java.util.jar.pack
 
 import pava
 from pava import nan, inf
-
-
-import browser
-
-
-import swing
 
 
 import util

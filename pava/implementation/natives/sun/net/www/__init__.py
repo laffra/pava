@@ -1,13 +1,7 @@
-# This is Java package sun.net.www.content.audio
+# This is Java package sun.net.www.protocol.http.ntlm
 
 import pava
 from pava import nan, inf
-
-
-import content
-
-
-import http
 
 
 import protocol

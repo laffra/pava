@@ -43,8 +43,6 @@ def set_classpath(cp):
         index_class_path(get_boot_path() + cp)
     except Exception as e:
         print '##### ERROR:', traceback.format_exc(e)
-    else:
-        import natives
 
 
 def index_class_path(path):
@@ -106,8 +104,8 @@ def add_class(module_name, class_name, fin):
         print '##### ERROR:', traceback.format_exc(e)
 
 
-def get_module_path(module_name):
-    path = os.path.join(HOME)
+def get_module_path(module_name, home=HOME):
+    path = os.path.join(home)
     parent_path = None
     for fragment in module_name.split('.'):
         fragment = replace_reserved_names(fragment)
@@ -157,7 +155,6 @@ def replace_reserved_names(name):
     return name
 
 
-
 def transpile_class(module_name, class_name, input_file):
     if DEBUG:
         print 'Load Java class %s.%s' % (module_name, class_name)
@@ -178,11 +175,15 @@ def transpile_class(module_name, class_name, input_file):
     if len(lines) == 1:
         lines.append('    pass')
     lines.append('')
+    if class_object.natives:
+        lines.append('from implementation.natives.%s.%s import add_native_methods' % (module_name, class_name))
+        lines.append('add_native_methods(%s)' % class_name)
+        lines.append('')
     return '\n'.join(lines)
 
 
 Class = namedtuple('Class', [
-    'fields', 'functions'
+    'fields', 'functions', 'natives'
 ])
 Field = namedtuple('Field', [
     'name', 'type', 'static'
@@ -192,10 +193,13 @@ Function = namedtuple('Function', [
     'constants', 'names', 'varnames', 'filename', 'name',
     'firstlineno', 'lnotab', 'modules', 'static'
 ])
+NativeMethod = namedtuple('NativeMethod', [
+    'name', 'args', 'static'
+])
 
 
 def generate_python_class(module_name, class_name, class_file):
-    class_object = Class([], [])
+    class_object = Class([], [], [])
     constants = dict((c.index, c) for c in class_file.constants)
     for field in class_file.fields:
         is_static = field.access_flags.get('acc_static')
@@ -207,10 +211,11 @@ def generate_python_class(module_name, class_name, class_file):
         method_name = replace_reserved_names(method.name.value)
         code, imports = compile_method('%s.%s' % (module_name, class_name), method, constants, file_name, is_static)
         if is_native:
-            add_native_method(module_name, class_name, method_name, method.args, is_static)
+            class_object.natives.append(NativeMethod(method_name, method.args, is_static))
         else:
             method = create_function(code, imports, is_static)
             class_object.functions.append(method)
+    add_native_methods(module_name, class_name, class_object.natives)
     return class_object
 
 
@@ -225,30 +230,31 @@ def create_function(code, imports, is_static):
     )
 
 
-def add_native_method(module_name, class_name, method_name, args, is_static):
-    target = 'staticmethod(%s)' % method_name if is_static else method_name
-    header = '%s.%s.%s = %s' % (module_name, class_name, method_name, target)
-    native_path = os.path.join(os.path.dirname(__file__), 'natives.py')
-    with open(native_path, 'r') as fin:
-        contents = fin.read()
-    if not header in contents:
-        with open(native_path, 'a') as fout:
-            module_import = 'import %s' % module_name.partition('.')[0]
-            if not module_import in contents:
-                fout.write('\n')
-                fout.write(module_import)
-                fout.write('\n')
-            fout.write('\n')
-            fout.write('def %s(%s):' % (method_name, ', '.join(['a%d' %n for n in range(len(args))])))
-            fout.write('\n')
-            fout.write('    raise NotImplementedError("%s")' % method_name)
-            fout.write('\n')
-            fout.write(header)
-            fout.write('\n')
+def add_native_methods(module_name, class_name, methods):
+    if not methods:
+        return
+    natives = os.path.join(os.path.dirname(__file__), 'natives')
+    dirname = os.path.dirname(get_module_path(module_name, home=natives))
+    native_path = os.path.join(dirname, class_name + '.py')
+    if os.path.exists(native_path):
+        return
+    with open(native_path, 'a') as fout:
+        fout.write('def add_native_methods(clazz):\n')
+        for method in methods:
+            fout.write('    def %s(%s):\n' % (method.name, ', '.join(['a%d' %n for n in range(len(method.args))])))
+            fout.write('        raise NotImplementedError()\n\n')
+        for method in methods:
+            target = 'staticmethod(%s)' % method.name if method.static else method.name
+            fout.write('    clazz.%s = %s\n' % (method.name, target))
+        fout.write('\n')
 
+if False:
+    # Custom initialization code
 
-
-
+    class PythonPrintStream(object):
+        def println(self, s):
+            print s
+    clazz.setOut0(PythonPrintStream())
 
 def compile_method(class_name, method, constants, filename, is_static):
     if DEBUG:

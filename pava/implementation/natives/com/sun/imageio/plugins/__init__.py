@@ -1,23 +1,8 @@
-# This is Java package com.sun.imageio.plugins.bmp
+# This is Java package com.sun.imageio.plugins.jpeg
 
 import pava
 from pava import nan, inf
 
 
-import bmp
-
-
-import common
-
-
-import gif
-
-
 import jpeg
-
-
-import png
-
-
-import wbmp
 

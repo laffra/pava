@@ -1,13 +1,7 @@
-# This is Java package com.sun.security.auth.callback
+# This is Java package com.sun.security.auth.module
 
 import pava
 from pava import nan, inf
-
-
-import callback
-
-
-import login
 
 
 import module

@@ -1,26 +1,8 @@
-# This is Java package sun.net.www.protocol.ftp
+# This is Java package sun.net.www.protocol.http.ntlm
 
 import pava
 from pava import nan, inf
 
 
-import ftp
-
-
 import http
-
-
-import https
-
-
-import jar
-
-
-import mailto
-
-
-import netdoc
-
-
-import file
 

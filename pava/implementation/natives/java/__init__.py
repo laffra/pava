@@ -1,16 +1,10 @@
-# This is Java package java.applet
+# This is Java package java.awt
 
 import pava
 from pava import nan, inf
 
 
-import applet
-
-
 import awt
-
-
-import beans
 
 
 import io
@@ -19,29 +13,14 @@ import io
 import lang
 
 
-import math
-
-
 import net
+
+
+import util
 
 
 import nio
 
 
-import rmi
-
-
 import security
-
-
-import sql
-
-
-import text
-
-
-import time
-
-
-import util
 

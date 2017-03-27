@@ -6,6 +6,3 @@ from pava import nan, inf
 
 import atomic
 
-
-import locks
-

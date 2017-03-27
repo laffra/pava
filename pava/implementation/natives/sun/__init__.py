@@ -1,19 +1,10 @@
-# This is Java package sun.applet
+# This is Java package sun.awt
 
 import pava
 from pava import nan, inf
 
 
-import applet
-
-
-import audio
-
-
 import awt
-
-
-import corba
 
 
 import dc
@@ -25,13 +16,7 @@ import font
 import instrument
 
 
-import invoke
-
-
 import java2d
-
-
-import launcher
 
 
 import management
@@ -49,31 +34,16 @@ import nio
 import __print__
 
 
-import reflect
-
-
-import rmi
-
-
 import security
-
-
-import swing
-
-
-import text
-
-
-import tools
 
 
 import tracing
 
 
-import usagetracker
-
-
 import util
+
+
+import reflect
 
 
 import io
