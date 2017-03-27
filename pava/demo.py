@@ -6,15 +6,6 @@ import pava
 print '1. Loading Java...'
 pava.set_classpath([os.path.dirname(__file__)])
 
-try:
-    import java
-    class Out(object):
-        def println(self, s):
-            print s
-    java.lang.System.out = Out()
-except ImportError:
-    pass
-
 #
 # Load the "HelloWorld" Java class and call the static "main" method on it directly from Python
 #
@@ -35,7 +26,7 @@ except ImportError:
 # ---------------------------------------------------------------------------------------------------------------------
 #
 
-print '2. Import the Python module that contains the transpiled HelloWorld:'
+print '2. Import the Python module that contains the transpiled HelloWorld...'
 import classfiles
 
 print '3. Call HelloWorld.main:'

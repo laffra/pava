@@ -1,3 +1,4 @@
+import datetime
 import os
 import subprocess
 import sys
@@ -42,24 +43,34 @@ def set_classpath(cp):
         index_class_path(get_boot_path() + cp)
     except Exception as e:
         print '##### ERROR:', traceback.format_exc(e)
+    else:
+        import natives
 
 
 def index_class_path(path):
     for p in path:
         if not os.path.exists(p):
             continue
+        marker = os.path.normpath(p)
+        marker = marker.replace('\\', '_').replace(' ', '_').replace(':', '_').replace('.', '_')
+        marker = os.path.join(HOME, marker + '.log')
+        if os.path.exists(marker):
+            return
         if os.path.isdir(p):
             add_directory(p)
         else:
             add_jar(p)
+        with open(marker, 'w') as fout:
+            fout.write('%s' % datetime.datetime.now())
 
 
-def add_jar(jarpath):
-    # return
-    with zipfile.ZipFile(jarpath, 'r') as jar:
+def add_jar(jar_path):
+    if DEBUG:
+        print 'add classpath: ', jar_path
+    with zipfile.ZipFile(jar_path, 'r') as jar:
         for n, entry in enumerate(jar.infolist()):
             if entry.filename.endswith('.class'):
-                fragments = entry.filename[:-6].split('/')
+                fragments = map(replace_reserved_names, entry.filename[:-6].split('/'))
                 module_name = str('.'.join(fragments[:-1]))
                 class_name = replace_reserved_names(str(fragments[-1]))
                 with jar.open(entry) as file:
@@ -67,11 +78,14 @@ def add_jar(jarpath):
 
 
 def add_directory(dir_path):
+    if DEBUG:
+        print 'add classpath: ', dir_path
     def visit(arg, dir_name, file_names):
         for file_name in file_names:
             if file_name.endswith('.class'):
                 module_path = os.path.normpath(dir_name[len(dir_path) + 1:])
-                module_name = module_path.replace('/', '.').replace('\\', '.')
+                fragments = map(replace_reserved_names, module_path.replace('/', '.').replace('\\', '.').split('.'))
+                module_name = str('.'.join(fragments))
                 class_name = fix_dollar_sign(file_name[:-6])
                 with open(os.path.join(dir_name, file_name)) as fin:
                     add_class(module_name, class_name, fin)
@@ -182,31 +196,65 @@ Function = namedtuple('Function', [
 
 def generate_python_class(module_name, class_name, class_file):
     class_object = Class([], [])
+    constants = dict((c.index, c) for c in class_file.constants)
     for field in class_file.fields:
         is_static = field.access_flags.get('acc_static')
         class_object.fields.append(Field(field.name.value, field.descriptor.value, is_static))
     for method in class_file.methods:
         is_static = method.access_flags.get('acc_static')
         is_native = method.access_flags.get('acc_native')
+        file_name = class_name + '.java'
+        method_name = replace_reserved_names(method.name.value)
+        code, imports = compile_method('%s.%s' % (module_name, class_name), method, constants, file_name, is_static)
         if is_native:
-            print 'missing native method: %s.%s.%s() %s' % (module_name, class_name, method.name.value, method.args)
-        filename = class_name + '.java'
-        constants = dict((c.index, c) for c in class_file.constants)
-        code, imports = compile_method('%s.%s' % (module_name, class_name), method, constants, filename, is_static)
-        class_object.functions.append(Function(
-            code.co_argcount, len(code.co_varnames),
-            code.co_stacksize, code.co_flags, code.co_code.tostring(),
-            tuple(code.co_consts), tuple(code.co_names),
-            tuple(code.co_varnames), code.co_filename,
-            code.co_name, code.co_firstlineno, code.co_lnotab.tostring(),
-            imports, is_static
-        ))
+            add_native_method(module_name, class_name, method_name, method.args, is_static)
+        else:
+            method = create_function(code, imports, is_static)
+            class_object.functions.append(method)
     return class_object
 
 
+def create_function(code, imports, is_static):
+    return Function(
+        code.co_argcount, len(code.co_varnames),
+        code.co_stacksize, code.co_flags, code.co_code.tostring(),
+        tuple(code.co_consts), tuple(code.co_names),
+        tuple(code.co_varnames), code.co_filename,
+        code.co_name, code.co_firstlineno, code.co_lnotab.tostring(),
+        imports, is_static
+    )
+
+
+def add_native_method(module_name, class_name, method_name, args, is_static):
+    target = 'staticmethod(%s)' % method_name if is_static else method_name
+    header = '%s.%s.%s = %s' % (module_name, class_name, method_name, target)
+    native_path = os.path.join(os.path.dirname(__file__), 'natives.py')
+    with open(native_path, 'r') as fin:
+        contents = fin.read()
+    if not header in contents:
+        with open(native_path, 'a') as fout:
+            module_import = 'import %s' % module_name.partition('.')[0]
+            if not module_import in contents:
+                fout.write('\n')
+                fout.write(module_import)
+                fout.write('\n')
+            fout.write('\n')
+            fout.write('def %s(%s):' % (method_name, ', '.join(['a%d' %n for n in range(len(args))])))
+            fout.write('\n')
+            fout.write('    raise NotImplementedError("%s")' % method_name)
+            fout.write('\n')
+            fout.write(header)
+            fout.write('\n')
+
+
+
+
+
 def compile_method(class_name, method, constants, filename, is_static):
+    if DEBUG:
+        print 'compile', class_name, method
     code = asm.Code()
-    code.co_name = str(method.name.value)
+    code.co_name = replace_reserved_names(str(method.name.value))
     code.co_filename = str(filename)
 
     # parameters added to code by pava
