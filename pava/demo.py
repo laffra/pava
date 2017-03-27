@@ -1,13 +1,26 @@
 import os
 import pava
+import sys
 
+
+print '1. Number of loaded modules at start:',
+print len(sys.modules)
 
 # Tell pava where it can find Java user-defined classes
-print '1. Loading Java...'
+print '2. Loading Java...'
 pava.set_classpath([os.path.dirname(__file__)])
 
-#
-# Load the "HelloWorld" Java class and call the static "main" method on it directly from Python
+print '3. Import the Python module that contains the transpiled HelloWorld...'
+import classfiles
+
+print '4. Call HelloWorld.main:'
+classfiles.HelloWorld.main()
+
+print '5. Number of loaded modules after loading HelloWorld:',
+print len(sys.modules)
+
+print '6. Done.'
+
 #
 # HelloWorld.class gets compiled to Python bytecodes as follows:
 #
@@ -25,11 +38,3 @@ pava.set_classpath([os.path.dirname(__file__)])
 # 25 RETURN_VALUE
 # ---------------------------------------------------------------------------------------------------------------------
 #
-
-print '2. Import the Python module that contains the transpiled HelloWorld...'
-import classfiles
-
-print '3. Call HelloWorld.main:'
-classfiles.HelloWorld.main()
-
-print '4. Done.'
