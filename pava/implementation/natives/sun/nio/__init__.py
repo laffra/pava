@@ -9,3 +9,15 @@ import ch
 
 import fs
 
+
+ch = pava.JavaPackage("ch")
+
+
+fs = pava.JavaPackage("fs")
+
+
+ch = pava.JavaPackage("sun.nio.ch")
+
+
+fs = pava.JavaPackage("sun.nio.fs")
+

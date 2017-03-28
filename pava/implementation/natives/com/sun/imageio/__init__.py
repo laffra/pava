@@ -6,3 +6,9 @@ from pava import nan, inf
 
 import plugins
 
+
+plugins = pava.JavaPackage("plugins")
+
+
+plugins = pava.JavaPackage("com.sun.imageio.plugins")
+

@@ -6,3 +6,9 @@ from pava import nan, inf
 
 import resource
 
+
+resource = pava.JavaPackage("resource")
+
+
+resource = pava.JavaPackage("jdk.management.resource")
+

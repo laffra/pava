@@ -6,3 +6,9 @@ from pava import nan, inf
 
 import dtrace
 
+
+dtrace = pava.JavaPackage("dtrace")
+
+
+dtrace = pava.JavaPackage("sun.tracing.dtrace")
+

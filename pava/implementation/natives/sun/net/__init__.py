@@ -15,3 +15,27 @@ import www
 
 import spi
 
+
+dns = pava.JavaPackage("dns")
+
+
+sdp = pava.JavaPackage("sdp")
+
+
+www = pava.JavaPackage("www")
+
+
+spi = pava.JavaPackage("spi")
+
+
+dns = pava.JavaPackage("sun.net.dns")
+
+
+sdp = pava.JavaPackage("sun.net.sdp")
+
+
+www = pava.JavaPackage("sun.net.www")
+
+
+spi = pava.JavaPackage("sun.net.spi")
+

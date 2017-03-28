@@ -6,3 +6,9 @@ from pava import nan, inf
 
 import hprof
 
+
+hprof = pava.JavaPackage("hprof")
+
+
+hprof = pava.JavaPackage("com.sun.demo.jvmti.hprof")
+

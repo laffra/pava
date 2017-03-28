@@ -6,3 +6,9 @@ from pava import nan, inf
 
 import util
 
+
+util = pava.JavaPackage("util")
+
+
+util = pava.JavaPackage("com.sun.java.util")
+

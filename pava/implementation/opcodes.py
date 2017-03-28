@@ -1057,6 +1057,11 @@ def convert_lrem(code, java_pos, java_locals):
     code.word_size = 2
 
 
+def convert_drem(code, java_pos, java_locals):
+    code.BINARY_MODULO()
+    code.word_size = 2
+
+
 def convert_lor(code, java_pos, java_locals):
     code.BINARY_OR()
     code.word_size = 2

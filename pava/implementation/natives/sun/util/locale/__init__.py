@@ -6,3 +6,9 @@ from pava import nan, inf
 
 import provider
 
+
+provider = pava.JavaPackage("provider")
+
+
+provider = pava.JavaPackage("sun.util.locale.provider")
+

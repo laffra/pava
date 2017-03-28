@@ -107,8 +107,10 @@ def add_class(module_name, class_name, fin):
 def get_module_path(module_name, home=HOME):
     path = os.path.join(home)
     parent_path = None
+    package_name = ''
     for fragment in module_name.split('.'):
         fragment = replace_reserved_names(fragment)
+        package_name = '.'.join([package_name, fragment]) if package_name else fragment
         path = os.path.join(path, fragment)
         if not os.path.exists(path):
             os.makedirs(path)
@@ -119,10 +121,10 @@ def get_module_path(module_name, home=HOME):
             init = os.path.join(parent_path, '__init__.py')
             with open(init, 'r') as fin:
                 contents = fin.read() or init_module(module_name)
-                import_statement = 'import %s\n\n' % fragment
-                if not import_statement in contents:
+                package = '%s = pava.JavaPackage("%s")\n\n' % (fragment, package_name)
+                if not package in contents:
                     with open(init, 'w') as fout:
-                        fout.write(contents + '\n' + import_statement)
+                        fout.write(contents + '\n' + package)
         parent_path = path
     return os.path.join(path, '__init__.py')
 
@@ -160,7 +162,7 @@ def transpile_class(module_name, class_name, input_file):
         print 'Load Java class %s.%s' % (module_name, class_name)
     java_class_file = jawa.ClassFile(input_file)
     class_object = generate_python_class(module_name, class_name, java_class_file)
-    lines = [ get_class_header(class_name) ]
+    lines = ['', get_class_header(class_name)]
     for field in class_object.fields:
         if field.static:
             lines.append('    %s = None # %s' % (replace_reserved_names(field.name), field.type))
@@ -172,7 +174,7 @@ def transpile_class(module_name, class_name, input_file):
             fn.modules, fn.static
         ])
         lines.append('    %s = pava.method(%s)' % (name, definition))
-    if len(lines) == 1:
+    if len(lines) == 2:
         lines.append('    pass')
     lines.append('')
     if class_object.natives:

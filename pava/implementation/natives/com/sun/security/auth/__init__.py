@@ -6,3 +6,9 @@ from pava import nan, inf
 
 import module
 
+
+module = pava.JavaPackage("module")
+
+
+module = pava.JavaPackage("com.sun.security.auth.module")
+

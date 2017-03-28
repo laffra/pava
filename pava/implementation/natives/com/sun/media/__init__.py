@@ -6,3 +6,9 @@ from pava import nan, inf
 
 import sound
 
+
+sound = pava.JavaPackage("sound")
+
+
+sound = pava.JavaPackage("com.sun.media.sound")
+

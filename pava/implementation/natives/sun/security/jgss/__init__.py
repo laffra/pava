@@ -6,3 +6,9 @@ from pava import nan, inf
 
 import wrapper
 
+
+wrapper = pava.JavaPackage("wrapper")
+
+
+wrapper = pava.JavaPackage("sun.security.jgss.wrapper")
+

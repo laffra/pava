@@ -9,3 +9,15 @@ import internal
 
 import management
 
+
+internal = pava.JavaPackage("internal")
+
+
+management = pava.JavaPackage("management")
+
+
+internal = pava.JavaPackage("jdk.internal")
+
+
+management = pava.JavaPackage("jdk.management")
+

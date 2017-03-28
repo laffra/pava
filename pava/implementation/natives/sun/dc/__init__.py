@@ -6,3 +6,9 @@ from pava import nan, inf
 
 import pr
 
+
+pr = pava.JavaPackage("pr")
+
+
+pr = pava.JavaPackage("sun.dc.pr")
+

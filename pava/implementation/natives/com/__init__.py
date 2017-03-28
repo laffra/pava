@@ -6,3 +6,9 @@ from pava import nan, inf
 
 import sun
 
+
+sun = pava.JavaPackage("sun")
+
+
+sun = pava.JavaPackage("com.sun")
+
