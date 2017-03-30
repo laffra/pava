@@ -4,5 +4,5 @@ import pava
 from pava import nan, inf
 
 
-certpath = pava.JavaPackage("sun.security.provider.certpath")
+ldap = pava.JavaPackage("sun.security.provider.certpath.ldap")
 

@@ -48,3 +48,12 @@ media = pava.JavaPackage("com.sun.media")
 
 security = pava.JavaPackage("com.sun.security")
 
+
+corba = pava.JavaPackage("com.sun.corba")
+
+
+org = pava.JavaPackage("com.sun.org")
+
+
+xml = pava.JavaPackage("com.sun.xml")
+

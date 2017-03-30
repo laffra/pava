@@ -1,7 +1,9 @@
 import os
 import pava
 import sys
+import time
 
+start = time.time()
 
 print '1. Number of loaded modules at start:',
 print len(sys.modules)
@@ -11,15 +13,15 @@ print '2. Loading Java...'
 pava.set_classpath([os.path.dirname(__file__)])
 
 print '3. Import the Python module that contains the transpiled HelloWorld...'
-import classfiles
+import helloworld
 
 print '4. Call HelloWorld.main:'
-classfiles.HelloWorld.main()
+helloworld.HelloWorld.main()
 
 print '5. Number of loaded modules after loading HelloWorld:',
 print len(sys.modules)
 
-print '6. Done.'
+print '6. Done %.4fs.' % (time.time() - start)
 
 #
 # HelloWorld.class gets compiled to Python bytecodes as follows:

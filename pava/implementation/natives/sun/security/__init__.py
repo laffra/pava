@@ -39,3 +39,6 @@ provider = pava.JavaPackage("sun.security.provider")
 
 smartcardio = pava.JavaPackage("sun.security.smartcardio")
 
+
+x509 = pava.JavaPackage("sun.security.x509")
+

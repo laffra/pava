@@ -66,3 +66,6 @@ nio = pava.JavaPackage("java.nio")
 
 security = pava.JavaPackage("java.security")
 
+
+sql = pava.JavaPackage("java.sql")
+
