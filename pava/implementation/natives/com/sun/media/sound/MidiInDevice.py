@@ -1,26 +1,22 @@
 def add_native_methods(clazz):
-    def nOpen(a0):
+    def nOpen__int__(a0, a1):
         raise NotImplementedError()
 
-    def nClose(a0):
+    def nClose__long__(a0, a1):
         raise NotImplementedError()
 
-    def nStart(a0):
+    def nStart__long__(a0, a1):
         raise NotImplementedError()
 
-    def nStop(a0):
+    def nStop__long__(a0, a1):
         raise NotImplementedError()
 
-    def nGetTimeStamp(a0):
+    def nGetTimeStamp__long__(a0, a1):
         raise NotImplementedError()
 
-    def nGetMessages(a0):
-        raise NotImplementedError()
-
-    clazz.nOpen = nOpen
-    clazz.nClose = nClose
-    clazz.nStart = nStart
-    clazz.nStop = nStop
-    clazz.nGetTimeStamp = nGetTimeStamp
-    clazz.nGetMessages = nGetMessages
+    clazz.nOpen__int__ = nOpen__int__
+    clazz.nClose__long__ = nClose__long__
+    clazz.nStart__long__ = nStart__long__
+    clazz.nStop__long__ = nStop__long__
+    clazz.nGetTimeStamp__long__ = nGetTimeStamp__long__
 

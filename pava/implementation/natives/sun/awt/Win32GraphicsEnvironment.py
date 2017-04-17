@@ -1,26 +1,22 @@
 def add_native_methods(clazz):
-    def initDisplay():
+    def getNumScreens____(a0):
         raise NotImplementedError()
 
-    def getNumScreens():
+    def getDefaultScreen____(a0):
         raise NotImplementedError()
 
-    def getDefaultScreen():
+    def getXResolution____(a0):
         raise NotImplementedError()
 
-    def getXResolution():
+    def getYResolution____(a0):
         raise NotImplementedError()
 
-    def getYResolution():
+    def isVistaOS____():
         raise NotImplementedError()
 
-    def isVistaOS():
-        raise NotImplementedError()
-
-    clazz.initDisplay = staticmethod(initDisplay)
-    clazz.getNumScreens = getNumScreens
-    clazz.getDefaultScreen = getDefaultScreen
-    clazz.getXResolution = getXResolution
-    clazz.getYResolution = getYResolution
-    clazz.isVistaOS = staticmethod(isVistaOS)
+    clazz.getNumScreens____ = getNumScreens____
+    clazz.getDefaultScreen____ = getDefaultScreen____
+    clazz.getXResolution____ = getXResolution____
+    clazz.getYResolution____ = getYResolution____
+    clazz.isVistaOS____ = staticmethod(isVistaOS____)
 

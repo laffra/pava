@@ -1,10 +1,10 @@
 def add_native_methods(clazz):
-    def setVmMemoryPressure(a0):
+    def setVmMemoryPressure__int__(a0, a1):
         raise NotImplementedError()
 
-    def getVmMemoryPressure():
+    def getVmMemoryPressure____(a0):
         raise NotImplementedError()
 
-    clazz.setVmMemoryPressure = setVmMemoryPressure
-    clazz.getVmMemoryPressure = getVmMemoryPressure
+    clazz.setVmMemoryPressure__int__ = setVmMemoryPressure__int__
+    clazz.getVmMemoryPressure____ = getVmMemoryPressure____
 

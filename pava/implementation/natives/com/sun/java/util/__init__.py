@@ -1,14 +1,12 @@
-# This is Java package com.sun.java.util.jar.pack
+"""
+This is the Python implementation for the Java package "com.sun.java.util.jar.pack", compiled by Pava.
+"""
 
 import pava
 from pava import nan, inf
 
+pava_classes = {}
+pava.module(__name__)
+
 
 import jar
-
-
-jar = pava.JavaPackage("jar")
-
-
-jar = pava.JavaPackage("com.sun.java.util.jar")
-

@@ -1,10 +1,10 @@
 def add_native_methods(clazz):
-    def getSubjectAlternativeNames():
+    def getSubjectAlternativeNames____(a0):
         raise NotImplementedError()
 
-    def getIssuerAlternativeNames():
+    def getIssuerAlternativeNames____(a0):
         raise NotImplementedError()
 
-    clazz.getSubjectAlternativeNames = getSubjectAlternativeNames
-    clazz.getIssuerAlternativeNames = getIssuerAlternativeNames
+    clazz.getSubjectAlternativeNames____ = getSubjectAlternativeNames____
+    clazz.getIssuerAlternativeNames____ = getIssuerAlternativeNames____
 

@@ -1,54 +1,46 @@
 def add_native_methods(clazz):
-    def init(a0, a1):
+    def init__java_lang_invoke_MemberName__java_lang_Object__(a0, a1):
         raise NotImplementedError()
 
-    def expand(a0):
+    def expand__java_lang_invoke_MemberName__(a0):
         raise NotImplementedError()
 
-    def resolve(a0, a1):
+    def resolve__java_lang_invoke_MemberName__java_lang_Class_____(a0, a1):
         raise NotImplementedError()
 
-    def getMembers(a0, a1, a2, a3, a4, a5, a6):
+    def getMembers__java_lang_Class_____java_lang_String__java_lang_String__int__java_lang_Class_____int__java_lang_invoke_MemberName____(a0, a1, a2, a3, a4, a5, a6):
         raise NotImplementedError()
 
-    def objectFieldOffset(a0):
+    def objectFieldOffset__java_lang_invoke_MemberName__(a0):
         raise NotImplementedError()
 
-    def staticFieldOffset(a0):
+    def staticFieldOffset__java_lang_invoke_MemberName__(a0):
         raise NotImplementedError()
 
-    def staticFieldBase(a0):
+    def staticFieldBase__java_lang_invoke_MemberName__(a0):
         raise NotImplementedError()
 
-    def getMemberVMInfo(a0):
+    def getMemberVMInfo__java_lang_invoke_MemberName__(a0):
         raise NotImplementedError()
 
-    def getConstant(a0):
+    def getConstant__int__(a0):
         raise NotImplementedError()
 
-    def setCallSiteTargetNormal(a0, a1):
+    def setCallSiteTargetNormal__java_lang_invoke_CallSite__java_lang_invoke_MethodHandle__(a0, a1):
         raise NotImplementedError()
 
-    def setCallSiteTargetVolatile(a0, a1):
+    def setCallSiteTargetVolatile__java_lang_invoke_CallSite__java_lang_invoke_MethodHandle__(a0, a1):
         raise NotImplementedError()
 
-    def registerNatives():
-        raise NotImplementedError()
-
-    def getNamedCon(a0, a1):
-        raise NotImplementedError()
-
-    clazz.init = staticmethod(init)
-    clazz.expand = staticmethod(expand)
-    clazz.resolve = staticmethod(resolve)
-    clazz.getMembers = staticmethod(getMembers)
-    clazz.objectFieldOffset = staticmethod(objectFieldOffset)
-    clazz.staticFieldOffset = staticmethod(staticFieldOffset)
-    clazz.staticFieldBase = staticmethod(staticFieldBase)
-    clazz.getMemberVMInfo = staticmethod(getMemberVMInfo)
-    clazz.getConstant = staticmethod(getConstant)
-    clazz.setCallSiteTargetNormal = staticmethod(setCallSiteTargetNormal)
-    clazz.setCallSiteTargetVolatile = staticmethod(setCallSiteTargetVolatile)
-    clazz.registerNatives = staticmethod(registerNatives)
-    clazz.getNamedCon = staticmethod(getNamedCon)
+    clazz.init__java_lang_invoke_MemberName__java_lang_Object__ = staticmethod(init__java_lang_invoke_MemberName__java_lang_Object__)
+    clazz.expand__java_lang_invoke_MemberName__ = staticmethod(expand__java_lang_invoke_MemberName__)
+    clazz.resolve__java_lang_invoke_MemberName__java_lang_Class_____ = staticmethod(resolve__java_lang_invoke_MemberName__java_lang_Class_____)
+    clazz.getMembers__java_lang_Class_____java_lang_String__java_lang_String__int__java_lang_Class_____int__java_lang_invoke_MemberName____ = staticmethod(getMembers__java_lang_Class_____java_lang_String__java_lang_String__int__java_lang_Class_____int__java_lang_invoke_MemberName____)
+    clazz.objectFieldOffset__java_lang_invoke_MemberName__ = staticmethod(objectFieldOffset__java_lang_invoke_MemberName__)
+    clazz.staticFieldOffset__java_lang_invoke_MemberName__ = staticmethod(staticFieldOffset__java_lang_invoke_MemberName__)
+    clazz.staticFieldBase__java_lang_invoke_MemberName__ = staticmethod(staticFieldBase__java_lang_invoke_MemberName__)
+    clazz.getMemberVMInfo__java_lang_invoke_MemberName__ = staticmethod(getMemberVMInfo__java_lang_invoke_MemberName__)
+    clazz.getConstant__int__ = staticmethod(getConstant__int__)
+    clazz.setCallSiteTargetNormal__java_lang_invoke_CallSite__java_lang_invoke_MethodHandle__ = staticmethod(setCallSiteTargetNormal__java_lang_invoke_CallSite__java_lang_invoke_MethodHandle__)
+    clazz.setCallSiteTargetVolatile__java_lang_invoke_CallSite__java_lang_invoke_MethodHandle__ = staticmethod(setCallSiteTargetVolatile__java_lang_invoke_CallSite__java_lang_invoke_MethodHandle__)
 

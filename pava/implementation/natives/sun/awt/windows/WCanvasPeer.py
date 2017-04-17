@@ -1,10 +1,6 @@
 def add_native_methods(clazz):
-    def create(a0):
+    def create__sun_awt_windows_WComponentPeer__(a0, a1):
         raise NotImplementedError()
 
-    def setNativeBackgroundErase(a0, a1):
-        raise NotImplementedError()
-
-    clazz.create = create
-    clazz.setNativeBackgroundErase = setNativeBackgroundErase
+    clazz.create__sun_awt_windows_WComponentPeer__ = create__sun_awt_windows_WComponentPeer__
 

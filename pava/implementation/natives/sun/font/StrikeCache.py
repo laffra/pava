@@ -1,22 +1,14 @@
 def add_native_methods(clazz):
-    def getGlyphCacheDescription(a0):
+    def getGlyphCacheDescription__long____(a0):
         raise NotImplementedError()
 
-    def freeIntPointer(a0):
+    def freeIntPointer__int__(a0):
         raise NotImplementedError()
 
-    def freeLongPointer(a0):
+    def freeLongPointer__long__(a0):
         raise NotImplementedError()
 
-    def freeIntMemory(a0, a1):
-        raise NotImplementedError()
-
-    def freeLongMemory(a0, a1):
-        raise NotImplementedError()
-
-    clazz.getGlyphCacheDescription = staticmethod(getGlyphCacheDescription)
-    clazz.freeIntPointer = staticmethod(freeIntPointer)
-    clazz.freeLongPointer = staticmethod(freeLongPointer)
-    clazz.freeIntMemory = staticmethod(freeIntMemory)
-    clazz.freeLongMemory = staticmethod(freeLongMemory)
+    clazz.getGlyphCacheDescription__long____ = staticmethod(getGlyphCacheDescription__long____)
+    clazz.freeIntPointer__int__ = staticmethod(freeIntPointer__int__)
+    clazz.freeLongPointer__long__ = staticmethod(freeLongPointer__long__)
 

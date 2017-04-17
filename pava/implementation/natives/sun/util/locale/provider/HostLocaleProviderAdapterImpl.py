@@ -1,102 +1,102 @@
 def add_native_methods(clazz):
-    def initialize():
+    def initialize____(a0):
         raise NotImplementedError()
 
-    def getDefaultLocale(a0):
+    def getDefaultLocale__int__(a0, a1):
         raise NotImplementedError()
 
-    def getDateTimePattern(a0, a1, a2):
+    def getDateTimePattern__int__int__java_lang_String__(a0, a1, a2, a3):
         raise NotImplementedError()
 
-    def getCalendarID(a0):
+    def getCalendarID__java_lang_String__(a0, a1):
         raise NotImplementedError()
 
-    def getAmPmStrings(a0, a1):
+    def getAmPmStrings__java_lang_String__java_lang_String____(a0, a1, a2):
         raise NotImplementedError()
 
-    def getEras(a0, a1):
+    def getEras__java_lang_String__java_lang_String____(a0, a1, a2):
         raise NotImplementedError()
 
-    def getMonths(a0, a1):
+    def getMonths__java_lang_String__java_lang_String____(a0, a1, a2):
         raise NotImplementedError()
 
-    def getShortMonths(a0, a1):
+    def getShortMonths__java_lang_String__java_lang_String____(a0, a1, a2):
         raise NotImplementedError()
 
-    def getWeekdays(a0, a1):
+    def getWeekdays__java_lang_String__java_lang_String____(a0, a1, a2):
         raise NotImplementedError()
 
-    def getShortWeekdays(a0, a1):
+    def getShortWeekdays__java_lang_String__java_lang_String____(a0, a1, a2):
         raise NotImplementedError()
 
-    def getNumberPattern(a0, a1):
+    def getNumberPattern__int__java_lang_String__(a0, a1, a2):
         raise NotImplementedError()
 
-    def isNativeDigit(a0):
+    def isNativeDigit__java_lang_String__(a0, a1):
         raise NotImplementedError()
 
-    def getCurrencySymbol(a0, a1):
+    def getCurrencySymbol__java_lang_String__java_lang_String__(a0, a1, a2):
         raise NotImplementedError()
 
-    def getDecimalSeparator(a0, a1):
+    def getDecimalSeparator__java_lang_String__char__(a0, a1, a2):
         raise NotImplementedError()
 
-    def getGroupingSeparator(a0, a1):
+    def getGroupingSeparator__java_lang_String__char__(a0, a1, a2):
         raise NotImplementedError()
 
-    def getInfinity(a0, a1):
+    def getInfinity__java_lang_String__java_lang_String__(a0, a1, a2):
         raise NotImplementedError()
 
-    def getInternationalCurrencySymbol(a0, a1):
+    def getInternationalCurrencySymbol__java_lang_String__java_lang_String__(a0, a1, a2):
         raise NotImplementedError()
 
-    def getMinusSign(a0, a1):
+    def getMinusSign__java_lang_String__char__(a0, a1, a2):
         raise NotImplementedError()
 
-    def getMonetaryDecimalSeparator(a0, a1):
+    def getMonetaryDecimalSeparator__java_lang_String__char__(a0, a1, a2):
         raise NotImplementedError()
 
-    def getNaN(a0, a1):
+    def getNaN__java_lang_String__java_lang_String__(a0, a1, a2):
         raise NotImplementedError()
 
-    def getPercent(a0, a1):
+    def getPercent__java_lang_String__char__(a0, a1, a2):
         raise NotImplementedError()
 
-    def getPerMill(a0, a1):
+    def getPerMill__java_lang_String__char__(a0, a1, a2):
         raise NotImplementedError()
 
-    def getZeroDigit(a0, a1):
+    def getZeroDigit__java_lang_String__char__(a0, a1, a2):
         raise NotImplementedError()
 
-    def getCalendarDataValue(a0, a1):
+    def getCalendarDataValue__java_lang_String__int__(a0, a1, a2):
         raise NotImplementedError()
 
-    def getDisplayString(a0, a1, a2):
+    def getDisplayString__java_lang_String__int__java_lang_String__(a0, a1, a2, a3):
         raise NotImplementedError()
 
-    clazz.initialize = staticmethod(initialize)
-    clazz.getDefaultLocale = staticmethod(getDefaultLocale)
-    clazz.getDateTimePattern = staticmethod(getDateTimePattern)
-    clazz.getCalendarID = staticmethod(getCalendarID)
-    clazz.getAmPmStrings = staticmethod(getAmPmStrings)
-    clazz.getEras = staticmethod(getEras)
-    clazz.getMonths = staticmethod(getMonths)
-    clazz.getShortMonths = staticmethod(getShortMonths)
-    clazz.getWeekdays = staticmethod(getWeekdays)
-    clazz.getShortWeekdays = staticmethod(getShortWeekdays)
-    clazz.getNumberPattern = staticmethod(getNumberPattern)
-    clazz.isNativeDigit = staticmethod(isNativeDigit)
-    clazz.getCurrencySymbol = staticmethod(getCurrencySymbol)
-    clazz.getDecimalSeparator = staticmethod(getDecimalSeparator)
-    clazz.getGroupingSeparator = staticmethod(getGroupingSeparator)
-    clazz.getInfinity = staticmethod(getInfinity)
-    clazz.getInternationalCurrencySymbol = staticmethod(getInternationalCurrencySymbol)
-    clazz.getMinusSign = staticmethod(getMinusSign)
-    clazz.getMonetaryDecimalSeparator = staticmethod(getMonetaryDecimalSeparator)
-    clazz.getNaN = staticmethod(getNaN)
-    clazz.getPercent = staticmethod(getPercent)
-    clazz.getPerMill = staticmethod(getPerMill)
-    clazz.getZeroDigit = staticmethod(getZeroDigit)
-    clazz.getCalendarDataValue = staticmethod(getCalendarDataValue)
-    clazz.getDisplayString = staticmethod(getDisplayString)
+    clazz.initialize____ = staticmethod(initialize____)
+    clazz.getDefaultLocale__int__ = staticmethod(getDefaultLocale__int__)
+    clazz.getDateTimePattern__int__int__java_lang_String__ = staticmethod(getDateTimePattern__int__int__java_lang_String__)
+    clazz.getCalendarID__java_lang_String__ = staticmethod(getCalendarID__java_lang_String__)
+    clazz.getAmPmStrings__java_lang_String__java_lang_String____ = staticmethod(getAmPmStrings__java_lang_String__java_lang_String____)
+    clazz.getEras__java_lang_String__java_lang_String____ = staticmethod(getEras__java_lang_String__java_lang_String____)
+    clazz.getMonths__java_lang_String__java_lang_String____ = staticmethod(getMonths__java_lang_String__java_lang_String____)
+    clazz.getShortMonths__java_lang_String__java_lang_String____ = staticmethod(getShortMonths__java_lang_String__java_lang_String____)
+    clazz.getWeekdays__java_lang_String__java_lang_String____ = staticmethod(getWeekdays__java_lang_String__java_lang_String____)
+    clazz.getShortWeekdays__java_lang_String__java_lang_String____ = staticmethod(getShortWeekdays__java_lang_String__java_lang_String____)
+    clazz.getNumberPattern__int__java_lang_String__ = staticmethod(getNumberPattern__int__java_lang_String__)
+    clazz.isNativeDigit__java_lang_String__ = staticmethod(isNativeDigit__java_lang_String__)
+    clazz.getCurrencySymbol__java_lang_String__java_lang_String__ = staticmethod(getCurrencySymbol__java_lang_String__java_lang_String__)
+    clazz.getDecimalSeparator__java_lang_String__char__ = staticmethod(getDecimalSeparator__java_lang_String__char__)
+    clazz.getGroupingSeparator__java_lang_String__char__ = staticmethod(getGroupingSeparator__java_lang_String__char__)
+    clazz.getInfinity__java_lang_String__java_lang_String__ = staticmethod(getInfinity__java_lang_String__java_lang_String__)
+    clazz.getInternationalCurrencySymbol__java_lang_String__java_lang_String__ = staticmethod(getInternationalCurrencySymbol__java_lang_String__java_lang_String__)
+    clazz.getMinusSign__java_lang_String__char__ = staticmethod(getMinusSign__java_lang_String__char__)
+    clazz.getMonetaryDecimalSeparator__java_lang_String__char__ = staticmethod(getMonetaryDecimalSeparator__java_lang_String__char__)
+    clazz.getNaN__java_lang_String__java_lang_String__ = staticmethod(getNaN__java_lang_String__java_lang_String__)
+    clazz.getPercent__java_lang_String__char__ = staticmethod(getPercent__java_lang_String__char__)
+    clazz.getPerMill__java_lang_String__char__ = staticmethod(getPerMill__java_lang_String__char__)
+    clazz.getZeroDigit__java_lang_String__char__ = staticmethod(getZeroDigit__java_lang_String__char__)
+    clazz.getCalendarDataValue__java_lang_String__int__ = staticmethod(getCalendarDataValue__java_lang_String__int__)
+    clazz.getDisplayString__java_lang_String__int__java_lang_String__ = staticmethod(getDisplayString__java_lang_String__int__java_lang_String__)
 

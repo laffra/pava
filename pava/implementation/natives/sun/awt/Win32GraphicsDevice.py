@@ -1,46 +1,30 @@
 def add_native_methods(clazz):
-    def initIDs():
+    def initDevice__int__(a0, a1):
         raise NotImplementedError()
 
-    def initDevice(a0):
+    def isPixFmtSupported__int__int__(a0, a1, a2):
         raise NotImplementedError()
 
-    def getMaxConfigsImpl(a0):
+    def enterFullScreenExclusive__int__java_awt_peer_WindowPeer__(a0, a1, a2):
         raise NotImplementedError()
 
-    def isPixFmtSupported(a0, a1):
+    def exitFullScreenExclusive__int__java_awt_peer_WindowPeer__(a0, a1, a2):
         raise NotImplementedError()
 
-    def getDefaultPixIDImpl(a0):
+    def getCurrentDisplayMode__int__(a0, a1):
         raise NotImplementedError()
 
-    def enterFullScreenExclusive(a0, a1):
+    def configDisplayMode__int__java_awt_peer_WindowPeer__int__int__int__int__(a0, a1, a2, a3, a4, a5, a6):
         raise NotImplementedError()
 
-    def exitFullScreenExclusive(a0, a1):
+    def enumDisplayModes__int__java_util_ArrayList__(a0, a1, a2):
         raise NotImplementedError()
 
-    def getCurrentDisplayMode(a0):
-        raise NotImplementedError()
-
-    def configDisplayMode(a0, a1, a2, a3, a4, a5):
-        raise NotImplementedError()
-
-    def enumDisplayModes(a0, a1):
-        raise NotImplementedError()
-
-    def makeColorModel(a0, a1):
-        raise NotImplementedError()
-
-    clazz.initIDs = staticmethod(initIDs)
-    clazz.initDevice = initDevice
-    clazz.getMaxConfigsImpl = getMaxConfigsImpl
-    clazz.isPixFmtSupported = isPixFmtSupported
-    clazz.getDefaultPixIDImpl = getDefaultPixIDImpl
-    clazz.enterFullScreenExclusive = enterFullScreenExclusive
-    clazz.exitFullScreenExclusive = exitFullScreenExclusive
-    clazz.getCurrentDisplayMode = getCurrentDisplayMode
-    clazz.configDisplayMode = configDisplayMode
-    clazz.enumDisplayModes = enumDisplayModes
-    clazz.makeColorModel = makeColorModel
+    clazz.initDevice__int__ = initDevice__int__
+    clazz.isPixFmtSupported__int__int__ = isPixFmtSupported__int__int__
+    clazz.enterFullScreenExclusive__int__java_awt_peer_WindowPeer__ = enterFullScreenExclusive__int__java_awt_peer_WindowPeer__
+    clazz.exitFullScreenExclusive__int__java_awt_peer_WindowPeer__ = exitFullScreenExclusive__int__java_awt_peer_WindowPeer__
+    clazz.getCurrentDisplayMode__int__ = getCurrentDisplayMode__int__
+    clazz.configDisplayMode__int__java_awt_peer_WindowPeer__int__int__int__int__ = configDisplayMode__int__java_awt_peer_WindowPeer__int__int__int__int__
+    clazz.enumDisplayModes__int__java_util_ArrayList__ = enumDisplayModes__int__java_util_ArrayList__
 

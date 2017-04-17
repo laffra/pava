@@ -1,6 +1,6 @@
 def add_native_methods(clazz):
-    def environmentBlock():
+    def environmentBlock____(a0):
         raise NotImplementedError()
 
-    clazz.environmentBlock = staticmethod(environmentBlock)
+    clazz.environmentBlock____ = staticmethod(environmentBlock____)
 

@@ -1,26 +1,14 @@
 def add_native_methods(clazz):
-    def _dispose():
+    def _setLabel__java_lang_String__(a0, a1):
         raise NotImplementedError()
 
-    def _setLabel(a0):
+    def create__sun_awt_windows_WMenuPeer__(a0, a1):
         raise NotImplementedError()
 
-    def create(a0):
+    def enable__boolean__(a0, a1):
         raise NotImplementedError()
 
-    def enable(a0):
-        raise NotImplementedError()
-
-    def initIDs():
-        raise NotImplementedError()
-
-    def _setFont(a0):
-        raise NotImplementedError()
-
-    clazz._dispose = _dispose
-    clazz._setLabel = _setLabel
-    clazz.create = create
-    clazz.enable = enable
-    clazz.initIDs = staticmethod(initIDs)
-    clazz._setFont = _setFont
+    clazz._setLabel__java_lang_String__ = _setLabel__java_lang_String__
+    clazz.create__sun_awt_windows_WMenuPeer__ = create__sun_awt_windows_WMenuPeer__
+    clazz.enable__boolean__ = enable__boolean__
 

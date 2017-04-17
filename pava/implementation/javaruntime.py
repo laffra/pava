@@ -1,10 +1,15 @@
 from collections import namedtuple
-import new
+import dis
+import opcodes
 import os
+import pava
+import profiler
+import re
+import sys
 import StringIO
 import subprocess
+import traceback
 
-DEBUG = False
 
 JDK = 'C:/Program Files/Java/jdk1.8.0_121'
 JAVA = JDK + '/bin/java'
@@ -12,18 +17,90 @@ JAVAC = JDK + '/bin/javac'
 JAVAP = JDK + '/bin/javap'
 JAVART = JDK + '/jre/lib/rt.jar'
 
-Field = namedtuple('Field', ['name', 'type_name', 'static', 'public'])
-Method = namedtuple('Method', ['name', 'args', 'return_type', 'code', 'exceptions', 'static', 'public', 'native'])
+Field = namedtuple('Field', ['name', 'type_name', 'is_static', 'is_public'])
+Method = namedtuple('Method', ['name', 'args', 'return_type', 'code', 'exceptions', 'is_static', 'is_public', 'is_native'])
 Instruction = namedtuple('Instruction', ['index', 'opcode', 'operands'])
 ExceptionHandler = namedtuple('ExceptionHandler', ['from_index', 'to_index', 'target_index', 'type_name'])
 FieldReference = namedtuple('FieldReference', ['class_name', 'field_name', 'signature'])
 MethodReference = namedtuple('MethodReference', ['class_name', 'method_name', 'return_type', 'args'])
 
+JAVA_TO_PYTHON_RENAME_RE = re.compile('[^a-zA-Z0-9]|\).*')
+
+JAVA_SIGNATURE_TYPES = {
+    'B': 'byte',
+    'C': 'char',
+    'D': 'double',
+    'F': 'float',
+    'I': 'int',
+    'J': 'long',
+    'S': 'short',
+    'V': 'void',
+    'Z': 'boolean',
+    '[': '[',
+    ']': ']'
+}
+
+
+def get_python_class_name(class_name):
+    python_name = '.'.join(map(get_python_name, class_name.split('.')))
+    return python_name
+
+
+def get_python_method_name(method_name, signature):
+    # ()V  or  int   or  ""
+    if signature and signature[0] == '(':
+        return_type, types = get_types_from_signature(signature)
+        python_signature = '__'.join(types)
+    else:
+        python_signature = signature
+    python_name = get_python_name('%s__%s__' % (method_name, python_signature))
+    return python_name
+
+
+def get_python_field_name(field_name):
+    python_name = get_python_name(field_name)
+    return python_name
+
+
+def get_python_name(java_name):
+    return re.sub(JAVA_TO_PYTHON_RENAME_RE, '_', java_name)
+
+
+def get_types_from_signature(signature):
+    # (I)Ljava/lang/StringBuilder;
+    # ([ZII)V
+    # ()[Ljava/lang/String;
+    return_type = extract_type_list(signature[signature.index(')') + 1:])[0]
+    signature_types = extract_type_list(signature[1:signature.index(')')])
+    return return_type, signature_types
+
+
+def extract_type_list(encoded_type_string):
+    types = []
+    n = 0
+    array_count = 0
+    while n < len(encoded_type_string):
+        long_name = JAVA_SIGNATURE_TYPES.get(encoded_type_string[n])
+        if encoded_type_string[n] == '[':
+            array_count += 1
+        elif long_name:
+            types.append(long_name + '[]' * array_count)
+            array_count = 0
+        else:
+            start = n
+            while n < len(encoded_type_string) - 1 and encoded_type_string[n] != ';':
+                n += 1
+            class_name = encoded_type_string[start + 1: n].replace('/', '.')
+            types.append(class_name + '[]' * array_count)
+            array_count = 0
+        n += 1
+    return types
+
 
 class ClassFile(object):
     def __init__(self, file_input):
         details = self.parse_details(file_input)
-        self.source_file, self.full_name, self.package, self.class_name, self.super_classes = details
+        self.source_file, self.full_name, self.package, self.class_name, self.super_class = details
         self.fields, self.methods = self.parse_items(file_input)
 
     def parse_details(self, file_input):
@@ -37,12 +114,15 @@ class ClassFile(object):
         package, _, class_name = full_name.rpartition('.')
         full_name = full_name.split('<')[0]
         class_name = class_name.split('<')[0]
-        super_classes = []
-        return source_file, full_name, package, class_name, super_classes
+        super_class = 'pava.JavaClass' if full_name == 'java.lang.Object' else 'java.lang.Object'
+        if 'extends' in tokens:
+            super_class = self.get_token_after(tokens, ['extends']).split('<')[0]
+        return source_file, full_name, package, class_name, super_class
 
     def parse_items(self, file_input):
         fields = []
         methods = []
+        found_methods = set()
         lines = iter(file_input)
         try:
             while True:
@@ -50,7 +130,10 @@ class ClassFile(object):
                 if not line:
                     continue
                 if '(' in line:
-                    methods.append(self.parse_method(line, lines))
+                    method = self.parse_method(line, lines)
+                    if method.name not in found_methods:
+                        found_methods.add(method.name)
+                        methods.append(method)
                 elif '{}' in line:
                     methods.append(self.parse_clinit(line, lines))
                 elif line != '}':
@@ -67,7 +150,7 @@ class ClassFile(object):
                 return tokens[index + 1]
             except ValueError:
                 pass
-        raise ValueError('"%s" is not in %s' % (after, tokens))
+        raise ValueError('None from "%s" found in %s' % (afters, tokens))
 
     def parse_method(self, line, lines):
         prefix, signature = line[:-1].split('(')
@@ -76,20 +159,18 @@ class ClassFile(object):
         signature = signature[:-1]
         tokens = prefix.split()
         if tokens[-1] == self.full_name:
-            name = '__init__'
+            name = '__java_init__'
             return_type = 'void'
         else:
             return_type, name = tokens[-2:]
         code, exceptions = self.parse_code(name, lines)
         args = signature.split(', ') if signature else []
-        static, public, native = 'static' in prefix, 'public' in prefix, 'native' in prefix
-        if not static:
-            args = ['self'] + args
-        return Method(name, args, return_type, code, exceptions, static, public, native)
+        is_static, is_public, is_native = 'static' in prefix, 'public' in prefix, 'native' in prefix
+        args = ['cls' if is_static else 'self'] + ['a%d' % (n+1) for n in range(len(args))]
+        python_method_name = get_python_method_name(name, signature)
+        return Method(python_method_name, args, return_type, code, exceptions, is_static, is_public, is_native)
 
     def parse_code(self, name, lines):
-        if DEBUG:
-            print 'parse code for ', name
         code = []
         exceptions = []
         line = lines.next().rstrip() # skip Code: label
@@ -98,8 +179,6 @@ class ClassFile(object):
         line = lines.next().rstrip()
         while line:
             tokens = line.split()
-            if DEBUG:
-                print '  parse ins', tokens
             if tokens[0] == '}':
                 break
             if tokens[0] == 'Exception':
@@ -134,16 +213,18 @@ class ClassFile(object):
                         if '.' in name:
                             class_name, field_name = name.split('.')
                             class_name = class_name.replace('/', '.')
-                        arg = FieldReference(class_name, field_name, type_signature)
+                        python_class_name = get_python_class_name(class_name) or self.class_name
+                        arg = FieldReference(python_class_name, field_name, type_signature)
                     elif kind in ['Method', 'InterfaceMethod', 'InvokeDynamic']:
                         # java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
                         target, _, signature = arg.rpartition(':')
                         class_name, method_name = target.split('.') if '.' in target else ('', target)
                         class_name = class_name.replace('/', '.')
-                        method_name = '__init__' if method_name == '"<init>"' else method_name
-                        operands, return_type = signature[1:].split(')')
-                        operands = operands.split(', ') if operands else []
-                        arg = MethodReference(class_name, method_name, return_type, operands)
+                        method_name = '__java_init__' if method_name == '"<init>"' else method_name
+                        return_type, method_args = get_types_from_signature(signature)
+                        python_class_name = get_python_class_name(class_name) or self.class_name
+                        python_method_name = get_python_method_name(method_name, signature)
+                        arg = MethodReference(python_class_name, python_method_name, return_type, method_args)
                     elif kind == '' or kind == 'String':
                         pass
                     elif kind == 'int':
@@ -179,7 +260,7 @@ class ClassFile(object):
 
     def parse_clinit(self, line, lines):
         code, exceptions = self.parse_code('clinit', lines)
-        return Method('__clinit__', [], 'void', code, exceptions, True, True, False)
+        return Method('__clinit__', ['cls'], 'void', code, exceptions, True, True, False)
 
     def parse_field(self, line):
         # Example: public static final java.lang.Boolean TRUE;
@@ -200,23 +281,13 @@ class ClassFile(object):
 def compile_java_source(file_name):
     print subprocess.Popen([JAVAC, file_name], stdout=subprocess.PIPE).stdout.read()
 
-def decompile_java_class_file(fin):
-    path = 'pava_class_file.class'
-    with open(path, 'wb') as fout:
-        fout.write(fin.read())
-    return ClassFile(subprocess.Popen([JAVAP, '-c', path], stdout=subprocess.PIPE).stdout)
-
-def javap(fin):
-    path = 'pava_class_file.class'
-    with open(path, 'wb') as fout:
-        fout.write(fin.read())
-    return subprocess.Popen([JAVAP, '-c', path], stdout=subprocess.PIPE).stdout.read()
 
 def decompile_java_class(class_name):
-    return ClassFile(subprocess.Popen([JAVAP, '-c', class_name], stdout=subprocess.PIPE).stdout)
+    return ClassFile(subprocess.Popen([JAVAP, '-c', '-p', class_name], stdout=subprocess.PIPE).stdout)
+
 
 def decompile_java_classes(class_names, classpath):
-    cmd = [JAVAP, '-cp', classpath, '-c'] + list(class_names)
+    cmd = [JAVAP, '-cp', classpath, '-c', '-p'] + list(class_names)
     javap_output = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout.readlines()
     class_files = []
     lines = []
@@ -227,12 +298,23 @@ def decompile_java_classes(class_names, classpath):
             lines = []
     return class_files
 
+
 def run_java_class(class_name):
     return subprocess.Popen([JAVA, class_name], stdout=subprocess.PIPE).stdout.read().rstrip()
 
+
 def run_java_test(return_type, expression):
+    profiler.profile('profile_run_java_test(return_type, expression)', globals(), locals(), 10)
+
+
+def profile_run_java_test(return_type, expression):
+    sys.setrecursionlimit(1000)
+    opcodes.DEBUG = True
+    opcodes.TRACE = False
+    opcodes.INTERPRET = True
     expected, actual = compile_and_run_java_test(return_type, expression)
     assert equals(actual, expected), 'Expected test to produce %s, instead got %s' % (repr(expected), repr(actual))
+
 
 def equals(value1, value2):
     if type(value1) is not type(value2):
@@ -240,6 +322,7 @@ def equals(value1, value2):
     if isinstance(value1, float):
         return abs(value1 - value2) < 0.000001
     return value1 == value2
+
 
 def compile_and_run_java_test(return_type, expression):
     from pava.implementation import classloader
@@ -259,33 +342,35 @@ def compile_and_run_java_test(return_type, expression):
         expected = run_java_class('PavaTest')
         try:
             expected = eval(expected)
-        except:
-            pass
+        except Exception as e:
+            pass # Interpret the result as a string
         class_file = decompile_java_class(binary_path)
-        test_method = class_file.methods[1]
-        code, imports = classloader.compile_method('PavaTest', test_method, source_path, True)
-        modules = {}
-        for module_name in imports:
-            if module_name and not '[' in module_name and not '.' in module_name:
-                if DEBUG:
-                    print 'IMPORT', module_name
-                modules[module_name] = __import__(module_name, {})
-            method = new.function(code.code(), modules, 'test')
-        if DEBUG:
-            print '################ Compiled method %s with imports %s' % (test_method, imports)
+        python_class_text = classloader.init_module('tests')
+        python_class_text += classloader.transpile_class('tests', 'PavaTest', 'java.lang.Object', class_file)
+        python_class_text = python_class_text.replace("'PavaTest']", ']')
+
+        globals()['pava'] = __import__('pava')
+        try:
+            exec(python_class_text, globals())
+        except Exception as e:
+            print '####### EXEC FAILED:'
+            raise e
         actual = 'Unknown'
         try:
-            actual = eval(code.code(), modules)
+            description = globals()['pava_classes']['PavaTest']
+            classobj = pava.implementation.create_class_from_description(description, '', 'PavaTest', reload=True)
+            method = getattr(classobj, 'test____')
+            setattr(sys.modules[__name__], 'PavaTest', classobj)
+            globals()['PavaTest'] = classobj
+            actual = method()
         except Exception as e:
             actual = str(e)
-            print open(source_path).read()
+            print '##### ERROR:', traceback.format_exc(e)
         finally:
             print '='*100
             print '#### Expression:', expression
             print '####   Expected:', repr(expected)
             print '####     Actual:', repr(actual)
-            print '-'*100
-            classloader.dump(code)
             print '='*100
             return expected, actual
     finally:

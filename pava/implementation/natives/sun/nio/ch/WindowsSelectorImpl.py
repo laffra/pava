@@ -1,14 +1,14 @@
 def add_native_methods(clazz):
-    def setWakeupSocket0(a0):
+    def setWakeupSocket0__int__(a0, a1):
         raise NotImplementedError()
 
-    def resetWakeupSocket0(a0):
+    def resetWakeupSocket0__int__(a0, a1):
         raise NotImplementedError()
 
-    def discardUrgentData(a0):
+    def discardUrgentData__int__(a0, a1):
         raise NotImplementedError()
 
-    clazz.setWakeupSocket0 = setWakeupSocket0
-    clazz.resetWakeupSocket0 = resetWakeupSocket0
-    clazz.discardUrgentData = discardUrgentData
+    clazz.setWakeupSocket0__int__ = setWakeupSocket0__int__
+    clazz.resetWakeupSocket0__int__ = resetWakeupSocket0__int__
+    clazz.discardUrgentData__int__ = discardUrgentData__int__
 

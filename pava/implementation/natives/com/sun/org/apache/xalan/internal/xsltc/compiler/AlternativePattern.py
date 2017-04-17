@@ -1,6 +1,6 @@
 def add_native_methods(clazz):
-    def __init__(a0, a1):
+    def __java_init____com_sun_org_apache_xalan_internal_xsltc_compiler_Pattern__com_sun_org_apache_xalan_internal_xsltc_compiler_Pattern__(a0, a1, a2):
         raise NotImplementedError()
 
-    clazz.__init__ = __init__
+    clazz.__java_init____com_sun_org_apache_xalan_internal_xsltc_compiler_Pattern__com_sun_org_apache_xalan_internal_xsltc_compiler_Pattern__ = __java_init____com_sun_org_apache_xalan_internal_xsltc_compiler_Pattern__com_sun_org_apache_xalan_internal_xsltc_compiler_Pattern__
 

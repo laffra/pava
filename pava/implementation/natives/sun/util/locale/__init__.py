@@ -1,14 +1,12 @@
-# This is Java package sun.util.locale.provider
+"""
+This is the Python implementation for the Java package "sun.util.locale.provider", compiled by Pava.
+"""
 
 import pava
 from pava import nan, inf
 
+pava_classes = {}
+pava.module(__name__)
+
 
 import provider
-
-
-provider = pava.JavaPackage("provider")
-
-
-provider = pava.JavaPackage("sun.util.locale.provider")
-

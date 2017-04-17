@@ -1,82 +1,82 @@
 def add_native_methods(clazz):
-    def sin(a0):
+    def sin__double__(a0):
         raise NotImplementedError()
 
-    def cos(a0):
+    def cos__double__(a0):
         raise NotImplementedError()
 
-    def tan(a0):
+    def tan__double__(a0):
         raise NotImplementedError()
 
-    def asin(a0):
+    def asin__double__(a0):
         raise NotImplementedError()
 
-    def acos(a0):
+    def acos__double__(a0):
         raise NotImplementedError()
 
-    def atan(a0):
+    def atan__double__(a0):
         raise NotImplementedError()
 
-    def exp(a0):
+    def exp__double__(a0):
         raise NotImplementedError()
 
-    def log(a0):
+    def log__double__(a0):
         raise NotImplementedError()
 
-    def log10(a0):
+    def log10__double__(a0):
         raise NotImplementedError()
 
-    def sqrt(a0):
+    def sqrt__double__(a0):
         raise NotImplementedError()
 
-    def cbrt(a0):
+    def cbrt__double__(a0):
         raise NotImplementedError()
 
-    def IEEEremainder(a0, a1):
+    def IEEEremainder__double__double__(a0, a1):
         raise NotImplementedError()
 
-    def atan2(a0, a1):
+    def atan2__double__double__(a0, a1):
         raise NotImplementedError()
 
-    def pow(a0, a1):
+    def pow__double__double__(a0, a1):
         raise NotImplementedError()
 
-    def sinh(a0):
+    def sinh__double__(a0):
         raise NotImplementedError()
 
-    def cosh(a0):
+    def cosh__double__(a0):
         raise NotImplementedError()
 
-    def tanh(a0):
+    def tanh__double__(a0):
         raise NotImplementedError()
 
-    def hypot(a0, a1):
+    def hypot__double__double__(a0, a1):
         raise NotImplementedError()
 
-    def expm1(a0):
+    def expm1__double__(a0):
         raise NotImplementedError()
 
-    def log1p(a0):
+    def log1p__double__(a0):
         raise NotImplementedError()
 
-    clazz.sin = staticmethod(sin)
-    clazz.cos = staticmethod(cos)
-    clazz.tan = staticmethod(tan)
-    clazz.asin = staticmethod(asin)
-    clazz.acos = staticmethod(acos)
-    clazz.atan = staticmethod(atan)
-    clazz.exp = staticmethod(exp)
-    clazz.log = staticmethod(log)
-    clazz.log10 = staticmethod(log10)
-    clazz.sqrt = staticmethod(sqrt)
-    clazz.cbrt = staticmethod(cbrt)
-    clazz.IEEEremainder = staticmethod(IEEEremainder)
-    clazz.atan2 = staticmethod(atan2)
-    clazz.pow = staticmethod(pow)
-    clazz.sinh = staticmethod(sinh)
-    clazz.cosh = staticmethod(cosh)
-    clazz.tanh = staticmethod(tanh)
-    clazz.hypot = staticmethod(hypot)
-    clazz.expm1 = staticmethod(expm1)
-    clazz.log1p = staticmethod(log1p)
+    clazz.sin__double__ = staticmethod(sin__double__)
+    clazz.cos__double__ = staticmethod(cos__double__)
+    clazz.tan__double__ = staticmethod(tan__double__)
+    clazz.asin__double__ = staticmethod(asin__double__)
+    clazz.acos__double__ = staticmethod(acos__double__)
+    clazz.atan__double__ = staticmethod(atan__double__)
+    clazz.exp__double__ = staticmethod(exp__double__)
+    clazz.log__double__ = staticmethod(log__double__)
+    clazz.log10__double__ = staticmethod(log10__double__)
+    clazz.sqrt__double__ = staticmethod(sqrt__double__)
+    clazz.cbrt__double__ = staticmethod(cbrt__double__)
+    clazz.IEEEremainder__double__double__ = staticmethod(IEEEremainder__double__double__)
+    clazz.atan2__double__double__ = staticmethod(atan2__double__double__)
+    clazz.pow__double__double__ = staticmethod(pow__double__double__)
+    clazz.sinh__double__ = staticmethod(sinh__double__)
+    clazz.cosh__double__ = staticmethod(cosh__double__)
+    clazz.tanh__double__ = staticmethod(tanh__double__)
+    clazz.hypot__double__double__ = staticmethod(hypot__double__double__)
+    clazz.expm1__double__ = staticmethod(expm1__double__)
+    clazz.log1p__double__ = staticmethod(log1p__double__)
 

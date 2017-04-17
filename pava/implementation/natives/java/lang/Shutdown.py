@@ -1,10 +1,6 @@
 def add_native_methods(clazz):
-    def halt0(a0):
+    def halt0__int__(a0):
         raise NotImplementedError()
 
-    def runAllFinalizers():
-        raise NotImplementedError()
-
-    clazz.halt0 = staticmethod(halt0)
-    clazz.runAllFinalizers = staticmethod(runAllFinalizers)
+    clazz.halt0__int__ = staticmethod(halt0__int__)
 

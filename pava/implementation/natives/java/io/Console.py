@@ -1,14 +1,14 @@
 def add_native_methods(clazz):
-    def encoding():
+    def encoding____(a0):
         raise NotImplementedError()
 
-    def echo(a0):
+    def echo__boolean__(a0, a1):
         raise NotImplementedError()
 
-    def istty():
+    def istty____(a0):
         raise NotImplementedError()
 
-    clazz.encoding = staticmethod(encoding)
-    clazz.echo = staticmethod(echo)
-    clazz.istty = staticmethod(istty)
+    clazz.encoding____ = staticmethod(encoding____)
+    clazz.echo__boolean__ = staticmethod(echo__boolean__)
+    clazz.istty____ = staticmethod(istty____)
 

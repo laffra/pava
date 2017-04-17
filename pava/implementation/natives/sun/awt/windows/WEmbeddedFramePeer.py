@@ -1,10 +1,10 @@
 def add_native_methods(clazz):
-    def create(a0):
+    def create__sun_awt_windows_WComponentPeer__(a0, a1):
         raise NotImplementedError()
 
-    def getBoundsPrivate():
+    def getBoundsPrivate____(a0):
         raise NotImplementedError()
 
-    clazz.create = create
-    clazz.getBoundsPrivate = getBoundsPrivate
+    clazz.create__sun_awt_windows_WComponentPeer__ = create__sun_awt_windows_WComponentPeer__
+    clazz.getBoundsPrivate____ = getBoundsPrivate____
 

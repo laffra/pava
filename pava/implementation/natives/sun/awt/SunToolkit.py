@@ -1,6 +1,6 @@
 def add_native_methods(clazz):
-    def closeSplashScreen():
+    def closeSplashScreen____():
         raise NotImplementedError()
 
-    clazz.closeSplashScreen = staticmethod(closeSplashScreen)
+    clazz.closeSplashScreen____ = staticmethod(closeSplashScreen____)
 

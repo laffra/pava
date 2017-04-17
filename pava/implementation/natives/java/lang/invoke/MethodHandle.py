@@ -1,30 +1,30 @@
 def add_native_methods(clazz):
-    def invokeExact(a0):
+    def invokeExact__java_lang_Object_____(a0, a1):
         raise NotImplementedError()
 
-    def invoke(a0):
+    def invoke__java_lang_Object_____(a0, a1):
         raise NotImplementedError()
 
-    def invokeBasic(a0):
+    def invokeBasic__java_lang_Object_____(a0, a1):
         raise NotImplementedError()
 
-    def linkToVirtual(a0):
+    def linkToVirtual__java_lang_Object_____(a0):
         raise NotImplementedError()
 
-    def linkToStatic(a0):
+    def linkToStatic__java_lang_Object_____(a0):
         raise NotImplementedError()
 
-    def linkToSpecial(a0):
+    def linkToSpecial__java_lang_Object_____(a0):
         raise NotImplementedError()
 
-    def linkToInterface(a0):
+    def linkToInterface__java_lang_Object_____(a0):
         raise NotImplementedError()
 
-    clazz.invokeExact = invokeExact
-    clazz.invoke = invoke
-    clazz.invokeBasic = invokeBasic
-    clazz.linkToVirtual = staticmethod(linkToVirtual)
-    clazz.linkToStatic = staticmethod(linkToStatic)
-    clazz.linkToSpecial = staticmethod(linkToSpecial)
-    clazz.linkToInterface = staticmethod(linkToInterface)
+    clazz.invokeExact__java_lang_Object_____ = invokeExact__java_lang_Object_____
+    clazz.invoke__java_lang_Object_____ = invoke__java_lang_Object_____
+    clazz.invokeBasic__java_lang_Object_____ = invokeBasic__java_lang_Object_____
+    clazz.linkToVirtual__java_lang_Object_____ = staticmethod(linkToVirtual__java_lang_Object_____)
+    clazz.linkToStatic__java_lang_Object_____ = staticmethod(linkToStatic__java_lang_Object_____)
+    clazz.linkToSpecial__java_lang_Object_____ = staticmethod(linkToSpecial__java_lang_Object_____)
+    clazz.linkToInterface__java_lang_Object_____ = staticmethod(linkToInterface__java_lang_Object_____)
 

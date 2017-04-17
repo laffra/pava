@@ -1,38 +1,30 @@
 def add_native_methods(clazz):
-    def getCommittedVirtualMemorySize0():
+    def getTotalSwapSpaceSize____(a0):
         raise NotImplementedError()
 
-    def getTotalSwapSpaceSize():
+    def getFreeSwapSpaceSize____(a0):
         raise NotImplementedError()
 
-    def getFreeSwapSpaceSize():
+    def getProcessCpuTime____(a0):
         raise NotImplementedError()
 
-    def getProcessCpuTime():
+    def getFreePhysicalMemorySize____(a0):
         raise NotImplementedError()
 
-    def getFreePhysicalMemorySize():
+    def getTotalPhysicalMemorySize____(a0):
         raise NotImplementedError()
 
-    def getTotalPhysicalMemorySize():
+    def getSystemCpuLoad____(a0):
         raise NotImplementedError()
 
-    def getSystemCpuLoad():
+    def getProcessCpuLoad____(a0):
         raise NotImplementedError()
 
-    def getProcessCpuLoad():
-        raise NotImplementedError()
-
-    def initialize():
-        raise NotImplementedError()
-
-    clazz.getCommittedVirtualMemorySize0 = getCommittedVirtualMemorySize0
-    clazz.getTotalSwapSpaceSize = getTotalSwapSpaceSize
-    clazz.getFreeSwapSpaceSize = getFreeSwapSpaceSize
-    clazz.getProcessCpuTime = getProcessCpuTime
-    clazz.getFreePhysicalMemorySize = getFreePhysicalMemorySize
-    clazz.getTotalPhysicalMemorySize = getTotalPhysicalMemorySize
-    clazz.getSystemCpuLoad = getSystemCpuLoad
-    clazz.getProcessCpuLoad = getProcessCpuLoad
-    clazz.initialize = staticmethod(initialize)
+    clazz.getTotalSwapSpaceSize____ = getTotalSwapSpaceSize____
+    clazz.getFreeSwapSpaceSize____ = getFreeSwapSpaceSize____
+    clazz.getProcessCpuTime____ = getProcessCpuTime____
+    clazz.getFreePhysicalMemorySize____ = getFreePhysicalMemorySize____
+    clazz.getTotalPhysicalMemorySize____ = getTotalPhysicalMemorySize____
+    clazz.getSystemCpuLoad____ = getSystemCpuLoad____
+    clazz.getProcessCpuLoad____ = getProcessCpuLoad____
 

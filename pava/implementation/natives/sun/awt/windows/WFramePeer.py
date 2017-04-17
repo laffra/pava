@@ -1,42 +1,18 @@
 def add_native_methods(clazz):
-    def initIDs():
+    def setState__int__(a0, a1):
         raise NotImplementedError()
 
-    def setState(a0):
+    def getState____(a0):
         raise NotImplementedError()
 
-    def getState():
+    def createAwtFrame__sun_awt_windows_WComponentPeer__(a0, a1):
         raise NotImplementedError()
 
-    def setMaximizedBounds(a0, a1, a2, a3):
+    def pSetIMMOption__java_lang_String__(a0, a1):
         raise NotImplementedError()
 
-    def clearMaximizedBounds():
-        raise NotImplementedError()
-
-    def setMenuBar0(a0):
-        raise NotImplementedError()
-
-    def createAwtFrame(a0):
-        raise NotImplementedError()
-
-    def getSysMenuHeight():
-        raise NotImplementedError()
-
-    def pSetIMMOption(a0):
-        raise NotImplementedError()
-
-    def synthesizeWmActivate(a0):
-        raise NotImplementedError()
-
-    clazz.initIDs = staticmethod(initIDs)
-    clazz.setState = setState
-    clazz.getState = getState
-    clazz.setMaximizedBounds = setMaximizedBounds
-    clazz.clearMaximizedBounds = clearMaximizedBounds
-    clazz.setMenuBar0 = setMenuBar0
-    clazz.createAwtFrame = createAwtFrame
-    clazz.getSysMenuHeight = staticmethod(getSysMenuHeight)
-    clazz.pSetIMMOption = pSetIMMOption
-    clazz.synthesizeWmActivate = synthesizeWmActivate
+    clazz.setState__int__ = setState__int__
+    clazz.getState____ = getState____
+    clazz.createAwtFrame__sun_awt_windows_WComponentPeer__ = createAwtFrame__sun_awt_windows_WComponentPeer__
+    clazz.pSetIMMOption__java_lang_String__ = pSetIMMOption__java_lang_String__
 

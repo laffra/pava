@@ -1,10 +1,10 @@
 def add_native_methods(clazz):
-    def init(a0):
+    def init__java_io_FileDescriptor__(a0, a1):
         raise NotImplementedError()
 
-    def initIDs():
+    def initIDs____(a0):
         raise NotImplementedError()
 
-    clazz.init = init
-    clazz.initIDs = staticmethod(initIDs)
+    clazz.init__java_io_FileDescriptor__ = init__java_io_FileDescriptor__
+    clazz.initIDs____ = staticmethod(initIDs____)
 

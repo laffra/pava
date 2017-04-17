@@ -1,10 +1,10 @@
 def add_native_methods(clazz):
-    def initIDs():
+    def initIDs____(a0):
         raise NotImplementedError()
 
-    def getBounds(a0):
+    def getBounds__int__(a0, a1):
         raise NotImplementedError()
 
-    clazz.initIDs = staticmethod(initIDs)
-    clazz.getBounds = getBounds
+    clazz.initIDs____ = staticmethod(initIDs____)
+    clazz.getBounds__int__ = getBounds__int__
 

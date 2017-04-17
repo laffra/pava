@@ -1,10 +1,10 @@
 def add_native_methods(clazz):
-    def getSystemTimeZoneID(a0):
+    def getSystemTimeZoneID__java_lang_String__(a0, a1):
         raise NotImplementedError()
 
-    def getSystemGMTOffsetID():
+    def getSystemGMTOffsetID____(a0):
         raise NotImplementedError()
 
-    clazz.getSystemTimeZoneID = staticmethod(getSystemTimeZoneID)
-    clazz.getSystemGMTOffsetID = staticmethod(getSystemGMTOffsetID)
+    clazz.getSystemTimeZoneID__java_lang_String__ = staticmethod(getSystemTimeZoneID__java_lang_String__)
+    clazz.getSystemGMTOffsetID____ = staticmethod(getSystemGMTOffsetID____)
 

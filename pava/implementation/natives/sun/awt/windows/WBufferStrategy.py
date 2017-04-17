@@ -1,10 +1,6 @@
 def add_native_methods(clazz):
-    def initIDs(a0):
+    def getDrawBuffer__java_awt_Component__(a0):
         raise NotImplementedError()
 
-    def getDrawBuffer(a0):
-        raise NotImplementedError()
-
-    clazz.initIDs = staticmethod(initIDs)
-    clazz.getDrawBuffer = staticmethod(getDrawBuffer)
+    clazz.getDrawBuffer__java_awt_Component__ = staticmethod(getDrawBuffer__java_awt_Component__)
 

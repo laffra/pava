@@ -1,6 +1,6 @@
 def add_native_methods(clazz):
-    def getIssuerAltNameExtension():
+    def getIssuerAltNameExtension____(a0):
         raise NotImplementedError()
 
-    clazz.getIssuerAltNameExtension = getIssuerAltNameExtension
+    clazz.getIssuerAltNameExtension____ = getIssuerAltNameExtension____
 

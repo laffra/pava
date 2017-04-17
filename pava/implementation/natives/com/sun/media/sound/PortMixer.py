@@ -1,42 +1,42 @@
 def add_native_methods(clazz):
-    def nOpen(a0):
+    def nOpen__int__(a0, a1):
         raise NotImplementedError()
 
-    def nClose(a0):
+    def nClose__long__(a0, a1):
         raise NotImplementedError()
 
-    def nGetPortCount(a0):
+    def nGetPortCount__long__(a0, a1):
         raise NotImplementedError()
 
-    def nGetPortType(a0, a1):
+    def nGetPortType__long__int__(a0, a1, a2):
         raise NotImplementedError()
 
-    def nGetPortName(a0, a1):
+    def nGetPortName__long__int__(a0, a1, a2):
         raise NotImplementedError()
 
-    def nGetControls(a0, a1, a2):
+    def nGetControls__long__int__java_util_Vector__(a0, a1, a2, a3):
         raise NotImplementedError()
 
-    def nControlSetIntValue(a0, a1):
+    def nControlSetIntValue__long__int__(a0, a1, a2):
         raise NotImplementedError()
 
-    def nControlGetIntValue(a0):
+    def nControlGetIntValue__long__(a0, a1):
         raise NotImplementedError()
 
-    def nControlSetFloatValue(a0, a1):
+    def nControlSetFloatValue__long__float__(a0, a1, a2):
         raise NotImplementedError()
 
-    def nControlGetFloatValue(a0):
+    def nControlGetFloatValue__long__(a0, a1):
         raise NotImplementedError()
 
-    clazz.nOpen = staticmethod(nOpen)
-    clazz.nClose = staticmethod(nClose)
-    clazz.nGetPortCount = staticmethod(nGetPortCount)
-    clazz.nGetPortType = staticmethod(nGetPortType)
-    clazz.nGetPortName = staticmethod(nGetPortName)
-    clazz.nGetControls = staticmethod(nGetControls)
-    clazz.nControlSetIntValue = staticmethod(nControlSetIntValue)
-    clazz.nControlGetIntValue = staticmethod(nControlGetIntValue)
-    clazz.nControlSetFloatValue = staticmethod(nControlSetFloatValue)
-    clazz.nControlGetFloatValue = staticmethod(nControlGetFloatValue)
+    clazz.nOpen__int__ = staticmethod(nOpen__int__)
+    clazz.nClose__long__ = staticmethod(nClose__long__)
+    clazz.nGetPortCount__long__ = staticmethod(nGetPortCount__long__)
+    clazz.nGetPortType__long__int__ = staticmethod(nGetPortType__long__int__)
+    clazz.nGetPortName__long__int__ = staticmethod(nGetPortName__long__int__)
+    clazz.nGetControls__long__int__java_util_Vector__ = staticmethod(nGetControls__long__int__java_util_Vector__)
+    clazz.nControlSetIntValue__long__int__ = staticmethod(nControlSetIntValue__long__int__)
+    clazz.nControlGetIntValue__long__ = staticmethod(nControlGetIntValue__long__)
+    clazz.nControlSetFloatValue__long__float__ = staticmethod(nControlSetFloatValue__long__float__)
+    clazz.nControlGetFloatValue__long__ = staticmethod(nControlGetFloatValue__long__)
 

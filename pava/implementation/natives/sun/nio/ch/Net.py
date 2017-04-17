@@ -1,126 +1,58 @@
 def add_native_methods(clazz):
-    def isIPv6Available0():
+    def listen__java_io_FileDescriptor__int__(a0, a1):
         raise NotImplementedError()
 
-    def isExclusiveBindAvailable():
+    def shutdown__java_io_FileDescriptor__int__(a0, a1):
         raise NotImplementedError()
 
-    def canIPv6SocketJoinIPv4Group0():
+    def poll__java_io_FileDescriptor__int__long__(a0, a1, a2):
         raise NotImplementedError()
 
-    def canJoin6WithIPv4Group0():
+    def blockOrUnblock6__boolean__java_io_FileDescriptor__byte____int__byte____(a0, a1, a2, a3, a4):
         raise NotImplementedError()
 
-    def socket0(a0, a1, a2, a3):
+    def setInterface4__java_io_FileDescriptor__int__(a0, a1):
         raise NotImplementedError()
 
-    def bind0(a0, a1, a2, a3, a4):
+    def getInterface4__java_io_FileDescriptor__(a0):
         raise NotImplementedError()
 
-    def listen(a0, a1):
+    def setInterface6__java_io_FileDescriptor__int__(a0, a1):
         raise NotImplementedError()
 
-    def connect0(a0, a1, a2, a3):
+    def getInterface6__java_io_FileDescriptor__(a0):
         raise NotImplementedError()
 
-    def shutdown(a0, a1):
+    def pollinValue____():
         raise NotImplementedError()
 
-    def localPort(a0):
+    def polloutValue____():
         raise NotImplementedError()
 
-    def localInetAddress(a0):
+    def pollerrValue____():
         raise NotImplementedError()
 
-    def remotePort(a0):
+    def pollhupValue____():
         raise NotImplementedError()
 
-    def remoteInetAddress(a0):
+    def pollnvalValue____():
         raise NotImplementedError()
 
-    def getIntOption0(a0, a1, a2, a3):
+    def pollconnValue____():
         raise NotImplementedError()
 
-    def setIntOption0(a0, a1, a2, a3, a4, a5):
-        raise NotImplementedError()
-
-    def poll(a0, a1, a2):
-        raise NotImplementedError()
-
-    def joinOrDrop4(a0, a1, a2, a3, a4):
-        raise NotImplementedError()
-
-    def blockOrUnblock4(a0, a1, a2, a3, a4):
-        raise NotImplementedError()
-
-    def joinOrDrop6(a0, a1, a2, a3, a4):
-        raise NotImplementedError()
-
-    def blockOrUnblock6(a0, a1, a2, a3, a4):
-        raise NotImplementedError()
-
-    def setInterface4(a0, a1):
-        raise NotImplementedError()
-
-    def getInterface4(a0):
-        raise NotImplementedError()
-
-    def setInterface6(a0, a1):
-        raise NotImplementedError()
-
-    def getInterface6(a0):
-        raise NotImplementedError()
-
-    def initIDs():
-        raise NotImplementedError()
-
-    def pollinValue():
-        raise NotImplementedError()
-
-    def polloutValue():
-        raise NotImplementedError()
-
-    def pollerrValue():
-        raise NotImplementedError()
-
-    def pollhupValue():
-        raise NotImplementedError()
-
-    def pollnvalValue():
-        raise NotImplementedError()
-
-    def pollconnValue():
-        raise NotImplementedError()
-
-    clazz.isIPv6Available0 = staticmethod(isIPv6Available0)
-    clazz.isExclusiveBindAvailable = staticmethod(isExclusiveBindAvailable)
-    clazz.canIPv6SocketJoinIPv4Group0 = staticmethod(canIPv6SocketJoinIPv4Group0)
-    clazz.canJoin6WithIPv4Group0 = staticmethod(canJoin6WithIPv4Group0)
-    clazz.socket0 = staticmethod(socket0)
-    clazz.bind0 = staticmethod(bind0)
-    clazz.listen = staticmethod(listen)
-    clazz.connect0 = staticmethod(connect0)
-    clazz.shutdown = staticmethod(shutdown)
-    clazz.localPort = staticmethod(localPort)
-    clazz.localInetAddress = staticmethod(localInetAddress)
-    clazz.remotePort = staticmethod(remotePort)
-    clazz.remoteInetAddress = staticmethod(remoteInetAddress)
-    clazz.getIntOption0 = staticmethod(getIntOption0)
-    clazz.setIntOption0 = staticmethod(setIntOption0)
-    clazz.poll = staticmethod(poll)
-    clazz.joinOrDrop4 = staticmethod(joinOrDrop4)
-    clazz.blockOrUnblock4 = staticmethod(blockOrUnblock4)
-    clazz.joinOrDrop6 = staticmethod(joinOrDrop6)
-    clazz.blockOrUnblock6 = staticmethod(blockOrUnblock6)
-    clazz.setInterface4 = staticmethod(setInterface4)
-    clazz.getInterface4 = staticmethod(getInterface4)
-    clazz.setInterface6 = staticmethod(setInterface6)
-    clazz.getInterface6 = staticmethod(getInterface6)
-    clazz.initIDs = staticmethod(initIDs)
-    clazz.pollinValue = staticmethod(pollinValue)
-    clazz.polloutValue = staticmethod(polloutValue)
-    clazz.pollerrValue = staticmethod(pollerrValue)
-    clazz.pollhupValue = staticmethod(pollhupValue)
-    clazz.pollnvalValue = staticmethod(pollnvalValue)
-    clazz.pollconnValue = staticmethod(pollconnValue)
+    clazz.listen__java_io_FileDescriptor__int__ = staticmethod(listen__java_io_FileDescriptor__int__)
+    clazz.shutdown__java_io_FileDescriptor__int__ = staticmethod(shutdown__java_io_FileDescriptor__int__)
+    clazz.poll__java_io_FileDescriptor__int__long__ = staticmethod(poll__java_io_FileDescriptor__int__long__)
+    clazz.blockOrUnblock6__boolean__java_io_FileDescriptor__byte____int__byte____ = staticmethod(blockOrUnblock6__boolean__java_io_FileDescriptor__byte____int__byte____)
+    clazz.setInterface4__java_io_FileDescriptor__int__ = staticmethod(setInterface4__java_io_FileDescriptor__int__)
+    clazz.getInterface4__java_io_FileDescriptor__ = staticmethod(getInterface4__java_io_FileDescriptor__)
+    clazz.setInterface6__java_io_FileDescriptor__int__ = staticmethod(setInterface6__java_io_FileDescriptor__int__)
+    clazz.getInterface6__java_io_FileDescriptor__ = staticmethod(getInterface6__java_io_FileDescriptor__)
+    clazz.pollinValue____ = staticmethod(pollinValue____)
+    clazz.polloutValue____ = staticmethod(polloutValue____)
+    clazz.pollerrValue____ = staticmethod(pollerrValue____)
+    clazz.pollhupValue____ = staticmethod(pollhupValue____)
+    clazz.pollnvalValue____ = staticmethod(pollnvalValue____)
+    clazz.pollconnValue____ = staticmethod(pollconnValue____)
 

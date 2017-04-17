@@ -1,10 +1,6 @@
 def add_native_methods(clazz):
-    def getNullScalerContext():
+    def getNullScalerContext____():
         raise NotImplementedError()
 
-    def getGlyphImage(a0, a1):
-        raise NotImplementedError()
-
-    clazz.getNullScalerContext = staticmethod(getNullScalerContext)
-    clazz.getGlyphImage = getGlyphImage
+    clazz.getNullScalerContext____ = staticmethod(getNullScalerContext____)
 

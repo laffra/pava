@@ -1,74 +1,42 @@
 def add_native_methods(clazz):
-    def getDriveDirectory(a0):
+    def getBooleanAttributes__java_io_File__(a0, a1):
         raise NotImplementedError()
 
-    def canonicalize0(a0):
+    def checkAccess__java_io_File__int__(a0, a1, a2):
         raise NotImplementedError()
 
-    def canonicalizeWithPrefix0(a0, a1):
+    def getLastModifiedTime__java_io_File__(a0, a1):
         raise NotImplementedError()
 
-    def getBooleanAttributes(a0):
+    def getLength__java_io_File__(a0, a1):
         raise NotImplementedError()
 
-    def checkAccess(a0, a1):
+    def setPermission__java_io_File__int__boolean__boolean__(a0, a1, a2, a3, a4):
         raise NotImplementedError()
 
-    def getLastModifiedTime(a0):
+    def createFileExclusively__java_lang_String__(a0, a1):
         raise NotImplementedError()
 
-    def getLength(a0):
+    def list__java_io_File__(a0, a1):
         raise NotImplementedError()
 
-    def setPermission(a0, a1, a2, a3):
+    def createDirectory__java_io_File__(a0, a1):
         raise NotImplementedError()
 
-    def createFileExclusively(a0):
+    def setLastModifiedTime__java_io_File__long__(a0, a1, a2):
         raise NotImplementedError()
 
-    def list(a0):
+    def setReadOnly__java_io_File__(a0, a1):
         raise NotImplementedError()
 
-    def createDirectory(a0):
-        raise NotImplementedError()
-
-    def setLastModifiedTime(a0, a1):
-        raise NotImplementedError()
-
-    def setReadOnly(a0):
-        raise NotImplementedError()
-
-    def delete0(a0):
-        raise NotImplementedError()
-
-    def rename0(a0, a1):
-        raise NotImplementedError()
-
-    def listRoots0():
-        raise NotImplementedError()
-
-    def getSpace0(a0, a1):
-        raise NotImplementedError()
-
-    def initIDs():
-        raise NotImplementedError()
-
-    clazz.getDriveDirectory = getDriveDirectory
-    clazz.canonicalize0 = canonicalize0
-    clazz.canonicalizeWithPrefix0 = canonicalizeWithPrefix0
-    clazz.getBooleanAttributes = getBooleanAttributes
-    clazz.checkAccess = checkAccess
-    clazz.getLastModifiedTime = getLastModifiedTime
-    clazz.getLength = getLength
-    clazz.setPermission = setPermission
-    clazz.createFileExclusively = createFileExclusively
-    clazz.list = list
-    clazz.createDirectory = createDirectory
-    clazz.setLastModifiedTime = setLastModifiedTime
-    clazz.setReadOnly = setReadOnly
-    clazz.delete0 = delete0
-    clazz.rename0 = rename0
-    clazz.listRoots0 = staticmethod(listRoots0)
-    clazz.getSpace0 = getSpace0
-    clazz.initIDs = staticmethod(initIDs)
+    clazz.getBooleanAttributes__java_io_File__ = getBooleanAttributes__java_io_File__
+    clazz.checkAccess__java_io_File__int__ = checkAccess__java_io_File__int__
+    clazz.getLastModifiedTime__java_io_File__ = getLastModifiedTime__java_io_File__
+    clazz.getLength__java_io_File__ = getLength__java_io_File__
+    clazz.setPermission__java_io_File__int__boolean__boolean__ = setPermission__java_io_File__int__boolean__boolean__
+    clazz.createFileExclusively__java_lang_String__ = createFileExclusively__java_lang_String__
+    clazz.list__java_io_File__ = list__java_io_File__
+    clazz.createDirectory__java_io_File__ = createDirectory__java_io_File__
+    clazz.setLastModifiedTime__java_io_File__long__ = setLastModifiedTime__java_io_File__long__
+    clazz.setReadOnly__java_io_File__ = setReadOnly__java_io_File__
 

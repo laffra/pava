@@ -1,34 +1,30 @@
 def add_native_methods(clazz):
-    def availableProcessors():
+    def availableProcessors____(a0):
         raise NotImplementedError()
 
-    def freeMemory():
+    def freeMemory____(a0):
         raise NotImplementedError()
 
-    def totalMemory():
+    def totalMemory____(a0):
         raise NotImplementedError()
 
-    def maxMemory():
+    def maxMemory____(a0):
         raise NotImplementedError()
 
-    def gc():
+    def gc____(a0):
         raise NotImplementedError()
 
-    def runFinalization0():
+    def traceInstructions__boolean__(a0, a1):
         raise NotImplementedError()
 
-    def traceInstructions(a0):
+    def traceMethodCalls__boolean__(a0, a1):
         raise NotImplementedError()
 
-    def traceMethodCalls(a0):
-        raise NotImplementedError()
-
-    clazz.availableProcessors = availableProcessors
-    clazz.freeMemory = freeMemory
-    clazz.totalMemory = totalMemory
-    clazz.maxMemory = maxMemory
-    clazz.gc = gc
-    clazz.runFinalization0 = staticmethod(runFinalization0)
-    clazz.traceInstructions = traceInstructions
-    clazz.traceMethodCalls = traceMethodCalls
+    clazz.availableProcessors____ = availableProcessors____
+    clazz.freeMemory____ = freeMemory____
+    clazz.totalMemory____ = totalMemory____
+    clazz.maxMemory____ = maxMemory____
+    clazz.gc____ = gc____
+    clazz.traceInstructions__boolean__ = traceInstructions__boolean__
+    clazz.traceMethodCalls__boolean__ = traceMethodCalls__boolean__
 

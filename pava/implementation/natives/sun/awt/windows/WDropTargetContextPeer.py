@@ -1,10 +1,6 @@
 def add_native_methods(clazz):
-    def getData(a0, a1):
+    def getData__long__long__(a0, a1, a2):
         raise NotImplementedError()
 
-    def dropDone(a0, a1, a2):
-        raise NotImplementedError()
-
-    clazz.getData = getData
-    clazz.dropDone = dropDone
+    clazz.getData__long__long__ = getData__long__long__
 

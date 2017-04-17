@@ -1,18 +1,10 @@
 def add_native_methods(clazz):
-    def getJvmSpecialVersion():
+    def getJvmSpecialVersion____():
         raise NotImplementedError()
 
-    def getJdkSpecialVersion():
+    def getJdkSpecialVersion____():
         raise NotImplementedError()
 
-    def getJvmVersionInfo():
-        raise NotImplementedError()
-
-    def getJdkVersionInfo():
-        raise NotImplementedError()
-
-    clazz.getJvmSpecialVersion = staticmethod(getJvmSpecialVersion)
-    clazz.getJdkSpecialVersion = staticmethod(getJdkSpecialVersion)
-    clazz.getJvmVersionInfo = staticmethod(getJvmVersionInfo)
-    clazz.getJdkVersionInfo = staticmethod(getJdkVersionInfo)
+    clazz.getJvmSpecialVersion____ = staticmethod(getJvmSpecialVersion____)
+    clazz.getJdkSpecialVersion____ = staticmethod(getJdkSpecialVersion____)
 

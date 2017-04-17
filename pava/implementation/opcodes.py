@@ -1,1195 +1,864 @@
 from collections import namedtuple
-import peak.util.assembler as asm
+import pava
 import sys
 
-VERBOSE = True
 DEBUG = False
 
 
-def convert_ldc(code, java_pos, value):
-    code.LOAD_CONST(value)
-    code.word_size = 1
+def convert_ldc(python_method, java_index, value):
+    python_method.push(java_index, repr(value))
 
 
-def convert_ldc_w(code, java_pos, value):
-    code.LOAD_CONST(value)
-    code.word_size = 1
+def convert_ldc_w(python_method, java_index, value):
+    python_method.push(java_index, repr(value))
 
 
-def convert_ldc2_w(code, java_pos, value):
-    code.LOAD_CONST(value)
-    code.word_size = 2
+def convert_ldc2_w(python_method, java_index, value):
+    python_method.push(java_index, repr(value))
 
 
-def convert_instanceof(code, java_pos, class_):
-    code.LOAD_GLOBAL('isinstance')
-    code.ROT_TWO()
-    class_reference(code, class_)
-    code.CALL_FUNCTION(2)
-    code.word_size = 1
+def convert_instanceof(python_method, java_index, class_name):
+    python_method.add_class_reference(class_name)
+    python_method.push(java_index, 'isinstance(%s, %s)' % (python_method.pop(), class_name))
 
 
-def convert_arraylength(code, java_pos):
-    code.LOAD_GLOBAL('len')
-    code.ROT_TWO()
-    code.CALL_FUNCTION(1)
-    code.word_size = 1
+def convert_arraylength(python_method, java_index):
+    python_method.push(java_index, 'len(%s)' % python_method.pop())
 
 
-def convert_getstatic(code, java_pos, field):
-    class_reference(code, field.class_name)
-    code.LOAD_ATTR(field.field_name)
-    code.word_size = get_word_size(field.signature)
+def convert_getstatic(python_method, java_index, field):
+    python_method.add_class_reference(replace_reserved_names(field.class_name))
+    python_method.push(java_index, '%s.%s' % (replace_reserved_names(field.class_name),
+                                              replace_reserved_names(field.field_name)))
 
 
-def convert_putstatic(code, java_pos, field):
-    class_reference(code, field.class_name)
-    code.STORE_ATTR(field.field_name)
-    code.word_size = 0
+def convert_putstatic(python_method, java_index, field):
+    python_method.add_class_reference(replace_reserved_names(field.class_name))
+    python_method.push(java_index, '%s.%s = %s' % (replace_reserved_names(field.class_name),
+                                                   replace_reserved_names(field.field_name),
+                                                   python_method.pop()), is_statement=True)
 
 
-def get_word_size(descriptor):
-    if descriptor[0] == '(':
-        descriptor = descriptor[descriptor.index(')') + 1:]
-    if descriptor == 'D' or descriptor == 'J':
-        return 2
-    if descriptor == 'V':
-        return 0
-    return 1
-
-def class_reference(code, class_, load=True):
-    fragments = str(class_).split('.')
-    asm.Global(fragments[0], code)
-    for fragment in fragments[1:]:
-        if load:
-            code.LOAD_ATTR(fragment)
-        else:
-            code.STORE_ATTR(fragment)
-
-    module_name = fragments[0]
-    load_module(code, module_name)
-    for fragment in fragments[1:-1]:
-        module_name += '.' + fragment
-        load_module(code, module_name)
+def convert_new(python_method, java_index, class_name):
+    python_method.add_class_reference(replace_reserved_names(class_name))
+    python_method.push(java_index, '%s()' % replace_reserved_names(class_name))
 
 
-def load_module(code, name):
-    # print 'load module', name
-    code.module_names.add(name)
-    # __import__(name)
+def convert_anewarray(python_method, java_index, class_):
+    python_method.push(java_index, '[]')
 
 
-def convert_new(code, java_pos, class_):
-    class_reference(code, class_)
-    code.word_size = 1
+def convert_checkcast(python_method, java_index, class_name):
+    python_method.add_class_reference(class_name)
+    python_method.push(java_index, 'pava.checkcast(%s, %s)' % (python_method.pop(), class_name))
 
 
-def convert_anewarray(code, java_pos, class_):
-    code([])
-    code.word_size = 1
+def convert_invokevirtual(python_method, java_index, method):
+    invoke_instance_method(python_method, java_index, method)
 
 
-def convert_checkcast(code, java_pos, class_):
-    if class_:
-        # TODO: implement checkcast for a type
-        code.DUP_TOP()
-        code.POP_TOP()
+def convert_invokeinterface(python_method, java_index, method):
+    invoke_instance_method(python_method, java_index, method)
+
+
+def is_self_opcode(code, index):
+    return code.co_code[index] == 124 and code.co_code[index + 1] == 0 and code.co_code[index + 2] == 0
+
+
+def convert_invokespecial(python_method, java_index, java_method):
+    python_method.add_class_reference(java_method.class_name)
+    args = map(str, python_method.pop_args(len(java_method.args) + 1))
+    if args[0] == 'self':
+        expression = '%s.%s(%s)' % (java_method.class_name, java_method.method_name, ', '.join(args))
     else:
-        # TODO: implement checkcast for null
-        code.DUP_TOP()
-        code.POP_TOP()
-    code.word_size = 0
+        expression = '%s.%s(%s)' % (args[0], java_method.method_name, ', '.join(args[1:]))
+    python_method.push(java_index, expression, java_method.return_type == 'void')
+
+def convert_invokestatic(python_method, java_index, java_method):
+    python_method.add_class_reference(java_method.class_name)
+    args = map(str, python_method.pop_args(len(java_method.args)))
+    expression = '%s.%s(%s)' % (java_method.class_name, java_method.method_name, ', '.join(args))
+    python_method.push(java_index, expression, java_method.return_type == 'void')
 
 
-def convert_invokevirtual(code, java_pos, method):
-    invoke(code, java_pos, method)
+def convert_invokedynamic(python_method, java_index, java_method):
+    python_method.add_class_reference(java_method.class_name)
+    args = map(str, python_method.pop_args(len(java_method.args)))
+    expression = '%s.%s(%s)' % (java_method.class_name, java_method.method_name, ', '.join(args))
+    python_method.push(java_index, expression, java_method.return_type == 'void')
 
 
-def convert_invokeinterface(code, java_pos, method):
-    invoke(code, java_pos, method)
+def invoke_instance_method(python_method, java_index, java_method):
+    if java_method.method_name == 'toString____' and len(java_method.args) == 0:
+        return python_method.push(java_index, 'str(%s)' % python_method.pop())
+
+    args = map(str, python_method.pop_args(len(java_method.args) + 1))
+    expression = '%s.%s(%s)' % (args[0], java_method.method_name, ', '.join(args[1:]))
+    python_method.push(java_index, expression, java_method.return_type == 'void')
 
 
-def convert_invokespecial(code, java_pos, method):
-    if method.method_name == '__init__':
-        if code.co_name != '__init__':
-            code.POP_TOP()
-        code.CALL_FUNCTION(len(method.args))
-    else:
-        invoke(code, java_pos, method, special=True)
+def convert_pop(python_method, java_index):
+    python_method.push(java_index, '_ = %s' % python_method.pop(), is_statement=True)
 
 
-def invoke(code, java_pos, method, special=False):
-    # put the function itself on the stack at the right spot
-    def load_function():
-        code.LOAD_ATTR(method.method_name)
-
-    if len(method.args):
-        inject(code, len(method.args), load_function)
-    else:
-        load_function()
-
-    if special:
-        code.LOAD_GLOBAL('super')
-        code.ROT_TWO()
-        code.CALL_FUNCTION(1)
-
-    code.CALL_FUNCTION(len(method.args))
-
-    if method.return_type == 'V':
-        # Python methods always return something, so remove that value
-        code.POP_TOP()
-
-    code.word_size = get_word_size(method.return_type)
+def convert_pop2(python_method, java_index):
+    python_method.push(java_index, '_ = %s' % python_method.pop(), is_statement=True)
 
 
-def inject(code, block_count, fn):
-    '''Go back in the current code by <block_count> blocks. Run fn there. '''
-    if DEBUG:
-        print 'inject %d blocks' % block_count
-    target = code.get_stack_size() - 1
-    index = get_insertion_index(code, block_count, target)
-    if DEBUG:
-        print 'inject at %d' % index
-    co_code = code.co_code
-    code_len = len(co_code)
-    fn()
-    code.co_code = co_code[:index] + co_code[code_len:] + co_code[index:code_len]
-    update_code(code, index, len(co_code) - code_len)
+def convert_areturn(python_method, java_index):
+    python_method.push(java_index, 'return %s' % python_method.pop())
 
 
-def get_insertion_index(code, block_count, target):
-    if DEBUG:
-        print 'target = %d' % target
-        for n in range(0, len(code.stack_depth)):
-            print n, code.stack_depth[n]
-    for n in range(len(code.stack_depth) - 1, -1, -1):
-        if DEBUG:
-            print 'Try', n, code.stack_depth[n]
-        index, depth = code.stack_depth[n]
-        if depth == target:
-            block_count -= 1
-            if block_count < 1:
-                return index
-    return 0
+def convert_dup(python_method, java_index):
+    # before: word1, ...
+    word1 = python_method.pop()
+    tmp = python_method.next_temp()
+    # after: tmp1, tmp1, tmp1=word1, ...
+    python_method.push(java_index, '%s = %s' % (tmp, word1), is_statement=True)
+    python_method.push(java_index, '%s' % tmp)
+    python_method.push(java_index, '%s' % tmp)
 
 
-def update_code(code, insert_index, inserted_count):
-    for n in range(0, len(code.stack_depth)):
-        index, depth = code.stack_depth[n]
-        if index >= insert_index:
-            code.stack_depth[n] = index + inserted_count, depth
-    for n in range(0, len(code.java_bytecodes)):
-        index, info = code.java_bytecodes[n]
-        if index >= insert_index:
-            code.java_bytecodes[n] = index + inserted_count, info
-
-
-def convert_invokestatic(code, java_pos, method):
-    # put the function itself on the stack at the right spot
-    def load_function():
-        class_reference(code, method.class_name)
-        code.LOAD_ATTR(method.method_name)
-    inject(code, len(method.args), load_function)
-    code.CALL_FUNCTION(len(method.args))
-    code.word_size = get_word_size(method.return_type)
-
-
-def convert_pop(code, java_pos):
-    code.POP_TOP()
-    code.word_size = 0
-
-
-def convert_pop2(code, java_pos):
-    code.POP_TOP()
-    if code.word_size == 1:
-        code.POP_TOP()
-    code.word_size = 0
-
-
-def convert_areturn(code, java_pos):
-    code.RETURN_VALUE()
-    code.set_stack_size(0)
-    code.word_size = 0
-
-
-def convert_dup(code, java_pos):
-    code.DUP_TOP()
-
-
-def convert_dup_x1(code, java_pos):
+def convert_dup_x1(python_method, java_index):
     # before: word1, word2, ...
-    code.DUP_TOP()
-    code.ROT_THREE()
-    # after: word1, word2, word1, ...
+    word1 = python_method.pop()
+    word2 = python_method.pop()
+    tmp = python_method.next_temp()
+    # after: tmp1, word2, tmp1, tmp1=word1, ...
+    python_method.push(java_index, '%s = %s' % (tmp, word1))
+    python_method.push(java_index, '%s' % tmp)
+    python_method.push(java_index, '%s' % word2)
+    python_method.push(java_index, '%s' % tmp)
 
 
-def convert_dup_x2(code, java_pos):
+def convert_dup_x2(python_method, java_index):
     # before: word1, word2, ...
-    code.DUP_TOP()
-    code.ROT_THREE()
-    # after: word1, word2, word1, ...
+    word1 = python_method.pop()
+    word2 = python_method.pop()
+    tmp = python_method.next_temp()
+    # after: tmp1, word2, tmp1, tmp1=word1, ...
+    python_method.push(java_index, '%s = %s' % (tmp, word1))
+    python_method.push(java_index, '%s' % tmp)
+    python_method.push(java_index, '%s' % word2)
+    python_method.push(java_index, '%s' % tmp)
+
+def convert_dup2_x2(python_method, java_index):
+    convert_dup_x2(python_method, java_index)
+
+def convert_dup2(python_method, java_index):
+    convert_dup(python_method, java_index)
+
+def convert_dup2_x1(python_method, java_index):
+    convert_dup_x1(python_method, java_index)
 
 
-def convert_dup2(code, java_pos):
-    if code.word_size == 2:
-        # before: word1, ...
-        code.DUP_TOP()
-        # after: word1, word1, ...
+def convert_ireturn(python_method, java_index):
+    python_method.push(java_index, 'return %s' % python_method.pop())
+
+
+def convert_dreturn(python_method, java_index):
+    python_method.push(java_index, 'return %s' % python_method.pop())
+
+
+def convert_freturn(python_method, java_index):
+    python_method.push(java_index, 'return %s' % python_method.pop())
+
+
+def convert_lreturn(python_method, java_index):
+    python_method.push(java_index, 'return %s' % python_method.pop())
+
+
+def convert_return(python_method, java_index):
+    if '__java_init__' in python_method.name:
+        python_method.push(java_index, 'return self')
     else:
-        # before: word1, word2, ...
-        code.ROT_TWO()
-        code.DUP_TOP()
-        code.ROT_THREE()
-        # now: word2, word1, word2, ...
-        code.ROT_TWO()
-        code.DUP_TOP()
-        code.ROT_THREE()
-        # after: word1, word2, word1, word2, ...
+        python_method.push(java_index, 'return None')
 
 
-def convert_dup2_x1(code, java_pos):
-    if code.word_size == 2:
-        # before: word1, word2, ...
-        code.DUP_TOP()
-        code.ROT_THREE()
-        # after: word1, word2, word1, ...
-    else:
-        # before: word1, word2, word3, ...
-        code.ROT_TWO()
-        code.DUP_TOP()
-        code.ROT_FOUR()
-        # now: word2, word1, word3, word2, ...
-        code.ROT_TWO()
-        code.DUP_TOP()
-        code.ROT_FOUR()
-        # after: word1, word2, word3, word1, word2, ...
-
-def convert_ireturn(code, java_pos):
-    code.RETURN_VALUE()
-    code.set_stack_size(0)
-    code.word_size = 0
+def convert_aastore(python_method, java_index):
+    array, index, value =  python_method.pop(3)
+    python_method.push(java_index, '%s[%s] = %s' % (array, index, value), is_statement=True)
 
 
-def convert_dreturn(code, java_pos):
-    code.RETURN_VALUE()
-    code.set_stack_size(0)
-    code.word_size = 0
+def convert_aaload(python_method, java_index):
+    array, index =  python_method.pop(2)
+    python_method.push(java_index, '%s[%s]' % (array, index))
 
 
-def convert_freturn(code, java_pos):
-    code.RETURN_VALUE()
-    code.set_stack_size(0)
-    code.word_size = 0
+def convert_iastore(python_method, java_index):
+    array, index, value =  python_method.pop(3)
+    python_method.push(java_index, '%s[%s] = %s' % (array, index, value), is_statement=True)
 
 
-def convert_lreturn(code, java_pos):
-    code.RETURN_VALUE()
-    code.set_stack_size(0)
-    code.word_size = 0
+def convert_fastore(python_method, java_index):
+    array, index, value =  python_method.pop(3)
+    python_method.push(java_index, '%s[%s] = %s' % (array, index, value), is_statement=True)
 
 
-def convert_return(code, java_pos):
-    # an empty return in Java means return None in Python
-    code.LOAD_CONST(0)
-    code.RETURN_VALUE()
-    code.set_stack_size(0)
-    code.word_size = 0
+def convert_dastore(python_method, java_index):
+    array, index, value =  python_method.pop(3)
+    python_method.push(java_index, '%s[%s] = %s' % (array, index, value), is_statement=True)
 
 
-def convert_aastore(code, java_pos):
-    # Java uses [array, index, value, AASTORE}
-    # Python uses [value, index, array, STORE_SUBSCR}
-    code.ROT_THREE()
-    code.STORE_SUBSCR()
-    code.word_size = 0
+def convert_lastore(python_method, java_index):
+    array, index, value =  python_method.pop(3)
+    python_method.push(java_index, '%s[%s] = %s' % (array, index, value), is_statement=True)
 
 
-def convert_aaload(code, java_pos):
-    # Java uses [array, index, AALOAD}
-    # Python uses [array, index, BINARY_SUBSCR}
-    code.BINARY_SUBSCR()
-    code.word_size = 1
+def convert_sastore(python_method, java_index):
+    array, index, value =  python_method.pop(3)
+    python_method.push(java_index, '%s[%s] = %s' % (array, index, value), is_statement=True)
 
 
-def convert_iastore(code, java_pos):
-    # Java uses [array, index, value, IASTORE}
-    # Python uses [value, index, array, STORE_SUBSCR}
-    code.ROT_THREE()
-    code.STORE_SUBSCR()
-    code.word_size = 0
+def convert_bastore(python_method, java_index):
+    array, index, value =  python_method.pop(3)
+    python_method.push(java_index, '%s[%s] = %s' % (array, index, value), is_statement=True)
 
 
-def convert_fastore(code, java_pos):
-    # Java uses [array, index, value, FASTORE}
-    # Python uses [value, index, array, STORE_SUBSCR}
-    code.ROT_THREE()
-    code.STORE_SUBSCR()
-    code.word_size = 0
+def convert_iaload(python_method, java_index):
+    array, index =  python_method.pop(2)
+    python_method.push(java_index, '%s[%s]' % (array, index))
 
 
-def convert_dastore(code, java_pos):
-    # Java uses [array, index, value, DASTORE}
-    # Python uses [value, index, array, STORE_SUBSCR}
-    code.ROT_THREE()
-    code.STORE_SUBSCR()
-    code.word_size = 0
+def convert_saload(python_method, java_index):
+    array, index =  python_method.pop(2)
+    python_method.push(java_index, '%s[%s]' % (array, index))
 
 
-def convert_lastore(code, java_pos):
-    # Java uses [array, index, value, LASTORE}
-    # Python uses [value, index, array, STORE_SUBSCR}
-    code.ROT_THREE()
-    code.STORE_SUBSCR()
-    code.word_size = 0
+def convert_baload(python_method, java_index):
+    array, index =  python_method.pop(2)
+    python_method.push(java_index, '%s[%s]' % (array, index))
 
 
-def convert_sastore(code, java_pos):
-    # Java uses [array, index, value, SASTORE}
-    # Python uses [value, index, array, STORE_SUBSCR}
-    code.ROT_THREE()
-    code.STORE_SUBSCR()
-    code.word_size = 0
+def convert_laload(python_method, java_index):
+    array, index =  python_method.pop(2)
+    python_method.push(java_index, '%s[%s]' % (array, index))
 
 
-def convert_bastore(code, java_pos):
-    # Java uses [array, index, value, BASTORE}
-    # Python uses [value, index, array, STORE_SUBSCR}
-    code.ROT_THREE()
-    code.STORE_SUBSCR()
-    code.word_size = 0
+def convert_daload(python_method, java_index):
+    array, index =  python_method.pop(2)
+    python_method.push(java_index, '%s[%s]' % (array, index))
 
 
-def convert_iaload(code, java_pos):
-    # Java uses [array, index, IALOAD}
-    # Python uses [array, index, BINARY_SUBSCR}
-    code.BINARY_SUBSCR()
-    code.word_size = 1
+def convert_faload(python_method, java_index):
+    array, index =  python_method.pop(2)
+    python_method.push(java_index, '%s[%s]' % (array, index))
 
 
-def convert_saload(code, java_pos):
-    # Java uses [array, index, SALOAD}
-    # Python uses [array, index, BINARY_SUBSCR}
-    code.BINARY_SUBSCR()
-    code.word_size = 1
+def convert_castore(python_method, java_index):
+    array, index, value =  python_method.pop(3)
+    python_method.push(java_index, '%s[%s] = %s' % (array, index, value), is_statement=True)
 
 
-def convert_baload(code, java_pos):
-    # Java uses [array, index, AALOAD}
-    # Python uses [array, index, BINARY_SUBSCR}
-    code.BINARY_SUBSCR()
-    code.word_size = 1
+def convert_caload(python_method, java_index):
+    array, index =  python_method.pop(2)
+    python_method.push(java_index, '%s[%s]' % (array, index))
 
 
-def convert_laload(code, java_pos):
-    # Java uses [array, index, AALOAD}
-    # Python uses [array, index, BINARY_SUBSCR}
-    code.BINARY_SUBSCR()
-    code.word_size = 2
-
-
-def convert_daload(code, java_pos):
-    # Java uses [array, index, DALOAD}
-    # Python uses [array, index, BINARY_SUBSCR}
-    code.BINARY_SUBSCR()
-    code.word_size = 2
-
-
-def convert_faload(code, java_pos):
-    # Java uses [array, index, FALOAD}
-    # Python uses [array, index, BINARY_SUBSCR}
-    code.BINARY_SUBSCR()
-    code.word_size = 1
-
-
-def convert_castore(code, java_pos):
-    # Java uses [array, index, value, AASTORE}
-    # Python uses [value, index, array, STORE_SUBSCR}
-    code.ROT_THREE()
-    code.STORE_SUBSCR()
-    code.word_size = 1
-
-
-def convert_caload(code, java_pos):
-    # Java uses [array, index, AALOAD}
-    # Python uses [array, index, BINARY_SUBSCR}
-    code.BINARY_SUBSCR()
-    code.word_size = 1
-
-
-def convert_athrow(code, java_pos):
-    code.RAISE_VARARGS(1)
-    code.word_size = 0
+def convert_athrow(python_method, java_index):
+    python_method.push(java_index, 'raise %s' % python_method.pop(), is_statement=True)
 
 
 ##########
 
 
-def convert_iinc(code, java_pos, operands):
+def convert_iinc(python_method, java_index, operands):
     index, value = operands
-    asm.Local(java_local(index), code)
-    code(asm.Const(value))
-    code.BINARY_ADD()
-    asm.LocalAssign(java_local(index), code)
-    code.word_size = 1
+    python_method.push(java_index, 'a%d += %s' % (index, value), is_statement=True)
 
-def convert_iinc_w(code, java_pos, operands):
-    convert_iinc(code, java_pos, operands)
+def convert_iinc_w(python_method, java_index, operands):
+    index, value = operands
+    python_method.push(java_index, 'a%d += %s' % (index, value), is_statement=True)
 
 
 ##########
 
 
-def convert_aload(code, java_pos, index):
-    asm.Local(java_local(index), code)
-    code.word_size = 1
+def convert_aload(python_method, java_index, index):
+    python_method.push(java_index, 'a%d' % index)
 
 
-def convert_astore(code, java_pos, index):
-    asm.LocalAssign(java_local(index), code)
-    code.word_size = 1
-
-
-##########
-
-
-def convert_iload(code, java_pos, index):
-    asm.Local(java_local(index), code)
-    code.word_size = 1
-
-
-def convert_istore(code, java_pos, index):
-    asm.LocalAssign(java_local(index), code)
-    code.word_size = 0
+def convert_astore(python_method, java_index, index):
+    python_method.push(java_index, 'a%d = %s' % (index, python_method.pop()), is_statement=True)
 
 
 ##########
 
 
-def convert_fload(code, java_pos, index):
-    asm.Local(java_local(index), code)
-    code.word_size = 1
+def convert_iload(python_method, java_index, index):
+    python_method.push(java_index, 'a%d' % index)
 
 
-def convert_fstore(code, java_pos, index):
-    asm.LocalAssign(java_local(index), code)
-    code.word_size = 0
-
-
-##########
-
-
-def convert_dload(code, java_pos, index):
-    asm.Local(java_local(index), code)
-    code.word_size = 1
-
-
-def convert_dstore(code, java_pos, index):
-    asm.LocalAssign(java_local(index), code)
-    code.word_size = 0
+def convert_istore(python_method, java_index, index):
+    python_method.push(java_index, 'a%d = %s' % (index, python_method.pop()), is_statement=True)
 
 
 ##########
 
 
-def convert_lload(code, java_pos, index):
-    asm.Local(java_local(index), code)
-    code.word_size = 1
+def convert_fload(python_method, java_index, index):
+    python_method.push(java_index, 'a%d' % index)
 
 
-def convert_lstore(code, java_pos, index):
-    asm.LocalAssign(java_local(index), code)
-    code.word_size = 0
-
-
-##########
-
-
-def convert_aload_0(code, java_pos):
-    asm.Local(java_local(0), code)
-    code.word_size = 1
-
-
-def convert_astore_0(code, java_pos):
-    asm.LocalAssign(java_local(0), code)
-    code.word_size = 0
-
-
-def convert_aload_1(code, java_pos):
-    asm.Local(java_local(1), code)
-    code.word_size = 1
-
-
-def convert_astore_1(code, java_pos):
-    asm.LocalAssign(java_local(1), code)
-    code.word_size = 0
-
-
-def convert_aload_2(code, java_pos):
-    asm.Local(java_local(2), code)
-    code.word_size = 1
-
-
-def convert_astore_2(code, java_pos):
-    asm.LocalAssign(java_local(2), code)
-    code.word_size = 0
-
-
-def convert_aload_3(code, java_pos):
-    asm.Local(java_local(3), code)
-    code.word_size = 1
-
-
-def convert_astore_3(code, java_pos):
-    asm.LocalAssign(java_local(3), code)
-    code.word_size = 0
+def convert_fstore(python_method, java_index, index):
+    python_method.push(java_index, 'a%d = %s' % (index, python_method.pop()), is_statement=True)
 
 
 ##########
 
 
-def convert_iload_0(code, java_pos):
-    asm.Local(java_local(0), code)
-    code.word_size = 1
+def convert_dload(python_method, java_index, index):
+    python_method.push(java_index, 'a%d' % index)
 
 
-def convert_istore_0(code, java_pos):
-    asm.LocalAssign(java_local(0), code)
-    code.word_size = 0
-
-
-def convert_iload_1(code, java_pos):
-    asm.Local(java_local(1), code)
-    code.word_size = 1
-
-
-def convert_istore_1(code, java_pos):
-    asm.LocalAssign(java_local(1), code)
-    code.word_size = 0
-
-
-def convert_iload_2(code, java_pos):
-    asm.Local(java_local(2), code)
-    code.word_size = 1
-
-
-def convert_istore_2(code, java_pos):
-    asm.LocalAssign(java_local(2), code)
-    code.word_size = 0
-
-
-def convert_iload_3(code, java_pos):
-    asm.Local(java_local(3), code)
-    code.word_size = 1
-
-
-def convert_istore_3(code, java_pos):
-    asm.LocalAssign(java_local(3), code)
-    code.word_size = 0
+def convert_dstore(python_method, java_index, index):
+    python_method.push(java_index, 'a%d = %s' % (index, python_method.pop()), is_statement=True)
 
 
 ##########
 
 
-def convert_lload_0(code, java_pos):
-    asm.Local(java_local(0), code)
-    code.word_size = 2
+def convert_lload(python_method, java_index, index):
+    python_method.push(java_index, 'a%d' % index)
 
 
-def convert_lstore_0(code, java_pos):
-    asm.LocalAssign(java_local(0), code)
-    code.word_size = 0
-
-
-def convert_lload_1(code, java_pos):
-    asm.Local(java_local(1), code)
-    code.word_size = 2
-
-
-def convert_lstore_1(code, java_pos):
-    asm.LocalAssign(java_local(1), code)
-    code.word_size = 0
-
-
-def convert_lload_2(code, java_pos):
-    asm.Local(java_local(2), code)
-    code.word_size = 2
-
-
-def convert_lstore_2(code, java_pos):
-    asm.LocalAssign(java_local(2), code)
-    code.word_size = 0
-
-
-def convert_lload_3(code, java_pos):
-    asm.Local(java_local(3), code)
-    code.word_size = 2
-
-
-def convert_lstore_3(code, java_pos):
-    asm.LocalAssign(java_local(3), code)
-    code.word_size = 0
+def convert_lstore(python_method, java_index, index):
+    python_method.push(java_index, 'a%d = %s' % (index, python_method.pop()), is_statement=True)
 
 
 ##########
 
 
-def convert_dload_0(code, java_pos):
-    asm.Local(java_local(0), code)
-    code.word_size = 2
+def convert_aload_0(python_method, java_index):
+    python_method.push(java_index, 'cls' if python_method.is_static else 'self')
 
 
-def convert_dstore_0(code, java_pos):
-    asm.LocalAssign(java_local(0), code)
-    code.word_size = 0
+def convert_astore_0(python_method, java_index):
+    target = 'cls' if python_method.is_static else 'self'
+    python_method.push(java_index, '%s = %s' % (target, python_method.pop()), is_statement=True)
 
 
-def convert_dload_1(code, java_pos):
-    asm.Local(java_local(1), code)
-    code.word_size = 2
+def convert_aload_1(python_method, java_index):
+    python_method.push(java_index, 'a1')
 
 
-def convert_dstore_1(code, java_pos):
-    asm.LocalAssign(java_local(1), code)
-    code.word_size = 0
+def convert_astore_1(python_method, java_index):
+    python_method.push(java_index, 'a1 = %s' % python_method.pop(), is_statement=True)
 
 
-def convert_dload_2(code, java_pos):
-    asm.Local(java_local(2), code)
-    code.word_size = 2
+def convert_aload_2(python_method, java_index):
+    python_method.push(java_index, 'a2')
 
 
-def convert_dstore_2(code, java_pos):
-    asm.LocalAssign(java_local(2), code)
-    code.word_size = 0
+def convert_astore_2(python_method, java_index):
+    python_method.push(java_index, 'a2 = %s' % python_method.pop(), is_statement=True)
 
 
-def convert_dload_3(code, java_pos):
-    asm.Local(java_local(3), code)
-    code.word_size = 2
+def convert_aload_3(python_method, java_index):
+    python_method.push(java_index, 'a3')
 
 
-def convert_dstore_3(code, java_pos):
-    asm.LocalAssign(java_local(3), code)
-    code.word_size = 0
+def convert_astore_3(python_method, java_index):
+    python_method.push(java_index, 'a3 = %s' % python_method.pop(), is_statement=True)
 
 
 ##########
 
 
-def convert_fload_0(code, java_pos):
-    asm.Local(java_local(0), code)
-    code.word_size = 1
+def convert_iload_0(python_method, java_index):
+    python_method.push(java_index, 'a0')
 
 
-def convert_fstore_0(code, java_pos):
-    asm.LocalAssign(java_local(0), code)
-    code.word_size = 0
+def convert_istore_0(python_method, java_index):
+    python_method.push(java_index, 'a0 = %s' % python_method.pop(), is_statement=True)
 
 
-def convert_fload_1(code, java_pos):
-    asm.Local(java_local(1), code)
-    code.word_size = 1
+def convert_iload_1(python_method, java_index):
+    python_method.push(java_index, 'a1')
 
 
-def convert_fstore_1(code, java_pos):
-    asm.LocalAssign(java_local(1), code)
-    code.word_size = 0
+def convert_istore_1(python_method, java_index):
+    python_method.push(java_index, 'a1 = %s' % python_method.pop(), is_statement=True)
 
 
-def convert_fload_2(code, java_pos):
-    asm.Local(java_local(2), code)
-    code.word_size = 1
+def convert_iload_2(python_method, java_index):
+    python_method.push(java_index, 'a2')
 
 
-def convert_fstore_2(code, java_pos):
-    asm.LocalAssign(java_local(2), code)
-    code.word_size = 0
+def convert_istore_2(python_method, java_index):
+    python_method.push(java_index, 'a2 = %s' % python_method.pop(), is_statement=True)
 
 
-def convert_fload_3(code, java_pos):
-    asm.Local(java_local(3), code)
-    code.word_size = 1
+def convert_iload_3(python_method, java_index):
+    python_method.push(java_index, 'a3')
 
 
-def convert_fstore_3(code, java_pos):
-    asm.LocalAssign(java_local(3), code)
-    code.word_size = 0
+def convert_istore_3(python_method, java_index):
+    python_method.push(java_index, 'a3 = %s' % python_method.pop(), is_statement=True)
 
 
 ##########
 
 
-def convert_lload_0(code, java_pos):
-    asm.Local(java_local(0), code)
-    code.word_size = 2
+def convert_lload_0(python_method, java_index):
+    python_method.push(java_index, 'a0')
 
 
-def convert_lload_1(code, java_pos):
-    asm.Local(java_local(1), code)
-    code.word_size = 2
+def convert_lstore_0(python_method, java_index):
+    python_method.push(java_index, 'a0 = %s' % python_method.pop(), is_statement=True)
 
 
-def convert_lload_2(code, java_pos):
-    asm.Local(java_local(2), code)
-    code.word_size = 2
+def convert_lload_1(python_method, java_index):
+    python_method.push(java_index, 'a1')
 
 
-def convert_lload_3(code, java_pos):
-    asm.Local(java_local(3), code)
-    code.word_size = 2
+def convert_lstore_1(python_method, java_index):
+    python_method.push(java_index, 'a1 = %s' % python_method.pop(), is_statement=True)
 
 
-def convert_aconst_null(code, java_pos):
-    code(asm.Const(None))
-    code.word_size = 1
+def convert_lload_2(python_method, java_index):
+    python_method.push(java_index, 'a2')
 
 
-######
+def convert_lstore_2(python_method, java_index):
+    python_method.push(java_index, 'a2 = %s' % python_method.pop(), is_statement=True)
 
 
-def convert_dconst_0(code, java_pos):
-    code(asm.Const(0.0))
-    code.word_size = 2
+def convert_lload_3(python_method, java_index):
+    python_method.push(java_index, 'a3')
 
 
-def convert_dconst_1(code, java_pos):
-    code(asm.Const(1.0))
-    code.word_size = 2
+def convert_lstore_3(python_method, java_index):
+    python_method.push(java_index, 'a3 = %s' % python_method.pop(), is_statement=True)
 
 
-######
+##########
 
 
-def convert_fconst_0(code, java_pos):
-    code(asm.Const(0.0))
-    code.word_size = 1
+def convert_dload_0(python_method, java_index):
+    python_method.push(java_index, 'a0')
 
 
-def convert_fconst_1(code, java_pos):
-    code(asm.Const(1.0))
-    code.word_size = 1
+def convert_dstore_0(python_method, java_index):
+    python_method.push(java_index, 'a0 = %s' % python_method.pop(), is_statement=True)
 
 
-def convert_fconst_2(code, java_pos):
-    code(asm.Const(2.0))
-    code.word_size = 1
+def convert_dload_1(python_method, java_index):
+    python_method.push(java_index, 'a1')
 
 
-######
+def convert_dstore_1(python_method, java_index):
+    python_method.push(java_index, 'a1 = %s' % python_method.pop(), is_statement=True)
 
 
-def convert_lconst_0(code, java_pos):
-    code(asm.Const(0))
-    code.word_size = 2
+def convert_dload_2(python_method, java_index):
+    python_method.push(java_index, 'a2')
 
 
-def convert_lconst_1(code, java_pos):
-    code(asm.Const(1))
-    code.word_size = 2
+def convert_dstore_2(python_method, java_index):
+    python_method.push(java_index, 'a2 = %s' % python_method.pop(), is_statement=True)
 
 
-######
+def convert_dload_3(python_method, java_index):
+    python_method.push(java_index, 'a3')
 
 
-def convert_iconst_m1(code, java_pos):
-    code(asm.Const(-1))
-    code.word_size = 1
+def convert_dstore_3(python_method, java_index):
+    python_method.push(java_index, 'a3 = %s' % python_method.pop(), is_statement=True)
 
 
-def convert_iconst_0(code, java_pos):
-    code(asm.Const(0))
-    code.word_size = 1
+##########
 
 
-def convert_iconst_1(code, java_pos):
-    code(asm.Const(1))
-    code.word_size = 1
+def convert_fload_0(python_method, java_index):
+    python_method.push(java_index, 'a0')
 
 
-def convert_iconst_2(code, java_pos):
-    code(asm.Const(2))
-    code.word_size = 1
+def convert_fstore_0(python_method, java_index):
+    python_method.push(java_index, 'a0 = %s' % python_method.pop(), is_statement=True)
 
 
-def convert_iconst_3(code, java_pos):
-    code(asm.Const(3))
-    code.word_size = 1
+def convert_fload_1(python_method, java_index):
+    python_method.push(java_index, 'a1')
 
 
-def convert_iconst_4(code, java_pos):
-    code(asm.Const(4))
-    code.word_size = 1
+def convert_fstore_1(python_method, java_index):
+    python_method.push(java_index, 'a1 = %s' % python_method.pop(), is_statement=True)
 
 
-def convert_iconst_5(code, java_pos):
-    code(asm.Const(5))
-    code.word_size = 1
+def convert_fload_2(python_method, java_index):
+    python_method.push(java_index, 'a2')
 
 
-def convert_getfield(code, java_pos, field):
-    code.LOAD_ATTR(field.field_name)
-    code.word_size = get_word_size(field.signature)
+def convert_fstore_2(python_method, java_index):
+    python_method.push(java_index, 'a2 = %s' % python_method.pop(), is_statement=True)
 
 
-def convert_putfield(code, java_pos, field):
-    code.ROT_TWO()
-    code.STORE_ATTR(field.field_name)
-    code.word_size = 0
+def convert_fload_3(python_method, java_index):
+    python_method.push(java_index, 'a3')
 
 
-def convert_bipush(code, java_pos, value):
-    code.LOAD_CONST(value)
-    code.word_size = 1
+def convert_fstore_3(python_method, java_index):
+    python_method.push(java_index, 'a3 = %s' % python_method.pop(), is_statement=True)
 
 
-def convert_sipush(code, java_pos, value):
-    code.LOAD_CONST(value)
-    code.word_size = 1
+##########
 
 
-def convert_i2d(code, java_pos):
-    # TODO: fix magnitude/sign during conversion
-    code.word_size = 2
+def convert_aconst_null(python_method, java_index):
+    python_method.push(java_index, 'None')
 
 
-def convert_i2l(code, java_pos):
-    # TODO: fix magnitude/sign during conversion
-    code.word_size = 2
+def convert_dconst_0(python_method, java_index):
+    python_method.push(java_index, 0.0)
 
 
-def convert_f2i(code, java_pos):
-    code.LOAD_GLOBAL('int')
-    code.ROT_TWO()
-    code.CALL_FUNCTION(1)
-    code.word_size = 1
+def convert_dconst_1(python_method, java_index):
+    python_method.push(java_index, 1.0)
 
 
-def convert_f2l(code, java_pos):
-    # TODO: fix magnitude/sign during conversion
-    code.word_size = 2
+def convert_fconst_0(python_method, java_index):
+    python_method.push(java_index, 0.0)
 
 
-def convert_l2i(code, java_pos):
-    # TODO: fix magnitude/sign during conversion
-    code.word_size = 1
+def convert_fconst_1(python_method, java_index):
+    python_method.push(java_index, 1.0)
 
 
-def convert_l2d(code, java_pos):
-    # TODO: fix magnitude/sign during conversion
-    code.word_size = 2
+def convert_fconst_2(python_method, java_index):
+    python_method.push(java_index, 2.0)
 
 
-def convert_d2l(code, java_pos):
-    # TODO: fix magnitude/sign during conversion
-    code.word_size = 2
+def convert_lconst_0(python_method, java_index):
+    python_method.push(java_index, 0)
 
 
-def convert_i2c(code, java_pos):
-    # TODO: fix magnitude/sign during conversion
-    code.word_size = 1
+def convert_lconst_1(python_method, java_index):
+    python_method.push(java_index, 1)
 
 
-def convert_c2i(code, java_pos):
-    # TODO: fix magnitude/sign during conversion
-    code.word_size = 1
+def convert_iconst_m1(python_method, java_index):
+    python_method.push(java_index, '-1')
 
 
-def convert_s2i(code, java_pos):
-    # TODO: fix magnitude/sign during conversion
-    code.word_size = 1
+def convert_iconst_0(python_method, java_index):
+    python_method.push(java_index, '0')
 
 
-def convert_i2s(code, java_pos):
-    # TODO: fix magnitude/sign during conversion
-    code.word_size = 1
+def convert_iconst_1(python_method, java_index):
+    python_method.push(java_index, '1')
 
 
-def convert_d2f(code, java_pos):
-    # TODO: fix magnitude/sign during conversion
-    code.word_size = 1
+def convert_iconst_2(python_method, java_index):
+    python_method.push(java_index, '2')
 
 
-def convert_l2f(code, java_pos):
-    code.LOAD_GLOBAL('float')
-    code.ROT_TWO()
-    code.CALL_FUNCTION(1)
-    code.word_size = 1
+def convert_iconst_3(python_method, java_index):
+    python_method.push(java_index, '3')
 
 
-def convert_d2i(code, java_pos):
-    code.LOAD_GLOBAL('int')
-    code.ROT_TWO()
-    code.CALL_FUNCTION(1)
-    code.word_size = 1
+def convert_iconst_4(python_method, java_index):
+    python_method.push(java_index, '4')
 
 
-def convert_f2d(code, java_pos):
-    # TODO: fix magnitude/sign during conversion
-    code.word_size = 2
+def convert_iconst_5(python_method, java_index):
+    python_method.push(java_index, '5')
 
 
-def convert_i2f(code, java_pos):
-    # TODO: fix magnitude/sign during conversion
-    code.word_size = 1
+def convert_getfield(python_method, java_index, field):
+    python_method.push(java_index, '%s.%s' % (
+        python_method.pop(),
+        replace_reserved_names(field.field_name))
+    )
 
 
-def convert_i2b(code, java_pos):
-    # TODO: fix magnitude/sign during conversion
-    code.word_size = 1
+def convert_putfield(python_method, java_index, field):
+    value, obj = python_method.pop(), python_method.pop()
+    python_method.push(java_index, '%s.%s = %s' % (
+        obj,
+        replace_reserved_names(field.field_name),
+        value,
+    ), is_statement=True)
 
 
-convert_ib2 = convert_i2b  # handle typo in jawa/util/bytecode.py
+def convert_bipush(python_method, java_index, value):
+    python_method.push(java_index, value)
 
 
-def convert_imul(code, java_pos):
-    code.BINARY_MULTIPLY()
-    code.word_size = 1
+def convert_sipush(python_method, java_index, value):
+    python_method.push(java_index, value)
 
 
-def convert_dmul(code, java_pos):
-    code.BINARY_MULTIPLY()
-    code.word_size = 2
+def convert_i2d(python_method, java_index):
+    pass # TODO: fix magnitude/sign during conversion
 
 
-def convert_fmul(code, java_pos):
-    code.BINARY_MULTIPLY()
-    code.word_size = 1
+def convert_i2l(python_method, java_index):
+    pass # TODO: fix magnitude/sign during conversion
 
 
-def convert_fsub(code, java_pos):
-    code.BINARY_SUBTRACT()
-    code.word_size = 1
+def convert_f2i(python_method, java_index):
+    python_method.push(java_index, 'int(%s)' % python_method.pop())
 
 
-def convert_iadd(code, java_pos):
-    code.BINARY_ADD()
-    code.word_size = 1
+def convert_f2l(python_method, java_index):
+    pass # TODO: fix magnitude/sign during conversion
 
 
-def convert_fadd(code, java_pos):
-    code.BINARY_ADD()
-    code.word_size = 1
+def convert_l2i(python_method, java_index):
+    pass # TODO: fix magnitude/sign during conversion
 
 
-def convert_ladd(code, java_pos):
-    code.BINARY_ADD()
-    code.word_size = 2
+def convert_l2d(python_method, java_index):
+    pass # TODO: fix magnitude/sign during conversion
 
 
-def convert_lmul(code, java_pos):
-    code.BINARY_MULTIPLY()
-    code.word_size = 2
+def convert_d2l(python_method, java_index):
+    pass # TODO: fix magnitude/sign during conversion
 
 
-def convert_dadd(code, java_pos):
-    code.BINARY_ADD()
-    code.word_size = 2
+def convert_i2c(python_method, java_index):
+    pass # TODO: fix magnitude/sign during conversion
 
 
-def convert_idiv(code, java_pos):
-    # TODO: check divide op
-    code.BINARY_DIVIDE()
-    code.word_size = 1
+def convert_c2i(python_method, java_index):
+    pass # TODO: fix magnitude/sign during conversion
 
 
-def convert_fdiv(code, java_pos):
-    # TODO: check divide op
-    code.BINARY_DIVIDE()
-    code.word_size = 1
+def convert_s2i(python_method, java_index):
+    pass # TODO: fix magnitude/sign during conversion
 
 
-def convert_ineg(code, java_pos):
-    code.UNARY_NEGATIVE()
-    code.word_size = 1
+def convert_i2s(python_method, java_index):
+    pass # TODO: fix magnitude/sign during conversion
 
 
-def convert_fneg(code, java_pos):
-    code.UNARY_NEGATIVE()
-    code.word_size = 1
+def convert_d2f(python_method, java_index):
+    pass # TODO: fix magnitude/sign during conversion
 
 
-def convert_dneg(code, java_pos):
-    code.UNARY_NEGATIVE()
-    code.word_size = 2
+def convert_l2f(python_method, java_index):
+    python_method.push(java_index, 'float(%s)' % python_method.pop())
 
 
-def convert_lneg(code, java_pos):
-    code.UNARY_NEGATIVE()
-    code.word_size = 2
+def convert_d2i(python_method, java_index):
+    python_method.push(java_index, 'int(%s)' % python_method.pop())
 
 
-def convert_isub(code, java_pos):
-    code.BINARY_SUBTRACT()
-    code.word_size = 1
+def convert_f2d(python_method, java_index):
+    pass # TODO: fix magnitude/sign during conversion
 
 
-def convert_dsub(code, java_pos):
-    code.BINARY_SUBTRACT()
-    code.word_size = 1
+def convert_i2f(python_method, java_index):
+    pass # TODO: fix magnitude/sign during conversion
 
 
-def convert_lsub(code, java_pos):
-    code.BINARY_SUBTRACT()
-    code.word_size = 2
+def convert_i2b(python_method, java_index):
+    pass # TODO: fix magnitude/sign during conversion
 
 
-def convert_ldiv(code, java_pos):
-    code.BINARY_DIVIDE()
-    code.word_size = 2
+def binary_operator(python_method, operator, java_index):
+    operand2 = python_method.pop()
+    operand1 = python_method.pop()
+    python_method.push(java_index, '%s %s %s' % (operand1, operator, operand2))
 
 
-def convert_ddiv(code, java_pos):
-    code.BINARY_DIVIDE()
-    code.word_size = 2
+def unary_operator(python_method, operator, java_index):
+    python_method.push(java_index, '%s%s' % (operator, python_method.pop()))
 
 
-def convert_ixor(code, java_pos):
-    code.BINARY_XOR()
-    code.word_size = 1
+def convert_imul(python_method, java_index):
+    binary_operator(python_method, '*', java_index)
 
 
-def convert_lxor(code, java_pos):
-    code.BINARY_XOR()
-    code.word_size = 2
+def convert_dmul(python_method, java_index):
+    binary_operator(python_method, '*', java_index)
 
 
-def convert_iand(code, java_pos):
-    code.BINARY_AND()
-    code.word_size = 1
+def convert_fmul(python_method, java_index):
+    binary_operator(python_method, '*', java_index)
 
 
-def convert_ior(code, java_pos):
-    code.BINARY_OR()
-    code.word_size = 1
+def convert_fsub(python_method, java_index):
+    binary_operator(python_method, '-', java_index)
 
 
-def convert_irem(code, java_pos):
-    code.BINARY_MODULO()
-    code.word_size = 1
+def convert_iadd(python_method, java_index):
+    binary_operator(python_method, '+', java_index)
 
 
-def convert_lrem(code, java_pos):
-    code.BINARY_MODULO()
-    code.word_size = 2
+def convert_fadd(python_method, java_index):
+    binary_operator(python_method, '+', java_index)
 
 
-def convert_drem(code, java_pos):
-    code.BINARY_MODULO()
-    code.word_size = 2
+def convert_ladd(python_method, java_index):
+    binary_operator(python_method, '+', java_index)
 
 
-def convert_lor(code, java_pos):
-    code.BINARY_OR()
-    code.word_size = 2
+def convert_lmul(python_method, java_index):
+    binary_operator(python_method, '*', java_index)
 
 
-def convert_land(code, java_pos):
-    code.BINARY_AND()
-    code.word_size = 2
+def convert_dadd(python_method, java_index):
+    binary_operator(python_method, '+', java_index)
 
 
-def convert_ishl(code, java_pos):
-    code(31)    # number with lowest 5 bits set
-    code.BINARY_AND()
-    code.BINARY_LSHIFT()
-    code.word_size = 1
+def convert_idiv(python_method, java_index):
+    binary_operator(python_method, '/', java_index)
 
 
-def convert_ishr(code, java_pos):
-    code(31)    # number with lowest 5 bits set
-    code.BINARY_AND()
-    code.BINARY_RSHIFT()
-    code.word_size = 1
+def convert_fdiv(python_method, java_index):
+    binary_operator(python_method, '/', java_index)
 
 
-def convert_iushl(code, java_pos):
-    code(31)    # number with lowest 5 bits set
-    code.BINARY_AND()
-    code.BINARY_LSHIFT()
-    code.word_size = 1
+def convert_ineg(python_method, java_index):
+    unary_operator(python_method, '-', java_index)
 
 
-def convert_iushr(code, java_pos):
-    code(31)    # number with lowest 5 bits set
-    code.BINARY_AND()
-    code.BINARY_RSHIFT()
-    code.word_size = 1
+def convert_fneg(python_method, java_index):
+    unary_operator(python_method, '-', java_index)
 
 
-def convert_lshl(code, java_pos):
-    code(63)    # number with lowest 6 bits set
-    code.BINARY_AND()
-    code.BINARY_LSHIFT()
-    code.word_size = 2
+def convert_dneg(python_method, java_index):
+    unary_operator(python_method, '-', java_index)
 
 
-def convert_lshr(code, java_pos):
-    code(63)    # number with lowest 6 bits set
-    code.BINARY_AND()
-    code.BINARY_RSHIFT()
-    code.word_size = 2
+def convert_lneg(python_method, java_index):
+    unary_operator(python_method, '-', java_index)
 
 
-def convert_lushl(code, java_pos):
-    code(63)    # number with lowest 6 bits set
-    code.BINARY_AND()
-    code.BINARY_LSHIFT()
-    code.word_size = 2
+def convert_isub(python_method, java_index):
+    binary_operator(python_method, '/', java_index)
 
 
-def convert_lushr(code, java_pos):
-    code(63)    # number with lowest 6 bits set
-    code.BINARY_AND()
-    code.BINARY_RSHIFT()
-    code.word_size = 2
+def convert_dsub(python_method, java_index):
+    binary_operator(python_method, '-', java_index)
 
 
-JumpTarget = namedtuple('JumpTarget', ['python_offset', 'java_pos', 'python_stack_size'])
+def convert_lsub(python_method, java_index):
+    binary_operator(python_method, '-', java_index)
 
 
-def convert_goto(code, java_pos, java_target_pos):
-    add_forward_jump(code, java_target_pos)
+def convert_ldiv(python_method, java_index):
+    binary_operator(python_method, '/', java_index)
 
 
-def add_forward_jump(code, java_pos):
-    current = len(code.co_code)
-    code.jumps.append(JumpTarget(current, java_pos, code.get_stack_size()))
-    code.JUMP_FORWARD(current + 3)
-    code.set_stack_size(0)
+def convert_ddiv(python_method, java_index):
+    binary_operator(python_method, '/', java_index)
 
 
-def handle_jumps(code, java_pos):
-    for jump in code.jumps:
-        if DEBUG: print '###', jump, java_pos
-        if jump.java_pos == java_pos:
-            if DEBUG: print '### fix', jump, len(code.co_code)
-            code.patch_arg(jump.python_offset, 0, len(code.co_code))
-            if not code.get_stack_size():
-                code.set_stack_size(jump.python_stack_size)
+def convert_ixor(python_method, java_index):
+    binary_operator(python_method, '^', java_index)
 
 
-def convert_lookupswitch(code, java_pos, lookup_dict):
-    # key is on the stack
-    # lookup_dict looks like {0: 68, 1: 74, 2: 80, 5: 86, 'default': 107, 47: 92, 59: 98, 61: 104}
-    # keys compared with the top of the stack, values are target indexes
-    key_to_compare_with = '$lookup$%d' % java_pos
-    code(asm.LocalAssign(key_to_compare_with))
-    for key, java_target_pos in lookup_dict.iteritems():
-        if key != 'default':
-            code(asm.Local(key_to_compare_with))
-            code(key)
-            handle_comparison(code, java_target_pos, None, '==')
-    add_forward_jump(code, lookup_dict['default'])
-    # TODO: optimize first case, which could avoid a jump
+def convert_lxor(python_method, java_index):
+    binary_operator(python_method, '^', java_index)
 
 
-def convert_tableswitch(code, java_pos, table_dict):
-    convert_lookupswitch(code, java_pos, table_dict)
+def convert_iand(python_method, java_index):
+    binary_operator(python_method, '&', java_index)
+
+
+def convert_ior(python_method, java_index):
+    binary_operator(python_method, '&', java_index)
+
+
+def convert_irem(python_method, java_index):
+    binary_operator(python_method, '%', java_index)
+
+
+def convert_lrem(python_method, java_index):
+    binary_operator(python_method, '%', java_index)
+
+
+def convert_drem(python_method, java_index):
+    binary_operator(python_method, '%', java_index)
+
+
+def convert_lor(python_method, java_index):
+    binary_operator(python_method, '|', java_index)
+
+
+def convert_land(python_method, java_index):
+    binary_operator(python_method, '&', java_index)
+
+
+def convert_ishl(python_method, java_index):
+    python_method.push(java_index, '(%s & 31) << %s' % (python_method.pop(), python_method.pop()))
+
+
+def convert_ishr(python_method, java_index):
+    python_method.push(java_index, '(%s & 31) >> %s' % (python_method.pop(), python_method.pop()))
+
+
+def convert_iushl(python_method, java_index):
+    python_method.push(java_index, '(%s & 31) << %s' % (python_method.pop(), python_method.pop()))
+
+
+def convert_iushr(python_method, java_index):
+    python_method.push(java_index, '(%s & 31) >> %s' % (python_method.pop(), python_method.pop()))
+
+
+def convert_lshl(python_method, java_index):
+    python_method.push(java_index, '(%s & 63) << %s' % (python_method.pop(), python_method.pop()))
+
+
+def convert_lshr(python_method, java_index):
+    python_method.push(java_index, '(%s & 63) >> %s' % (python_method.pop(), python_method.pop()))
+
+
+def convert_lushl(python_method, java_index):
+    python_method.push(java_index, '(%s & 63) << %s' % (python_method.pop(), python_method.pop()))
+
+
+def convert_lushr(python_method, java_index):
+    python_method.push(java_index, '(%s & 63) >> %s' % (python_method.pop(), python_method.pop()))
+
+
+JumpTarget = namedtuple('JumpTarget', ['python_offset', 'java_index', 'python_stack_size'])
+Injection = namedtuple('Injection', ['index', 'count', 'target'])
+
+
+def convert_goto(python_method, java_index, java_target_index):
+    if java_target_index > java_index:
+        expression = python_method.add_else(java_index, java_target_index)
+    else:
+        expression = python_method.add_loop(java_index, java_target_index)
+    python_method.push(java_index, expression, is_statement=True)
+
+
+def convert_jsr(python_method, java_index, java_target_index):
+    python_method.push(java_index, '"jsr not implemented"')
+
+
+def convert_ret(python_method, java_index, value):
+    python_method.push(java_index, '"ret not implemented"')
+
+
+def convert_lookupswitch(python_method, java_index, lookup_dict):
+    python_method.add_lookup_switch(java_index, lookup_dict)
+
+
+def convert_case(python_method, java_index, operands):
+    python_method.push(java_index, '# CASE=%s=%s=%s' % operands)
+
+
+def convert_default(python_method, java_index, operands):
+    if python_method.previous_ins.opcode != 'switchend':
+        python_method.push(java_index, '# DEFAULT=%s=%s=%s' % operands)
+
+
+def convert_switchend(python_method, java_index, operands):
+    python_method.push(java_index, '# ENDSWITCH=%s=%s=%s' % operands)
+
+
+def convert_tableswitch(python_method, java_index, table_dict):
+    convert_lookupswitch(python_method, java_index, table_dict)
     # TODO: optimize low/high, do binary search
 
 
 DEFAULT_VALUES = {
-    'char': '\0',
+    'char': "' '",
     'byte': 0,
     'short': 0,
     'int': 0,
@@ -1199,144 +868,144 @@ DEFAULT_VALUES = {
     'boolean': False,
 }
 
-def convert_newarray(code, java_pos, element_type):
-    code(DEFAULT_VALUES.get(element_type, None)),
-    code.BUILD_LIST(1)
-    code.ROT_TWO()
-    code.BINARY_MULTIPLY()
-    code.word_size = 1
-
-def convert_ifnull(code, java_pos, java_target_pos):
-    handle_comparison(code, java_target_pos, asm.Const(None), '==')
+def convert_newarray(python_method, java_index, element_type):
+    python_method.push(java_index, '[%s] * %s' % (DEFAULT_VALUES.get(element_type, None), python_method.pop()))
 
 
-def convert_ifnonnull(code, java_pos, java_target_pos):
-    handle_comparison(code, java_target_pos, asm.Const(None), '!=')
-
-##############
-
-def convert_ifeq(code, java_pos, java_target_pos):
-    handle_comparison(code, java_target_pos, asm.Const(0), '==')
+def convert_multianewarray(python_method, java_index, signature):
+    count = len(signature) - len(signature.replace('[', '')) - 1
+    args = map(str, python_method.pop_args(count))
+    python_method.push(java_index, 'pava.multianewarray(%s)' % ','.join(args))
 
 
-def convert_ifne(code, java_pos, java_target_pos):
-    handle_comparison(code, java_target_pos, asm.Const(0), '!=')
+def convert_ifnull(python_method, java_index, java_target_index):
+    if_label = python_method.add_if(java_index, java_target_index)
+    python_method.push(java_index, 'if %s is not None: %s' % (python_method.pop(), if_label))
 
 
-def convert_ifle(code, java_pos, java_target_pos):
-    handle_comparison(code, java_target_pos, asm.Const(0), '<=')
-
-
-def convert_iflt(code, java_pos, java_target_pos):
-    handle_comparison(code, java_target_pos, asm.Const(0), '<')
-
-
-def convert_ifge(code, java_pos, java_target_pos):
-    handle_comparison(code, java_target_pos, asm.Const(0), '>=')
-
-
-def convert_ifgt(code, java_pos, java_target_pos):
-    handle_comparison(code, java_target_pos, asm.Const(0), '>')
+def convert_ifnonnull(python_method, java_index, java_target_index):
+    if_label = python_method.add_if(java_index, java_target_index)
+    python_method.push(java_index, 'if %s is None: %s' % (python_method.pop(), if_label))
 
 ##############
 
-def convert_if_acmpeq(code, java_pos, java_target_pos):
-    handle_comparison(code, java_target_pos, None, '==')
+
+def convert_ifeq(python_method, java_index, java_target_index):
+    handle_comparison(python_method, java_index, java_target_index, python_method.pop(), 0, '!=')
 
 
-def convert_if_acmpne(code, java_pos, java_target_pos):
-    handle_comparison(code, java_target_pos, None, '!=')
+def convert_ifne(python_method, java_index, java_target_index):
+    handle_comparison(python_method, java_index, java_target_index, python_method.pop(), 0, '==')
 
 
-def convert_if_acmple(code, java_pos, java_target_pos):
-    handle_comparison(code, java_target_pos, None, '<=')
+def convert_ifle(python_method, java_index, java_target_index):
+    handle_comparison(python_method, java_index, java_target_index, python_method.pop(), 0, '>')
 
 
-def convert_if_acmplt(code, java_pos, java_target_pos):
-    handle_comparison(code, java_target_pos, None, '<')
+def convert_iflt(python_method, java_index, java_target_index):
+    handle_comparison(python_method, java_index, java_target_index, python_method.pop(), 0, '>=')
 
 
-def convert_if_acmpge(code, java_pos, java_target_pos):
-    handle_comparison(code, java_target_pos, None, '>=')
+def convert_ifge(python_method, java_index, java_target_index):
+    handle_comparison(python_method, java_index, java_target_index, python_method.pop(), 0, '<')
 
 
-def convert_if_acmpgt(code, java_pos, java_target_pos):
-    handle_comparison(code, java_target_pos, None, '>')
-
-##############
-
-def convert_if_icmpeq(code, java_pos, java_target_pos):
-    handle_comparison(code, java_target_pos, None, '==')
-
-
-def convert_if_icmpne(code, java_pos, java_target_pos):
-    handle_comparison(code, java_target_pos, None, '!=')
-
-
-def convert_if_icmple(code, java_pos, java_target_pos):
-    handle_comparison(code, java_target_pos, None, '<=')
-
-
-def convert_if_icmplt(code, java_pos, java_target_pos):
-    handle_comparison(code, java_target_pos, None, '<')
-
-
-def convert_if_icmpge(code, java_pos, java_target_pos):
-    handle_comparison(code, java_target_pos, None, '>=')
-
-
-def convert_if_icmpgt(code, java_pos, java_target_pos):
-    handle_comparison(code, java_target_pos, None, '>')
+def convert_ifgt(python_method, java_index, java_target_index):
+    handle_comparison(python_method, java_index, java_target_index, python_method.pop(), 0, '<=')
 
 ##############
 
-def handle_comparison(code, java_target, constant_to_compare_with, comparison_operator):
-    if constant_to_compare_with is not None:
-        code(constant_to_compare_with)
-    code.COMPARE_OP(comparison_operator)
-    current = len(code.co_code)
-    # temporarily jump to the next instruction
-    code.POP_JUMP_IF_TRUE(current + 3)
-    # we remember to fix the current jump once we reach instruction at java_target
-    code.jumps.append(JumpTarget(current, java_target, code.get_stack_size()))
+def convert_if_acmpeq(python_method, java_index, java_target_index):
+    handle_comparison(python_method, java_index, java_target_index, python_method.pop(), python_method.pop(), '!=')
 
 
-def convert_lcmp(code, java_pos):
-    code(asm.If('>', 1, [asm.If('<', -1, 0)]))
+def convert_if_acmpne(python_method, java_index, java_target_index):
+    handle_comparison(python_method, java_index, java_target_index, python_method.pop(), python_method.pop(), '==')
 
 
-def convert_fcmpg(code, java_pos):
-    code(asm.If('>', 1, [asm.If('<', -1, 0)]))
+def convert_if_acmple(python_method, java_index, java_target_index):
+    handle_comparison(python_method, java_index, java_target_index, python_method.pop(), python_method.pop(), '>')
 
 
-def convert_fcmpl(code, java_pos):
-    code(asm.If('<', 1, [asm.If('>', -1, 0)]))
+def convert_if_acmplt(python_method, java_index, java_target_index):
+    handle_comparison(python_method, java_index, java_target_index, python_method.pop(), python_method.pop(), '>=')
 
 
-def convert_dcmpg(code, java_pos):
-    code(asm.If('>', 1, [asm.If('<', -1, 0)]))
+def convert_if_acmpge(python_method, java_index, java_target_index):
+    handle_comparison(python_method, java_index, java_target_index, python_method.pop(), python_method.pop(), '<')
 
 
-def convert_dcmpl(code, java_pos):
-    code(asm.If('<', 1, [asm.If('>', -1, 0)]))
+def convert_if_acmpgt(python_method, java_index, java_target_index):
+    handle_comparison(python_method, java_index, java_target_index, python_method.pop(), python_method.pop(), '<=')
+
+##############
+
+def convert_if_icmpeq(python_method, java_index, java_target_index):
+    handle_comparison(python_method, java_index, java_target_index, python_method.pop(), python_method.pop(), '!=')
 
 
-def convert_monitorenter(code, java_pos):
-    # TODO: implement monitors
-    code.POP_TOP()
+def convert_if_icmpne(python_method, java_index, java_target_index):
+    handle_comparison(python_method, java_index, java_target_index, python_method.pop(), python_method.pop(), '==')
 
 
-def convert_monitorexit(code, java_pos):
-    # TODO: implement monitors
-    code.POP_TOP()
+def convert_if_icmple(python_method, java_index, java_target_index):
+    handle_comparison(python_method, java_index, java_target_index, python_method.pop(), python_method.pop(), '>')
 
 
-def fix_dollar_sign(class_name):
-    return class_name.replace('$', '__')
+def convert_if_icmplt(python_method, java_index, java_target_index):
+    handle_comparison(python_method, java_index, java_target_index, python_method.pop(), python_method.pop(), '>=')
 
 
-def java_local(index):
-    return 'a%d' % index
+def convert_if_icmpge(python_method, java_index, java_target_index):
+    handle_comparison(python_method, java_index, java_target_index, python_method.pop(), python_method.pop(), '<')
+
+
+def convert_if_icmpgt(python_method, java_index, java_target_index):
+    handle_comparison(python_method, java_index, java_target_index, python_method.pop(), python_method.pop(), '<=')
+
+
+##############
+
+def handle_comparison(python_method, java_index, java_target_index, operand1, operand2, comparison_operator):
+    if_label = python_method.add_if(java_index, java_target_index)
+    python_method.push(java_index, 'if %s %s %s: %s' % (
+        operand1, comparison_operator, operand2, if_label
+    ), True)
+
+
+def convert_lcmp(python_method, java_index):
+    python_method.push(java_index, 'cmp(%s, %s)' % (python_method.pop(), python_method.pop()))
+
+
+def convert_fcmpg(python_method, java_index):
+    python_method.push(java_index, 'cmp(%s, %s)' % (python_method.pop(), python_method.pop()))
+
+
+def convert_dcmpg(python_method, java_index):
+    python_method.push(java_index, 'cmp(%s, %s)' % (python_method.pop(), python_method.pop()))
+
+
+def convert_fcmpl(python_method, java_index):
+    python_method.push(java_index, '-cmp(%s, %s)' % (python_method.pop(), python_method.pop()))
+
+
+def convert_dcmpl(python_method, java_index):
+    python_method.push(java_index, '-cmp(%s, %s)' % (python_method.pop(), python_method.pop()))
+
+
+def convert_monitorenter(python_method, java_index):
+    python_method.push(java_index, 'pava.monitorenter(%s)' % (python_method.pop()))
+
+
+def convert_monitorexit(python_method, java_index):
+    python_method.push(java_index, 'pava.monitorexit(%s)' % (python_method.pop()))
+
+
+def java_local(code, index):
+    if code.is_static:
+        return 'a%d' % (index + 1)
+    else:
+        return 'self' if index == 0 else 'a%d' % index
 
 
 class OpcodeMap(dict):
@@ -1348,13 +1017,60 @@ module = sys.modules[__name__]
 opcode_map = OpcodeMap((k[8:],getattr(module, k)) for k in dir(module) if k.startswith('convert_'))
 
 
-def convert(java_opcode, code, java_pos, *operands):
+def last_opcode(code):
+    return code.co_code[-1]
+
+
+def remove_last_opcode(code):
+    code.co_code.pop()
+
+
+RESERVED_WORDS = {
+    'and', 'assert', 'break', 'class', 'continue',
+    'def', 'del', 'elif', 'else', 'except',
+    'exec', 'finally', 'for', 'from', 'global',
+    'if', 'import', 'in', 'is', 'lambda',
+    'not', 'or', 'pass', 'print', 'raise',
+    'return', 'try', 'while',
+    # some specific ones for pava
+    'set', 'dict', 'with', 'yield'
+}
+
+
+def replace_reserved_names(name):
+    if name in RESERVED_WORDS:
+        return '__%s__' % name
+    if name == '<init>': return '__init__'
+    if name == '<clinit>': return '__clinit__'
+    name = name.replace('$', '_')
+    name = name.replace('-', '_')
+    return name
+
+
+def format_operands(operands):
+    from javaruntime import MethodReference
+    from javaruntime import FieldReference
+    result = []
+    for op in operands:
+        if isinstance(op, MethodReference):
+            result.append('%s.%s(%s)' % (op.class_name, op.method_name, ', '.join(op.args)))
+        elif isinstance(op, FieldReference):
+            result.append('%s.%s' % (op.class_name, op.field_name))
+        else:
+            result.append(str(op))
+    return ' '.join(result)
+
+def convert(java_opcode, python_method, java_index, *operands):
+    python_method.java_bytecodes[java_index] = '%s %s' % (java_opcode, format_operands(operands))
+    # handle_jumps(python_method, java_index)
+    # code.pava_file.set_lineno(code)
+    python_method.check_if(java_index)
     if DEBUG:
-        print '    ### %-15s %s'  % (java_opcode, operands)
-    code.java_bytecodes.append((len(code.co_code), (java_opcode, java_pos, operands)))
-    handle_jumps(code, java_pos)
-    opcode_map[java_opcode](code, java_pos, *operands)
-    code.stack_depth.append((len(code.co_code), code.get_stack_size()))
+        print('        %s %s %s' % (str(java_index).rjust(4), opcode_map[java_opcode].__name__[8:], format_operands(operands)))
+    opcode_map[java_opcode](python_method, java_index, *operands)
+    # code.last_code_length = len(code.co_code)
+    # code.stack_depth.append((len(code.co_code), code.get_stack_size()))
+
 
 
 

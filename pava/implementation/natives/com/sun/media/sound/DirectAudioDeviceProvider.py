@@ -1,10 +1,10 @@
 def add_native_methods(clazz):
-    def nGetNumDevices():
+    def nGetNumDevices____(a0):
         raise NotImplementedError()
 
-    def nNewDirectAudioDeviceInfo(a0):
+    def nNewDirectAudioDeviceInfo__int__(a0, a1):
         raise NotImplementedError()
 
-    clazz.nGetNumDevices = staticmethod(nGetNumDevices)
-    clazz.nNewDirectAudioDeviceInfo = staticmethod(nNewDirectAudioDeviceInfo)
+    clazz.nGetNumDevices____ = staticmethod(nGetNumDevices____)
+    clazz.nNewDirectAudioDeviceInfo__int__ = staticmethod(nNewDirectAudioDeviceInfo__int__)
 

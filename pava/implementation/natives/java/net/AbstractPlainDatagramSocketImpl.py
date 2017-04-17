@@ -1,6 +1,6 @@
 def add_native_methods(clazz):
-    def nativeConnectDisabled():
+    def nativeConnectDisabled____(a0):
         raise NotImplementedError()
 
-    clazz.nativeConnectDisabled = nativeConnectDisabled
+    clazz.nativeConnectDisabled____ = nativeConnectDisabled____
 

@@ -1,82 +1,78 @@
 def add_native_methods(clazz):
-    def bind0(a0, a1, a2):
+    def bind0__int__java_net_InetAddress__boolean__(a0, a1, a2, a3):
         raise NotImplementedError()
 
-    def send(a0):
+    def send__java_net_DatagramPacket__(a0, a1):
         raise NotImplementedError()
 
-    def peek(a0):
+    def peek__java_net_InetAddress__(a0, a1):
         raise NotImplementedError()
 
-    def peekData(a0):
+    def peekData__java_net_DatagramPacket__(a0, a1):
         raise NotImplementedError()
 
-    def receive0(a0):
+    def receive0__java_net_DatagramPacket__(a0, a1):
         raise NotImplementedError()
 
-    def setTimeToLive(a0):
+    def setTimeToLive__int__(a0, a1):
         raise NotImplementedError()
 
-    def getTimeToLive():
+    def getTimeToLive____(a0):
         raise NotImplementedError()
 
-    def setTTL(a0):
+    def setTTL__byte__(a0, a1):
         raise NotImplementedError()
 
-    def getTTL():
+    def getTTL____(a0):
         raise NotImplementedError()
 
-    def join(a0, a1):
+    def join__java_net_InetAddress__java_net_NetworkInterface__(a0, a1, a2):
         raise NotImplementedError()
 
-    def leave(a0, a1):
+    def leave__java_net_InetAddress__java_net_NetworkInterface__(a0, a1, a2):
         raise NotImplementedError()
 
-    def datagramSocketCreate():
+    def datagramSocketCreate____(a0):
         raise NotImplementedError()
 
-    def datagramSocketClose():
+    def datagramSocketClose____(a0):
         raise NotImplementedError()
 
-    def socketNativeSetOption(a0, a1):
+    def socketNativeSetOption__int__java_lang_Object__(a0, a1, a2):
         raise NotImplementedError()
 
-    def socketGetOption(a0):
+    def socketGetOption__int__(a0, a1):
         raise NotImplementedError()
 
-    def connect0(a0, a1):
+    def connect0__java_net_InetAddress__int__(a0, a1, a2):
         raise NotImplementedError()
 
-    def socketLocalAddress(a0):
+    def socketLocalAddress__int__(a0, a1):
         raise NotImplementedError()
 
-    def disconnect0(a0):
+    def disconnect0__int__(a0, a1):
         raise NotImplementedError()
 
-    def dataAvailable():
+    def dataAvailable____(a0):
         raise NotImplementedError()
 
-    def init():
-        raise NotImplementedError()
-
-    clazz.bind0 = bind0
-    clazz.send = send
-    clazz.peek = peek
-    clazz.peekData = peekData
-    clazz.receive0 = receive0
-    clazz.setTimeToLive = setTimeToLive
-    clazz.getTimeToLive = getTimeToLive
-    clazz.setTTL = setTTL
-    clazz.getTTL = getTTL
-    clazz.join = join
-    clazz.leave = leave
-    clazz.datagramSocketCreate = datagramSocketCreate
-    clazz.datagramSocketClose = datagramSocketClose
-    clazz.socketNativeSetOption = socketNativeSetOption
-    clazz.socketGetOption = socketGetOption
-    clazz.connect0 = connect0
-    clazz.socketLocalAddress = socketLocalAddress
-    clazz.disconnect0 = disconnect0
-    clazz.dataAvailable = dataAvailable
-    clazz.init = staticmethod(init)
+    clazz.bind0__int__java_net_InetAddress__boolean__ = bind0__int__java_net_InetAddress__boolean__
+    clazz.send__java_net_DatagramPacket__ = send__java_net_DatagramPacket__
+    clazz.peek__java_net_InetAddress__ = peek__java_net_InetAddress__
+    clazz.peekData__java_net_DatagramPacket__ = peekData__java_net_DatagramPacket__
+    clazz.receive0__java_net_DatagramPacket__ = receive0__java_net_DatagramPacket__
+    clazz.setTimeToLive__int__ = setTimeToLive__int__
+    clazz.getTimeToLive____ = getTimeToLive____
+    clazz.setTTL__byte__ = setTTL__byte__
+    clazz.getTTL____ = getTTL____
+    clazz.join__java_net_InetAddress__java_net_NetworkInterface__ = join__java_net_InetAddress__java_net_NetworkInterface__
+    clazz.leave__java_net_InetAddress__java_net_NetworkInterface__ = leave__java_net_InetAddress__java_net_NetworkInterface__
+    clazz.datagramSocketCreate____ = datagramSocketCreate____
+    clazz.datagramSocketClose____ = datagramSocketClose____
+    clazz.socketNativeSetOption__int__java_lang_Object__ = socketNativeSetOption__int__java_lang_Object__
+    clazz.socketGetOption__int__ = socketGetOption__int__
+    clazz.connect0__java_net_InetAddress__int__ = connect0__java_net_InetAddress__int__
+    clazz.socketLocalAddress__int__ = socketLocalAddress__int__
+    clazz.disconnect0__int__ = disconnect0__int__
+    clazz.dataAvailable____ = dataAvailable____
 

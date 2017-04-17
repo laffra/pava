@@ -1,30 +1,10 @@
 def add_native_methods(clazz):
-    def initIDs():
+    def setOption__java_lang_String__java_lang_String__(a0, a1, a2):
         raise NotImplementedError()
 
-    def start(a0, a1):
+    def getOption__java_lang_String__(a0, a1):
         raise NotImplementedError()
 
-    def getNextFile(a0):
-        raise NotImplementedError()
-
-    def getUnusedInput():
-        raise NotImplementedError()
-
-    def finish():
-        raise NotImplementedError()
-
-    def setOption(a0, a1):
-        raise NotImplementedError()
-
-    def getOption(a0):
-        raise NotImplementedError()
-
-    clazz.initIDs = staticmethod(initIDs)
-    clazz.start = start
-    clazz.getNextFile = getNextFile
-    clazz.getUnusedInput = getUnusedInput
-    clazz.finish = finish
-    clazz.setOption = setOption
-    clazz.getOption = getOption
+    clazz.setOption__java_lang_String__java_lang_String__ = setOption__java_lang_String__java_lang_String__
+    clazz.getOption__java_lang_String__ = getOption__java_lang_String__
 

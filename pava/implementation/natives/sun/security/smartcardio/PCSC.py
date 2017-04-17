@@ -1,42 +1,42 @@
 def add_native_methods(clazz):
-    def SCardEstablishContext(a0):
+    def SCardEstablishContext__int__(a0):
         raise NotImplementedError()
 
-    def SCardListReaders(a0):
+    def SCardListReaders__long__(a0):
         raise NotImplementedError()
 
-    def SCardConnect(a0, a1, a2, a3):
+    def SCardConnect__long__java_lang_String__int__int__(a0, a1, a2, a3):
         raise NotImplementedError()
 
-    def SCardTransmit(a0, a1, a2, a3, a4):
+    def SCardTransmit__long__int__byte____int__int__(a0, a1, a2, a3, a4):
         raise NotImplementedError()
 
-    def SCardStatus(a0, a1):
+    def SCardStatus__long__byte____(a0, a1):
         raise NotImplementedError()
 
-    def SCardDisconnect(a0, a1):
+    def SCardDisconnect__long__int__(a0, a1):
         raise NotImplementedError()
 
-    def SCardGetStatusChange(a0, a1, a2, a3):
+    def SCardGetStatusChange__long__long__int____java_lang_String____(a0, a1, a2, a3):
         raise NotImplementedError()
 
-    def SCardBeginTransaction(a0):
+    def SCardBeginTransaction__long__(a0):
         raise NotImplementedError()
 
-    def SCardEndTransaction(a0, a1):
+    def SCardEndTransaction__long__int__(a0, a1):
         raise NotImplementedError()
 
-    def SCardControl(a0, a1, a2):
+    def SCardControl__long__int__byte____(a0, a1, a2):
         raise NotImplementedError()
 
-    clazz.SCardEstablishContext = staticmethod(SCardEstablishContext)
-    clazz.SCardListReaders = staticmethod(SCardListReaders)
-    clazz.SCardConnect = staticmethod(SCardConnect)
-    clazz.SCardTransmit = staticmethod(SCardTransmit)
-    clazz.SCardStatus = staticmethod(SCardStatus)
-    clazz.SCardDisconnect = staticmethod(SCardDisconnect)
-    clazz.SCardGetStatusChange = staticmethod(SCardGetStatusChange)
-    clazz.SCardBeginTransaction = staticmethod(SCardBeginTransaction)
-    clazz.SCardEndTransaction = staticmethod(SCardEndTransaction)
-    clazz.SCardControl = staticmethod(SCardControl)
+    clazz.SCardEstablishContext__int__ = staticmethod(SCardEstablishContext__int__)
+    clazz.SCardListReaders__long__ = staticmethod(SCardListReaders__long__)
+    clazz.SCardConnect__long__java_lang_String__int__int__ = staticmethod(SCardConnect__long__java_lang_String__int__int__)
+    clazz.SCardTransmit__long__int__byte____int__int__ = staticmethod(SCardTransmit__long__int__byte____int__int__)
+    clazz.SCardStatus__long__byte____ = staticmethod(SCardStatus__long__byte____)
+    clazz.SCardDisconnect__long__int__ = staticmethod(SCardDisconnect__long__int__)
+    clazz.SCardGetStatusChange__long__long__int____java_lang_String____ = staticmethod(SCardGetStatusChange__long__long__int____java_lang_String____)
+    clazz.SCardBeginTransaction__long__ = staticmethod(SCardBeginTransaction__long__)
+    clazz.SCardEndTransaction__long__int__ = staticmethod(SCardEndTransaction__long__int__)
+    clazz.SCardControl__long__int__byte____ = staticmethod(SCardControl__long__int__byte____)
 

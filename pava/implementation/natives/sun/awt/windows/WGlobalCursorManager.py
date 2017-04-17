@@ -1,18 +1,18 @@
 def add_native_methods(clazz):
-    def setCursor(a0, a1, a2):
+    def nativeUpdateCursor__java_awt_Component__(a0):
         raise NotImplementedError()
 
-    def getCursorPos(a0):
+    def setCursor__java_awt_Component__java_awt_Cursor__boolean__(a0, a1, a2, a3):
         raise NotImplementedError()
 
-    def findHeavyweightUnderCursor(a0):
+    def getCursorPos__java_awt_Point__(a0, a1):
         raise NotImplementedError()
 
-    def getLocationOnScreen(a0):
+    def findHeavyweightUnderCursor__boolean__(a0, a1):
         raise NotImplementedError()
 
-    clazz.setCursor = setCursor
-    clazz.getCursorPos = getCursorPos
-    clazz.findHeavyweightUnderCursor = findHeavyweightUnderCursor
-    clazz.getLocationOnScreen = getLocationOnScreen
+    clazz.nativeUpdateCursor__java_awt_Component__ = staticmethod(nativeUpdateCursor__java_awt_Component__)
+    clazz.setCursor__java_awt_Component__java_awt_Cursor__boolean__ = setCursor__java_awt_Component__java_awt_Cursor__boolean__
+    clazz.getCursorPos__java_awt_Point__ = getCursorPos__java_awt_Point__
+    clazz.findHeavyweightUnderCursor__boolean__ = findHeavyweightUnderCursor__boolean__
 

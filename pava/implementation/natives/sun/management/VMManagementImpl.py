@@ -1,122 +1,106 @@
 def add_native_methods(clazz):
-    def getVersion0():
+    def isThreadContentionMonitoringEnabled____(a0):
         raise NotImplementedError()
 
-    def initOptionalSupportFields():
+    def isThreadCpuTimeEnabled____(a0):
         raise NotImplementedError()
 
-    def isThreadContentionMonitoringEnabled():
+    def isThreadAllocatedMemoryEnabled____(a0):
         raise NotImplementedError()
 
-    def isThreadCpuTimeEnabled():
+    def getTotalClassCount____(a0):
         raise NotImplementedError()
 
-    def isThreadAllocatedMemoryEnabled():
+    def getUnloadedClassCount____(a0):
         raise NotImplementedError()
 
-    def getTotalClassCount():
+    def getVerboseClass____(a0):
         raise NotImplementedError()
 
-    def getUnloadedClassCount():
+    def getVerboseGC____(a0):
         raise NotImplementedError()
 
-    def getVerboseClass():
+    def getVmArguments0____(a0):
         raise NotImplementedError()
 
-    def getVerboseGC():
+    def getStartupTime____(a0):
         raise NotImplementedError()
 
-    def getProcessId():
+    def getAvailableProcessors____(a0):
         raise NotImplementedError()
 
-    def getVmArguments0():
+    def getTotalCompileTime____(a0):
         raise NotImplementedError()
 
-    def getStartupTime():
+    def getTotalThreadCount____(a0):
         raise NotImplementedError()
 
-    def getUptime0():
+    def getLiveThreadCount____(a0):
         raise NotImplementedError()
 
-    def getAvailableProcessors():
+    def getPeakThreadCount____(a0):
         raise NotImplementedError()
 
-    def getTotalCompileTime():
+    def getDaemonThreadCount____(a0):
         raise NotImplementedError()
 
-    def getTotalThreadCount():
+    def getSafepointCount____(a0):
         raise NotImplementedError()
 
-    def getLiveThreadCount():
+    def getTotalSafepointTime____(a0):
         raise NotImplementedError()
 
-    def getPeakThreadCount():
+    def getSafepointSyncTime____(a0):
         raise NotImplementedError()
 
-    def getDaemonThreadCount():
+    def getTotalApplicationNonStoppedTime____(a0):
         raise NotImplementedError()
 
-    def getSafepointCount():
+    def getLoadedClassSize____(a0):
         raise NotImplementedError()
 
-    def getTotalSafepointTime():
+    def getUnloadedClassSize____(a0):
         raise NotImplementedError()
 
-    def getSafepointSyncTime():
+    def getClassLoadingTime____(a0):
         raise NotImplementedError()
 
-    def getTotalApplicationNonStoppedTime():
+    def getMethodDataSize____(a0):
         raise NotImplementedError()
 
-    def getLoadedClassSize():
+    def getInitializedClassCount____(a0):
         raise NotImplementedError()
 
-    def getUnloadedClassSize():
+    def getClassInitializationTime____(a0):
         raise NotImplementedError()
 
-    def getClassLoadingTime():
+    def getClassVerificationTime____(a0):
         raise NotImplementedError()
 
-    def getMethodDataSize():
-        raise NotImplementedError()
-
-    def getInitializedClassCount():
-        raise NotImplementedError()
-
-    def getClassInitializationTime():
-        raise NotImplementedError()
-
-    def getClassVerificationTime():
-        raise NotImplementedError()
-
-    clazz.getVersion0 = staticmethod(getVersion0)
-    clazz.initOptionalSupportFields = staticmethod(initOptionalSupportFields)
-    clazz.isThreadContentionMonitoringEnabled = isThreadContentionMonitoringEnabled
-    clazz.isThreadCpuTimeEnabled = isThreadCpuTimeEnabled
-    clazz.isThreadAllocatedMemoryEnabled = isThreadAllocatedMemoryEnabled
-    clazz.getTotalClassCount = getTotalClassCount
-    clazz.getUnloadedClassCount = getUnloadedClassCount
-    clazz.getVerboseClass = getVerboseClass
-    clazz.getVerboseGC = getVerboseGC
-    clazz.getProcessId = getProcessId
-    clazz.getVmArguments0 = getVmArguments0
-    clazz.getStartupTime = getStartupTime
-    clazz.getUptime0 = getUptime0
-    clazz.getAvailableProcessors = getAvailableProcessors
-    clazz.getTotalCompileTime = getTotalCompileTime
-    clazz.getTotalThreadCount = getTotalThreadCount
-    clazz.getLiveThreadCount = getLiveThreadCount
-    clazz.getPeakThreadCount = getPeakThreadCount
-    clazz.getDaemonThreadCount = getDaemonThreadCount
-    clazz.getSafepointCount = getSafepointCount
-    clazz.getTotalSafepointTime = getTotalSafepointTime
-    clazz.getSafepointSyncTime = getSafepointSyncTime
-    clazz.getTotalApplicationNonStoppedTime = getTotalApplicationNonStoppedTime
-    clazz.getLoadedClassSize = getLoadedClassSize
-    clazz.getUnloadedClassSize = getUnloadedClassSize
-    clazz.getClassLoadingTime = getClassLoadingTime
-    clazz.getMethodDataSize = getMethodDataSize
-    clazz.getInitializedClassCount = getInitializedClassCount
-    clazz.getClassInitializationTime = getClassInitializationTime
-    clazz.getClassVerificationTime = getClassVerificationTime
+    clazz.isThreadContentionMonitoringEnabled____ = isThreadContentionMonitoringEnabled____
+    clazz.isThreadCpuTimeEnabled____ = isThreadCpuTimeEnabled____
+    clazz.isThreadAllocatedMemoryEnabled____ = isThreadAllocatedMemoryEnabled____
+    clazz.getTotalClassCount____ = getTotalClassCount____
+    clazz.getUnloadedClassCount____ = getUnloadedClassCount____
+    clazz.getVerboseClass____ = getVerboseClass____
+    clazz.getVerboseGC____ = getVerboseGC____
+    clazz.getVmArguments0____ = getVmArguments0____
+    clazz.getStartupTime____ = getStartupTime____
+    clazz.getAvailableProcessors____ = getAvailableProcessors____
+    clazz.getTotalCompileTime____ = getTotalCompileTime____
+    clazz.getTotalThreadCount____ = getTotalThreadCount____
+    clazz.getLiveThreadCount____ = getLiveThreadCount____
+    clazz.getPeakThreadCount____ = getPeakThreadCount____
+    clazz.getDaemonThreadCount____ = getDaemonThreadCount____
+    clazz.getSafepointCount____ = getSafepointCount____
+    clazz.getTotalSafepointTime____ = getTotalSafepointTime____
+    clazz.getSafepointSyncTime____ = getSafepointSyncTime____
+    clazz.getTotalApplicationNonStoppedTime____ = getTotalApplicationNonStoppedTime____
+    clazz.getLoadedClassSize____ = getLoadedClassSize____
+    clazz.getUnloadedClassSize____ = getUnloadedClassSize____
+    clazz.getClassLoadingTime____ = getClassLoadingTime____
+    clazz.getMethodDataSize____ = getMethodDataSize____
+    clazz.getInitializedClassCount____ = getInitializedClassCount____
+    clazz.getClassInitializationTime____ = getClassInitializationTime____
+    clazz.getClassVerificationTime____ = getClassVerificationTime____
 

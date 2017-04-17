@@ -1,22 +1,22 @@
 def add_native_methods(clazz):
-    def getScrollbarSize(a0):
+    def getScrollbarSize__int__(a0):
         raise NotImplementedError()
 
-    def setValues(a0, a1, a2, a3):
+    def setValues__int__int__int__int__(a0, a1, a2, a3, a4):
         raise NotImplementedError()
 
-    def setLineIncrement(a0):
+    def setLineIncrement__int__(a0, a1):
         raise NotImplementedError()
 
-    def setPageIncrement(a0):
+    def setPageIncrement__int__(a0, a1):
         raise NotImplementedError()
 
-    def create(a0):
+    def create__sun_awt_windows_WComponentPeer__(a0, a1):
         raise NotImplementedError()
 
-    clazz.getScrollbarSize = staticmethod(getScrollbarSize)
-    clazz.setValues = setValues
-    clazz.setLineIncrement = setLineIncrement
-    clazz.setPageIncrement = setPageIncrement
-    clazz.create = create
+    clazz.getScrollbarSize__int__ = staticmethod(getScrollbarSize__int__)
+    clazz.setValues__int__int__int__int__ = setValues__int__int__int__int__
+    clazz.setLineIncrement__int__ = setLineIncrement__int__
+    clazz.setPageIncrement__int__ = setPageIncrement__int__
+    clazz.create__sun_awt_windows_WComponentPeer__ = create__sun_awt_windows_WComponentPeer__
 

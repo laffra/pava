@@ -1,10 +1,6 @@
 def add_native_methods(clazz):
-    def fillPointWithCoords(a0):
+    def fillPointWithCoords__java_awt_Point__(a0, a1):
         raise NotImplementedError()
 
-    def isWindowUnderMouse(a0):
-        raise NotImplementedError()
-
-    clazz.fillPointWithCoords = fillPointWithCoords
-    clazz.isWindowUnderMouse = isWindowUnderMouse
+    clazz.fillPointWithCoords__java_awt_Point__ = fillPointWithCoords__java_awt_Point__
 

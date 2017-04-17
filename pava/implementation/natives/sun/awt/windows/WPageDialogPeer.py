@@ -1,6 +1,6 @@
 def add_native_methods(clazz):
-    def _show():
+    def _show____(a0):
         raise NotImplementedError()
 
-    clazz._show = _show
+    clazz._show____ = _show____
 

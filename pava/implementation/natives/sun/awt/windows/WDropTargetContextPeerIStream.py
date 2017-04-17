@@ -1,18 +1,14 @@
 def add_native_methods(clazz):
-    def Available(a0):
+    def Available__long__(a0, a1):
         raise NotImplementedError()
 
-    def Read(a0):
+    def Read__long__(a0, a1):
         raise NotImplementedError()
 
-    def ReadBytes(a0, a1, a2, a3):
+    def ReadBytes__long__byte____int__int__(a0, a1, a2, a3, a4):
         raise NotImplementedError()
 
-    def Close(a0):
-        raise NotImplementedError()
-
-    clazz.Available = Available
-    clazz.Read = Read
-    clazz.ReadBytes = ReadBytes
-    clazz.Close = Close
+    clazz.Available__long__ = Available__long__
+    clazz.Read__long__ = Read__long__
+    clazz.ReadBytes__long__byte____int__int__ = ReadBytes__long__byte____int__int__
 

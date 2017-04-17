@@ -1,18 +1,14 @@
 def add_native_methods(clazz):
-    def addSeparator():
+    def addSeparator____(a0):
         raise NotImplementedError()
 
-    def delItem(a0):
+    def delItem__int__(a0, a1):
         raise NotImplementedError()
 
-    def createMenu(a0):
+    def createMenu__sun_awt_windows_WMenuBarPeer__(a0, a1):
         raise NotImplementedError()
 
-    def createSubMenu(a0):
-        raise NotImplementedError()
-
-    clazz.addSeparator = addSeparator
-    clazz.delItem = delItem
-    clazz.createMenu = createMenu
-    clazz.createSubMenu = createSubMenu
+    clazz.addSeparator____ = addSeparator____
+    clazz.delItem__int__ = delItem__int__
+    clazz.createMenu__sun_awt_windows_WMenuBarPeer__ = createMenu__sun_awt_windows_WMenuBarPeer__
 

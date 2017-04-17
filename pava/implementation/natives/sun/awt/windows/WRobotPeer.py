@@ -1,38 +1,30 @@
 def add_native_methods(clazz):
-    def _dispose():
+    def create____(a0):
         raise NotImplementedError()
 
-    def create():
+    def mouseMoveImpl__int__int__(a0, a1, a2):
         raise NotImplementedError()
 
-    def mouseMoveImpl(a0, a1):
+    def mousePress__int__(a0, a1):
         raise NotImplementedError()
 
-    def mousePress(a0):
+    def mouseRelease__int__(a0, a1):
         raise NotImplementedError()
 
-    def mouseRelease(a0):
+    def mouseWheel__int__(a0, a1):
         raise NotImplementedError()
 
-    def mouseWheel(a0):
+    def keyPress__int__(a0, a1):
         raise NotImplementedError()
 
-    def keyPress(a0):
+    def keyRelease__int__(a0, a1):
         raise NotImplementedError()
 
-    def keyRelease(a0):
-        raise NotImplementedError()
-
-    def getRGBPixels(a0, a1, a2, a3, a4):
-        raise NotImplementedError()
-
-    clazz._dispose = _dispose
-    clazz.create = create
-    clazz.mouseMoveImpl = mouseMoveImpl
-    clazz.mousePress = mousePress
-    clazz.mouseRelease = mouseRelease
-    clazz.mouseWheel = mouseWheel
-    clazz.keyPress = keyPress
-    clazz.keyRelease = keyRelease
-    clazz.getRGBPixels = getRGBPixels
+    clazz.create____ = create____
+    clazz.mouseMoveImpl__int__int__ = mouseMoveImpl__int__int__
+    clazz.mousePress__int__ = mousePress__int__
+    clazz.mouseRelease__int__ = mouseRelease__int__
+    clazz.mouseWheel__int__ = mouseWheel__int__
+    clazz.keyPress__int__ = keyPress__int__
+    clazz.keyRelease__int__ = keyRelease__int__
 

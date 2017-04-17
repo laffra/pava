@@ -1,23 +1,14 @@
-# This is Java package sun.nio.ch
+"""
+This is the Python implementation for the Java package "sun.nio.ch", compiled by Pava.
+"""
 
 import pava
 from pava import nan, inf
 
+pava_classes = {}
+pava.module(__name__)
+
 
 import ch
 
-
 import fs
-
-
-ch = pava.JavaPackage("ch")
-
-
-fs = pava.JavaPackage("fs")
-
-
-ch = pava.JavaPackage("sun.nio.ch")
-
-
-fs = pava.JavaPackage("sun.nio.fs")
-

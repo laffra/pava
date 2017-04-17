@@ -1,14 +1,14 @@
 def add_native_methods(clazz):
-    def startPrintRawData(a0, a1):
+    def startPrintRawData__java_lang_String__java_lang_String__(a0, a1, a2):
         raise NotImplementedError()
 
-    def printRawData(a0, a1):
+    def printRawData__byte____int__(a0, a1, a2):
         raise NotImplementedError()
 
-    def endPrintRawData():
+    def endPrintRawData____(a0):
         raise NotImplementedError()
 
-    clazz.startPrintRawData = startPrintRawData
-    clazz.printRawData = printRawData
-    clazz.endPrintRawData = endPrintRawData
+    clazz.startPrintRawData__java_lang_String__java_lang_String__ = startPrintRawData__java_lang_String__java_lang_String__
+    clazz.printRawData__byte____int__ = printRawData__byte____int__
+    clazz.endPrintRawData____ = endPrintRawData____
 

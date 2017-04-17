@@ -1,42 +1,38 @@
 def add_native_methods(clazz):
-    def addItems(a0, a1, a2):
+    def addItems__java_lang_String____int__int__(a0, a1, a2, a3):
         raise NotImplementedError()
 
-    def delItems(a0, a1):
+    def delItems__int__int__(a0, a1, a2):
         raise NotImplementedError()
 
-    def select(a0):
+    def select__int__(a0, a1):
         raise NotImplementedError()
 
-    def deselect(a0):
+    def deselect__int__(a0, a1):
         raise NotImplementedError()
 
-    def makeVisible(a0):
+    def makeVisible__int__(a0, a1):
         raise NotImplementedError()
 
-    def setMultipleSelections(a0):
+    def setMultipleSelections__boolean__(a0, a1):
         raise NotImplementedError()
 
-    def getMaxWidth():
+    def getMaxWidth____(a0):
         raise NotImplementedError()
 
-    def create(a0):
+    def create__sun_awt_windows_WComponentPeer__(a0, a1):
         raise NotImplementedError()
 
-    def updateMaxItemWidth():
+    def isSelected__int__(a0, a1):
         raise NotImplementedError()
 
-    def isSelected(a0):
-        raise NotImplementedError()
-
-    clazz.addItems = addItems
-    clazz.delItems = delItems
-    clazz.select = select
-    clazz.deselect = deselect
-    clazz.makeVisible = makeVisible
-    clazz.setMultipleSelections = setMultipleSelections
-    clazz.getMaxWidth = getMaxWidth
-    clazz.create = create
-    clazz.updateMaxItemWidth = updateMaxItemWidth
-    clazz.isSelected = isSelected
+    clazz.addItems__java_lang_String____int__int__ = addItems__java_lang_String____int__int__
+    clazz.delItems__int__int__ = delItems__int__int__
+    clazz.select__int__ = select__int__
+    clazz.deselect__int__ = deselect__int__
+    clazz.makeVisible__int__ = makeVisible__int__
+    clazz.setMultipleSelections__boolean__ = setMultipleSelections__boolean__
+    clazz.getMaxWidth____ = getMaxWidth____
+    clazz.create__sun_awt_windows_WComponentPeer__ = create__sun_awt_windows_WComponentPeer__
+    clazz.isSelected__int__ = isSelected__int__
 

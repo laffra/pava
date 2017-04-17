@@ -1,10 +1,10 @@
 def add_native_methods(clazz):
-    def nGetNumDevices():
+    def nGetNumDevices____(a0):
         raise NotImplementedError()
 
-    def nNewPortMixerInfo(a0):
+    def nNewPortMixerInfo__int__(a0, a1):
         raise NotImplementedError()
 
-    clazz.nGetNumDevices = staticmethod(nGetNumDevices)
-    clazz.nNewPortMixerInfo = staticmethod(nNewPortMixerInfo)
+    clazz.nGetNumDevices____ = staticmethod(nGetNumDevices____)
+    clazz.nNewPortMixerInfo__int__ = staticmethod(nNewPortMixerInfo__int__)
 

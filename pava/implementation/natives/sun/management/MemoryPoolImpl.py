@@ -1,38 +1,38 @@
 def add_native_methods(clazz):
-    def getUsage0():
+    def getUsage0____(a0):
         raise NotImplementedError()
 
-    def getPeakUsage0():
+    def getPeakUsage0____(a0):
         raise NotImplementedError()
 
-    def getCollectionUsage0():
+    def getCollectionUsage0____(a0):
         raise NotImplementedError()
 
-    def setUsageThreshold0(a0, a1):
+    def setUsageThreshold0__long__long__(a0, a1, a2):
         raise NotImplementedError()
 
-    def setCollectionThreshold0(a0, a1):
+    def setCollectionThreshold0__long__long__(a0, a1, a2):
         raise NotImplementedError()
 
-    def resetPeakUsage0():
+    def resetPeakUsage0____(a0):
         raise NotImplementedError()
 
-    def getMemoryManagers0():
+    def getMemoryManagers0____(a0):
         raise NotImplementedError()
 
-    def setPoolUsageSensor(a0):
+    def setPoolUsageSensor__sun_management_Sensor__(a0, a1):
         raise NotImplementedError()
 
-    def setPoolCollectionSensor(a0):
+    def setPoolCollectionSensor__sun_management_Sensor__(a0, a1):
         raise NotImplementedError()
 
-    clazz.getUsage0 = getUsage0
-    clazz.getPeakUsage0 = getPeakUsage0
-    clazz.getCollectionUsage0 = getCollectionUsage0
-    clazz.setUsageThreshold0 = setUsageThreshold0
-    clazz.setCollectionThreshold0 = setCollectionThreshold0
-    clazz.resetPeakUsage0 = resetPeakUsage0
-    clazz.getMemoryManagers0 = getMemoryManagers0
-    clazz.setPoolUsageSensor = setPoolUsageSensor
-    clazz.setPoolCollectionSensor = setPoolCollectionSensor
+    clazz.getUsage0____ = getUsage0____
+    clazz.getPeakUsage0____ = getPeakUsage0____
+    clazz.getCollectionUsage0____ = getCollectionUsage0____
+    clazz.setUsageThreshold0__long__long__ = setUsageThreshold0__long__long__
+    clazz.setCollectionThreshold0__long__long__ = setCollectionThreshold0__long__long__
+    clazz.resetPeakUsage0____ = resetPeakUsage0____
+    clazz.getMemoryManagers0____ = getMemoryManagers0____
+    clazz.setPoolUsageSensor__sun_management_Sensor__ = setPoolUsageSensor__sun_management_Sensor__
+    clazz.setPoolCollectionSensor__sun_management_Sensor__ = setPoolCollectionSensor__sun_management_Sensor__
 

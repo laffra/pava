@@ -1,44 +1,20 @@
-# This is Java package sun.security.jgss.wrapper
+"""
+This is the Python implementation for the Java package "sun.security.jgss.wrapper", compiled by Pava.
+"""
 
 import pava
 from pava import nan, inf
 
+pava_classes = {}
+pava.module(__name__)
+
 
 import jgss
 
-
-import krb5
-
-
 import provider
-
 
 import smartcardio
 
+import x509
 
-jgss = pava.JavaPackage("jgss")
-
-
-krb5 = pava.JavaPackage("krb5")
-
-
-provider = pava.JavaPackage("provider")
-
-
-smartcardio = pava.JavaPackage("smartcardio")
-
-
-jgss = pava.JavaPackage("sun.security.jgss")
-
-
-krb5 = pava.JavaPackage("sun.security.krb5")
-
-
-provider = pava.JavaPackage("sun.security.provider")
-
-
-smartcardio = pava.JavaPackage("sun.security.smartcardio")
-
-
-x509 = pava.JavaPackage("sun.security.x509")
-
+import krb5

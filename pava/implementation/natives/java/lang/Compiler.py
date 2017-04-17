@@ -1,30 +1,22 @@
 def add_native_methods(clazz):
-    def initialize():
+    def compileClass__java_lang_Class_____(a0):
         raise NotImplementedError()
 
-    def registerNatives():
+    def compileClasses__java_lang_String__(a0):
         raise NotImplementedError()
 
-    def compileClass(a0):
+    def command__java_lang_Object__(a0):
         raise NotImplementedError()
 
-    def compileClasses(a0):
+    def enable____():
         raise NotImplementedError()
 
-    def command(a0):
+    def disable____():
         raise NotImplementedError()
 
-    def enable():
-        raise NotImplementedError()
-
-    def disable():
-        raise NotImplementedError()
-
-    clazz.initialize = staticmethod(initialize)
-    clazz.registerNatives = staticmethod(registerNatives)
-    clazz.compileClass = staticmethod(compileClass)
-    clazz.compileClasses = staticmethod(compileClasses)
-    clazz.command = staticmethod(command)
-    clazz.enable = staticmethod(enable)
-    clazz.disable = staticmethod(disable)
+    clazz.compileClass__java_lang_Class_____ = staticmethod(compileClass__java_lang_Class_____)
+    clazz.compileClasses__java_lang_String__ = staticmethod(compileClasses__java_lang_String__)
+    clazz.command__java_lang_Object__ = staticmethod(command__java_lang_Object__)
+    clazz.enable____ = staticmethod(enable____)
+    clazz.disable____ = staticmethod(disable____)
 

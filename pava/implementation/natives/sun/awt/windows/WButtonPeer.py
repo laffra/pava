@@ -1,14 +1,10 @@
 def add_native_methods(clazz):
-    def setLabel(a0):
+    def setLabel__java_lang_String__(a0, a1):
         raise NotImplementedError()
 
-    def create(a0):
+    def create__sun_awt_windows_WComponentPeer__(a0, a1):
         raise NotImplementedError()
 
-    def initIDs():
-        raise NotImplementedError()
-
-    clazz.setLabel = setLabel
-    clazz.create = create
-    clazz.initIDs = staticmethod(initIDs)
+    clazz.setLabel__java_lang_String__ = setLabel__java_lang_String__
+    clazz.create__sun_awt_windows_WComponentPeer__ = create__sun_awt_windows_WComponentPeer__
 

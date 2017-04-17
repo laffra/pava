@@ -1,38 +1,38 @@
 def add_native_methods(clazz):
-    def getStillActive():
+    def getStillActive____(a0):
         raise NotImplementedError()
 
-    def getExitCodeProcess(a0):
+    def getExitCodeProcess__long__(a0, a1):
         raise NotImplementedError()
 
-    def waitForInterruptibly(a0):
+    def waitForInterruptibly__long__(a0, a1):
         raise NotImplementedError()
 
-    def waitForTimeoutInterruptibly(a0, a1):
+    def waitForTimeoutInterruptibly__long__long__(a0, a1, a2):
         raise NotImplementedError()
 
-    def terminateProcess(a0):
+    def terminateProcess__long__(a0, a1):
         raise NotImplementedError()
 
-    def isProcessAlive(a0):
+    def isProcessAlive__long__(a0, a1):
         raise NotImplementedError()
 
-    def create(a0, a1, a2, a3, a4):
+    def create__java_lang_String__java_lang_String__java_lang_String__long____boolean__(a0, a1, a2, a3, a4, a5):
         raise NotImplementedError()
 
-    def openForAtomicAppend(a0):
+    def openForAtomicAppend__java_lang_String__(a0, a1):
         raise NotImplementedError()
 
-    def closeHandle(a0):
+    def closeHandle__long__(a0, a1):
         raise NotImplementedError()
 
-    clazz.getStillActive = staticmethod(getStillActive)
-    clazz.getExitCodeProcess = staticmethod(getExitCodeProcess)
-    clazz.waitForInterruptibly = staticmethod(waitForInterruptibly)
-    clazz.waitForTimeoutInterruptibly = staticmethod(waitForTimeoutInterruptibly)
-    clazz.terminateProcess = staticmethod(terminateProcess)
-    clazz.isProcessAlive = staticmethod(isProcessAlive)
-    clazz.create = staticmethod(create)
-    clazz.openForAtomicAppend = staticmethod(openForAtomicAppend)
-    clazz.closeHandle = staticmethod(closeHandle)
+    clazz.getStillActive____ = staticmethod(getStillActive____)
+    clazz.getExitCodeProcess__long__ = staticmethod(getExitCodeProcess__long__)
+    clazz.waitForInterruptibly__long__ = staticmethod(waitForInterruptibly__long__)
+    clazz.waitForTimeoutInterruptibly__long__long__ = staticmethod(waitForTimeoutInterruptibly__long__long__)
+    clazz.terminateProcess__long__ = staticmethod(terminateProcess__long__)
+    clazz.isProcessAlive__long__ = staticmethod(isProcessAlive__long__)
+    clazz.create__java_lang_String__java_lang_String__java_lang_String__long____boolean__ = staticmethod(create__java_lang_String__java_lang_String__java_lang_String__long____boolean__)
+    clazz.openForAtomicAppend__java_lang_String__ = staticmethod(openForAtomicAppend__java_lang_String__)
+    clazz.closeHandle__long__ = staticmethod(closeHandle__long__)
 

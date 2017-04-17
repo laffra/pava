@@ -1,14 +1,14 @@
 def add_native_methods(clazz):
-    def init0():
+    def init0____():
         raise NotImplementedError()
 
-    def loadDNSconfig0():
+    def loadDNSconfig0____():
         raise NotImplementedError()
 
-    def notifyAddrChange0():
+    def notifyAddrChange0____():
         raise NotImplementedError()
 
-    clazz.init0 = staticmethod(init0)
-    clazz.loadDNSconfig0 = staticmethod(loadDNSconfig0)
-    clazz.notifyAddrChange0 = staticmethod(notifyAddrChange0)
+    clazz.init0____ = staticmethod(init0____)
+    clazz.loadDNSconfig0____ = staticmethod(loadDNSconfig0____)
+    clazz.notifyAddrChange0____ = staticmethod(notifyAddrChange0____)
 

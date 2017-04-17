@@ -1,6 +1,6 @@
 def add_native_methods(clazz):
-    def Transform(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17):
+    def Transform__sun_java2d_loops_MaskBlit__sun_java2d_SurfaceData__sun_java2d_SurfaceData__java_awt_Composite__sun_java2d_pipe_Region__java_awt_geom_AffineTransform__int__int__int__int__int__int__int__int__int__int____int__int__(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18):
         raise NotImplementedError()
 
-    clazz.Transform = Transform
+    clazz.Transform__sun_java2d_loops_MaskBlit__sun_java2d_SurfaceData__sun_java2d_SurfaceData__java_awt_Composite__sun_java2d_pipe_Region__java_awt_geom_AffineTransform__int__int__int__int__int__int__int__int__int__int____int__int__ = Transform__sun_java2d_loops_MaskBlit__sun_java2d_SurfaceData__sun_java2d_SurfaceData__java_awt_Composite__sun_java2d_pipe_Region__java_awt_geom_AffineTransform__int__int__int__int__int__int__int__int__int__int____int__int__
 

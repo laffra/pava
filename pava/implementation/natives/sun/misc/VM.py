@@ -1,10 +1,6 @@
 def add_native_methods(clazz):
-    def latestUserDefinedLoader():
+    def latestUserDefinedLoader____():
         raise NotImplementedError()
 
-    def initialize():
-        raise NotImplementedError()
-
-    clazz.latestUserDefinedLoader = staticmethod(latestUserDefinedLoader)
-    clazz.initialize = staticmethod(initialize)
+    clazz.latestUserDefinedLoader____ = staticmethod(latestUserDefinedLoader____)
 

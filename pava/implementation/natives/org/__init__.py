@@ -1,8 +1,12 @@
-# This is Java package org.omg.CORBA
+"""
+This is the Python implementation for the Java package "org.omg.CORBA", compiled by Pava.
+"""
 
 import pava
 from pava import nan, inf
 
+pava_classes = {}
+pava.module(__name__)
 
-omg = pava.JavaPackage("org.omg")
 
+import omg

@@ -1,82 +1,62 @@
 def add_native_methods(clazz):
-    def dispose():
+    def dispose____(a0):
         raise NotImplementedError()
 
-    def setFillMode(a0):
+    def setFillMode__int__(a0, a1):
         raise NotImplementedError()
 
-    def beginPath():
+    def beginPath____(a0):
         raise NotImplementedError()
 
-    def beginSubpath(a0, a1):
+    def beginSubpath__float__float__(a0, a1, a2):
         raise NotImplementedError()
 
-    def appendLine(a0, a1):
+    def appendLine__float__float__(a0, a1, a2):
         raise NotImplementedError()
 
-    def appendQuadratic(a0, a1, a2, a3):
+    def appendQuadratic__float__float__float__float__(a0, a1, a2, a3, a4):
         raise NotImplementedError()
 
-    def appendCubic(a0, a1, a2, a3, a4, a5):
+    def appendCubic__float__float__float__float__float__float__(a0, a1, a2, a3, a4, a5, a6):
         raise NotImplementedError()
 
-    def closedSubpath():
+    def closedSubpath____(a0):
         raise NotImplementedError()
 
-    def endPath():
+    def endPath____(a0):
         raise NotImplementedError()
 
-    def getCPathConsumer():
+    def getCPathConsumer____(a0):
         raise NotImplementedError()
 
-    def getAlphaBox(a0):
+    def getAlphaBox__int____(a0, a1):
         raise NotImplementedError()
 
-    def setOutputArea(a0, a1, a2, a3):
+    def setOutputArea__float__float__int__int__(a0, a1, a2, a3, a4):
         raise NotImplementedError()
 
-    def getTileState():
+    def getTileState____(a0):
         raise NotImplementedError()
 
-    def writeAlpha8(a0, a1, a2, a3):
+    def nextTile____(a0):
         raise NotImplementedError()
 
-    def writeAlpha16(a0, a1, a2, a3):
+    def reset____(a0):
         raise NotImplementedError()
 
-    def nextTile():
-        raise NotImplementedError()
-
-    def reset():
-        raise NotImplementedError()
-
-    def cClassInitialize():
-        raise NotImplementedError()
-
-    def cClassFinalize():
-        raise NotImplementedError()
-
-    def cInitialize():
-        raise NotImplementedError()
-
-    clazz.dispose = dispose
-    clazz.setFillMode = setFillMode
-    clazz.beginPath = beginPath
-    clazz.beginSubpath = beginSubpath
-    clazz.appendLine = appendLine
-    clazz.appendQuadratic = appendQuadratic
-    clazz.appendCubic = appendCubic
-    clazz.closedSubpath = closedSubpath
-    clazz.endPath = endPath
-    clazz.getCPathConsumer = getCPathConsumer
-    clazz.getAlphaBox = getAlphaBox
-    clazz.setOutputArea = setOutputArea
-    clazz.getTileState = getTileState
-    clazz.writeAlpha8 = writeAlpha8
-    clazz.writeAlpha16 = writeAlpha16
-    clazz.nextTile = nextTile
-    clazz.reset = reset
-    clazz.cClassInitialize = staticmethod(cClassInitialize)
-    clazz.cClassFinalize = staticmethod(cClassFinalize)
-    clazz.cInitialize = cInitialize
+    clazz.dispose____ = dispose____
+    clazz.setFillMode__int__ = setFillMode__int__
+    clazz.beginPath____ = beginPath____
+    clazz.beginSubpath__float__float__ = beginSubpath__float__float__
+    clazz.appendLine__float__float__ = appendLine__float__float__
+    clazz.appendQuadratic__float__float__float__float__ = appendQuadratic__float__float__float__float__
+    clazz.appendCubic__float__float__float__float__float__float__ = appendCubic__float__float__float__float__float__float__
+    clazz.closedSubpath____ = closedSubpath____
+    clazz.endPath____ = endPath____
+    clazz.getCPathConsumer____ = getCPathConsumer____
+    clazz.getAlphaBox__int____ = getAlphaBox__int____
+    clazz.setOutputArea__float__float__int__int__ = setOutputArea__float__float__int__int__
+    clazz.getTileState____ = getTileState____
+    clazz.nextTile____ = nextTile____
+    clazz.reset____ = reset____
 

@@ -1,118 +1,114 @@
 def add_native_methods(clazz):
-    def init(a0, a1):
+    def init__java_lang_String__boolean__(a0, a1):
         raise NotImplementedError()
 
-    def getMechPtr(a0):
+    def indicateMechs____():
         raise NotImplementedError()
 
-    def indicateMechs():
+    def inquireNamesForMech____(a0):
         raise NotImplementedError()
 
-    def inquireNamesForMech():
+    def releaseName__long__(a0, a1):
         raise NotImplementedError()
 
-    def releaseName(a0):
+    def importName__byte____org_ietf_jgss_Oid__(a0, a1, a2):
         raise NotImplementedError()
 
-    def importName(a0, a1):
+    def compareName__long__long__(a0, a1, a2):
         raise NotImplementedError()
 
-    def compareName(a0, a1):
+    def canonicalizeName__long__(a0, a1):
         raise NotImplementedError()
 
-    def canonicalizeName(a0):
+    def exportName__long__(a0, a1):
         raise NotImplementedError()
 
-    def exportName(a0):
+    def displayName__long__(a0, a1):
         raise NotImplementedError()
 
-    def displayName(a0):
+    def acquireCred__long__int__int__(a0, a1, a2, a3):
         raise NotImplementedError()
 
-    def acquireCred(a0, a1, a2):
+    def releaseCred__long__(a0, a1):
         raise NotImplementedError()
 
-    def releaseCred(a0):
+    def getCredName__long__(a0, a1):
         raise NotImplementedError()
 
-    def getCredName(a0):
+    def getCredTime__long__(a0, a1):
         raise NotImplementedError()
 
-    def getCredTime(a0):
+    def getCredUsage__long__(a0, a1):
         raise NotImplementedError()
 
-    def getCredUsage(a0):
+    def importContext__byte____(a0, a1):
         raise NotImplementedError()
 
-    def importContext(a0):
+    def initContext__long__long__org_ietf_jgss_ChannelBinding__byte____sun_security_jgss_wrapper_NativeGSSContext__(a0, a1, a2, a3, a4, a5):
         raise NotImplementedError()
 
-    def initContext(a0, a1, a2, a3, a4):
+    def acceptContext__long__org_ietf_jgss_ChannelBinding__byte____sun_security_jgss_wrapper_NativeGSSContext__(a0, a1, a2, a3, a4):
         raise NotImplementedError()
 
-    def acceptContext(a0, a1, a2, a3):
+    def inquireContext__long__(a0, a1):
         raise NotImplementedError()
 
-    def inquireContext(a0):
+    def getContextMech__long__(a0, a1):
         raise NotImplementedError()
 
-    def getContextMech(a0):
+    def getContextName__long__boolean__(a0, a1, a2):
         raise NotImplementedError()
 
-    def getContextName(a0, a1):
+    def getContextTime__long__(a0, a1):
         raise NotImplementedError()
 
-    def getContextTime(a0):
+    def deleteContext__long__(a0, a1):
         raise NotImplementedError()
 
-    def deleteContext(a0):
+    def wrapSizeLimit__long__int__int__int__(a0, a1, a2, a3, a4):
         raise NotImplementedError()
 
-    def wrapSizeLimit(a0, a1, a2, a3):
+    def exportContext__long__(a0, a1):
         raise NotImplementedError()
 
-    def exportContext(a0):
+    def getMic__long__int__byte____(a0, a1, a2, a3):
         raise NotImplementedError()
 
-    def getMic(a0, a1, a2):
+    def verifyMic__long__byte____byte____org_ietf_jgss_MessageProp__(a0, a1, a2, a3, a4):
         raise NotImplementedError()
 
-    def verifyMic(a0, a1, a2, a3):
+    def wrap__long__byte____org_ietf_jgss_MessageProp__(a0, a1, a2, a3):
         raise NotImplementedError()
 
-    def wrap(a0, a1, a2):
+    def unwrap__long__byte____org_ietf_jgss_MessageProp__(a0, a1, a2, a3):
         raise NotImplementedError()
 
-    def unwrap(a0, a1, a2):
-        raise NotImplementedError()
-
-    clazz.init = staticmethod(init)
-    clazz.getMechPtr = staticmethod(getMechPtr)
-    clazz.indicateMechs = staticmethod(indicateMechs)
-    clazz.inquireNamesForMech = inquireNamesForMech
-    clazz.releaseName = releaseName
-    clazz.importName = importName
-    clazz.compareName = compareName
-    clazz.canonicalizeName = canonicalizeName
-    clazz.exportName = exportName
-    clazz.displayName = displayName
-    clazz.acquireCred = acquireCred
-    clazz.releaseCred = releaseCred
-    clazz.getCredName = getCredName
-    clazz.getCredTime = getCredTime
-    clazz.getCredUsage = getCredUsage
-    clazz.importContext = importContext
-    clazz.initContext = initContext
-    clazz.acceptContext = acceptContext
-    clazz.inquireContext = inquireContext
-    clazz.getContextMech = getContextMech
-    clazz.getContextName = getContextName
-    clazz.getContextTime = getContextTime
-    clazz.deleteContext = deleteContext
-    clazz.wrapSizeLimit = wrapSizeLimit
-    clazz.exportContext = exportContext
-    clazz.getMic = getMic
-    clazz.verifyMic = verifyMic
-    clazz.wrap = wrap
-    clazz.unwrap = unwrap
+    clazz.init__java_lang_String__boolean__ = staticmethod(init__java_lang_String__boolean__)
+    clazz.indicateMechs____ = staticmethod(indicateMechs____)
+    clazz.inquireNamesForMech____ = inquireNamesForMech____
+    clazz.releaseName__long__ = releaseName__long__
+    clazz.importName__byte____org_ietf_jgss_Oid__ = importName__byte____org_ietf_jgss_Oid__
+    clazz.compareName__long__long__ = compareName__long__long__
+    clazz.canonicalizeName__long__ = canonicalizeName__long__
+    clazz.exportName__long__ = exportName__long__
+    clazz.displayName__long__ = displayName__long__
+    clazz.acquireCred__long__int__int__ = acquireCred__long__int__int__
+    clazz.releaseCred__long__ = releaseCred__long__
+    clazz.getCredName__long__ = getCredName__long__
+    clazz.getCredTime__long__ = getCredTime__long__
+    clazz.getCredUsage__long__ = getCredUsage__long__
+    clazz.importContext__byte____ = importContext__byte____
+    clazz.initContext__long__long__org_ietf_jgss_ChannelBinding__byte____sun_security_jgss_wrapper_NativeGSSContext__ = initContext__long__long__org_ietf_jgss_ChannelBinding__byte____sun_security_jgss_wrapper_NativeGSSContext__
+    clazz.acceptContext__long__org_ietf_jgss_ChannelBinding__byte____sun_security_jgss_wrapper_NativeGSSContext__ = acceptContext__long__org_ietf_jgss_ChannelBinding__byte____sun_security_jgss_wrapper_NativeGSSContext__
+    clazz.inquireContext__long__ = inquireContext__long__
+    clazz.getContextMech__long__ = getContextMech__long__
+    clazz.getContextName__long__boolean__ = getContextName__long__boolean__
+    clazz.getContextTime__long__ = getContextTime__long__
+    clazz.deleteContext__long__ = deleteContext__long__
+    clazz.wrapSizeLimit__long__int__int__int__ = wrapSizeLimit__long__int__int__int__
+    clazz.exportContext__long__ = exportContext__long__
+    clazz.getMic__long__int__byte____ = getMic__long__int__byte____
+    clazz.verifyMic__long__byte____byte____org_ietf_jgss_MessageProp__ = verifyMic__long__byte____byte____org_ietf_jgss_MessageProp__
+    clazz.wrap__long__byte____org_ietf_jgss_MessageProp__ = wrap__long__byte____org_ietf_jgss_MessageProp__
+    clazz.unwrap__long__byte____org_ietf_jgss_MessageProp__ = unwrap__long__byte____org_ietf_jgss_MessageProp__
 

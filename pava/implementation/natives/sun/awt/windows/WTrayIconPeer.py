@@ -1,26 +1,22 @@
 def add_native_methods(clazz):
-    def setToolTip(a0):
+    def setToolTip__java_lang_String__(a0, a1):
         raise NotImplementedError()
 
-    def create():
+    def create____(a0):
         raise NotImplementedError()
 
-    def _dispose():
+    def _dispose____(a0):
         raise NotImplementedError()
 
-    def updateNativeIcon(a0):
+    def updateNativeIcon__boolean__(a0, a1):
         raise NotImplementedError()
 
-    def setNativeIcon(a0, a1, a2, a3, a4):
+    def setNativeIcon__int____byte____int__int__int__(a0, a1, a2, a3, a4, a5):
         raise NotImplementedError()
 
-    def _displayMessage(a0, a1, a2):
-        raise NotImplementedError()
-
-    clazz.setToolTip = setToolTip
-    clazz.create = create
-    clazz._dispose = _dispose
-    clazz.updateNativeIcon = updateNativeIcon
-    clazz.setNativeIcon = setNativeIcon
-    clazz._displayMessage = _displayMessage
+    clazz.setToolTip__java_lang_String__ = setToolTip__java_lang_String__
+    clazz.create____ = create____
+    clazz._dispose____ = _dispose____
+    clazz.updateNativeIcon__boolean__ = updateNativeIcon__boolean__
+    clazz.setNativeIcon__int____byte____int__int__int__ = setNativeIcon__int____byte____int__int__int__
 

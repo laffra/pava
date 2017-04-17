@@ -1,6 +1,6 @@
 def add_native_methods(clazz):
-    def initNativeFlags():
+    def initNativeFlags____(a0):
         raise NotImplementedError()
 
-    clazz.initNativeFlags = staticmethod(initNativeFlags)
+    clazz.initNativeFlags____ = staticmethod(initNativeFlags____)
 

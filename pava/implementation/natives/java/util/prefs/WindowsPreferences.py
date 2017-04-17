@@ -1,46 +1,46 @@
 def add_native_methods(clazz):
-    def WindowsRegOpenKey(a0, a1, a2):
+    def WindowsRegOpenKey__int__byte____int__(a0, a1, a2, a3):
         raise NotImplementedError()
 
-    def WindowsRegCloseKey(a0):
+    def WindowsRegCloseKey__int__(a0, a1):
         raise NotImplementedError()
 
-    def WindowsRegCreateKeyEx(a0, a1):
+    def WindowsRegCreateKeyEx__int__byte____(a0, a1, a2):
         raise NotImplementedError()
 
-    def WindowsRegDeleteKey(a0, a1):
+    def WindowsRegDeleteKey__int__byte____(a0, a1, a2):
         raise NotImplementedError()
 
-    def WindowsRegFlushKey(a0):
+    def WindowsRegFlushKey__int__(a0, a1):
         raise NotImplementedError()
 
-    def WindowsRegQueryValueEx(a0, a1):
+    def WindowsRegQueryValueEx__int__byte____(a0, a1, a2):
         raise NotImplementedError()
 
-    def WindowsRegSetValueEx(a0, a1, a2):
+    def WindowsRegSetValueEx__int__byte____byte____(a0, a1, a2, a3):
         raise NotImplementedError()
 
-    def WindowsRegDeleteValue(a0, a1):
+    def WindowsRegDeleteValue__int__byte____(a0, a1, a2):
         raise NotImplementedError()
 
-    def WindowsRegQueryInfoKey(a0):
+    def WindowsRegQueryInfoKey__int__(a0, a1):
         raise NotImplementedError()
 
-    def WindowsRegEnumKeyEx(a0, a1, a2):
+    def WindowsRegEnumKeyEx__int__int__int__(a0, a1, a2, a3):
         raise NotImplementedError()
 
-    def WindowsRegEnumValue(a0, a1, a2):
+    def WindowsRegEnumValue__int__int__int__(a0, a1, a2, a3):
         raise NotImplementedError()
 
-    clazz.WindowsRegOpenKey = staticmethod(WindowsRegOpenKey)
-    clazz.WindowsRegCloseKey = staticmethod(WindowsRegCloseKey)
-    clazz.WindowsRegCreateKeyEx = staticmethod(WindowsRegCreateKeyEx)
-    clazz.WindowsRegDeleteKey = staticmethod(WindowsRegDeleteKey)
-    clazz.WindowsRegFlushKey = staticmethod(WindowsRegFlushKey)
-    clazz.WindowsRegQueryValueEx = staticmethod(WindowsRegQueryValueEx)
-    clazz.WindowsRegSetValueEx = staticmethod(WindowsRegSetValueEx)
-    clazz.WindowsRegDeleteValue = staticmethod(WindowsRegDeleteValue)
-    clazz.WindowsRegQueryInfoKey = staticmethod(WindowsRegQueryInfoKey)
-    clazz.WindowsRegEnumKeyEx = staticmethod(WindowsRegEnumKeyEx)
-    clazz.WindowsRegEnumValue = staticmethod(WindowsRegEnumValue)
+    clazz.WindowsRegOpenKey__int__byte____int__ = staticmethod(WindowsRegOpenKey__int__byte____int__)
+    clazz.WindowsRegCloseKey__int__ = staticmethod(WindowsRegCloseKey__int__)
+    clazz.WindowsRegCreateKeyEx__int__byte____ = staticmethod(WindowsRegCreateKeyEx__int__byte____)
+    clazz.WindowsRegDeleteKey__int__byte____ = staticmethod(WindowsRegDeleteKey__int__byte____)
+    clazz.WindowsRegFlushKey__int__ = staticmethod(WindowsRegFlushKey__int__)
+    clazz.WindowsRegQueryValueEx__int__byte____ = staticmethod(WindowsRegQueryValueEx__int__byte____)
+    clazz.WindowsRegSetValueEx__int__byte____byte____ = staticmethod(WindowsRegSetValueEx__int__byte____byte____)
+    clazz.WindowsRegDeleteValue__int__byte____ = staticmethod(WindowsRegDeleteValue__int__byte____)
+    clazz.WindowsRegQueryInfoKey__int__ = staticmethod(WindowsRegQueryInfoKey__int__)
+    clazz.WindowsRegEnumKeyEx__int__int__int__ = staticmethod(WindowsRegEnumKeyEx__int__int__int__)
+    clazz.WindowsRegEnumValue__int__int__int__ = staticmethod(WindowsRegEnumValue__int__int__int__)
 

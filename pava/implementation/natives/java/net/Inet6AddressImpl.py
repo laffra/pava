@@ -1,18 +1,14 @@
 def add_native_methods(clazz):
-    def getLocalHostName():
+    def getLocalHostName____(a0):
         raise NotImplementedError()
 
-    def lookupAllHostAddr(a0):
+    def lookupAllHostAddr__java_lang_String__(a0, a1):
         raise NotImplementedError()
 
-    def getHostByAddr(a0):
+    def getHostByAddr__byte____(a0, a1):
         raise NotImplementedError()
 
-    def isReachable0(a0, a1, a2, a3, a4, a5):
-        raise NotImplementedError()
-
-    clazz.getLocalHostName = getLocalHostName
-    clazz.lookupAllHostAddr = lookupAllHostAddr
-    clazz.getHostByAddr = getHostByAddr
-    clazz.isReachable0 = isReachable0
+    clazz.getLocalHostName____ = getLocalHostName____
+    clazz.lookupAllHostAddr__java_lang_String__ = lookupAllHostAddr__java_lang_String__
+    clazz.getHostByAddr__byte____ = getHostByAddr__byte____
 

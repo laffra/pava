@@ -1,18 +1,10 @@
 def add_native_methods(clazz):
-    def _show():
+    def toFront____(a0):
         raise NotImplementedError()
 
-    def toFront():
+    def toBack____(a0):
         raise NotImplementedError()
 
-    def toBack():
-        raise NotImplementedError()
-
-    def initIDs():
-        raise NotImplementedError()
-
-    clazz._show = _show
-    clazz.toFront = toFront
-    clazz.toBack = toBack
-    clazz.initIDs = staticmethod(initIDs)
+    clazz.toFront____ = toFront____
+    clazz.toBack____ = toBack____
 

@@ -1,38 +1,38 @@
 def add_native_methods(clazz):
-    def randomBytes(a0):
+    def randomBytes__byte____(a0):
         raise NotImplementedError()
 
-    def makePipe(a0):
+    def makePipe__boolean__(a0):
         raise NotImplementedError()
 
-    def drain(a0):
+    def drain__int__(a0):
         raise NotImplementedError()
 
-    def configureBlocking(a0, a1):
+    def configureBlocking__java_io_FileDescriptor__boolean__(a0, a1):
         raise NotImplementedError()
 
-    def fdVal(a0):
+    def fdVal__java_io_FileDescriptor__(a0):
         raise NotImplementedError()
 
-    def setfdVal(a0, a1):
+    def setfdVal__java_io_FileDescriptor__int__(a0, a1):
         raise NotImplementedError()
 
-    def fdLimit():
+    def fdLimit____():
         raise NotImplementedError()
 
-    def iovMax():
+    def iovMax____():
         raise NotImplementedError()
 
-    def initIDs():
+    def initIDs____():
         raise NotImplementedError()
 
-    clazz.randomBytes = staticmethod(randomBytes)
-    clazz.makePipe = staticmethod(makePipe)
-    clazz.drain = staticmethod(drain)
-    clazz.configureBlocking = staticmethod(configureBlocking)
-    clazz.fdVal = staticmethod(fdVal)
-    clazz.setfdVal = staticmethod(setfdVal)
-    clazz.fdLimit = staticmethod(fdLimit)
-    clazz.iovMax = staticmethod(iovMax)
-    clazz.initIDs = staticmethod(initIDs)
+    clazz.randomBytes__byte____ = staticmethod(randomBytes__byte____)
+    clazz.makePipe__boolean__ = staticmethod(makePipe__boolean__)
+    clazz.drain__int__ = staticmethod(drain__int__)
+    clazz.configureBlocking__java_io_FileDescriptor__boolean__ = staticmethod(configureBlocking__java_io_FileDescriptor__boolean__)
+    clazz.fdVal__java_io_FileDescriptor__ = staticmethod(fdVal__java_io_FileDescriptor__)
+    clazz.setfdVal__java_io_FileDescriptor__int__ = staticmethod(setfdVal__java_io_FileDescriptor__int__)
+    clazz.fdLimit____ = staticmethod(fdLimit____)
+    clazz.iovMax____ = staticmethod(iovMax____)
+    clazz.initIDs____ = staticmethod(initIDs____)
 

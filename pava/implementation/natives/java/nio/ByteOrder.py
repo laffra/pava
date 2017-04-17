@@ -1,6 +1,6 @@
 def add_native_methods(clazz):
-    def nativeOrder():
+    def nativeOrder____():
         raise NotImplementedError()
 
-    clazz.nativeOrder = staticmethod(nativeOrder)
+    clazz.nativeOrder____ = staticmethod(nativeOrder____)
 

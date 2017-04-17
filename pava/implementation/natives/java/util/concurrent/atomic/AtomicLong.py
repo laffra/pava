@@ -1,6 +1,6 @@
 def add_native_methods(clazz):
-    def VMSupportsCS8():
+    def VMSupportsCS8____(a0):
         raise NotImplementedError()
 
-    clazz.VMSupportsCS8 = staticmethod(VMSupportsCS8)
+    clazz.VMSupportsCS8____ = staticmethod(VMSupportsCS8____)
 

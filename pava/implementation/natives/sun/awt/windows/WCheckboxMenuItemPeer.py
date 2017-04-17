@@ -1,6 +1,6 @@
 def add_native_methods(clazz):
-    def setState(a0):
+    def setState__boolean__(a0, a1):
         raise NotImplementedError()
 
-    clazz.setState = setState
+    clazz.setState__boolean__ = setState__boolean__
 

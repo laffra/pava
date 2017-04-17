@@ -1,14 +1,12 @@
-# This is Java package com.sun.demo.jvmti.hprof
+"""
+This is the Python implementation for the Java package "com.sun.demo.jvmti.hprof", compiled by Pava.
+"""
 
 import pava
 from pava import nan, inf
 
+pava_classes = {}
+pava.module(__name__)
+
 
 import hprof
-
-
-hprof = pava.JavaPackage("hprof")
-
-
-hprof = pava.JavaPackage("com.sun.demo.jvmti.hprof")
-

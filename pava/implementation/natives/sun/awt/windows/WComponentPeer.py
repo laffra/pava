@@ -1,102 +1,74 @@
 def add_native_methods(clazz):
-    def isObscured():
+    def isObscured____(a0):
         raise NotImplementedError()
 
-    def pShow():
+    def hide____(a0):
         raise NotImplementedError()
 
-    def hide():
+    def enable____(a0):
         raise NotImplementedError()
 
-    def enable():
+    def disable____(a0):
         raise NotImplementedError()
 
-    def disable():
+    def getLocationOnScreen____(a0):
         raise NotImplementedError()
 
-    def getLocationOnScreen():
+    def updateWindow____(a0):
         raise NotImplementedError()
 
-    def reshapeNoCheck(a0, a1, a2, a3):
+    def reshape__int__int__int__int__(a0, a1, a2, a3, a4):
         raise NotImplementedError()
 
-    def updateWindow():
+    def nativeHandleEvent__java_awt_AWTEvent__(a0, a1):
         raise NotImplementedError()
 
-    def createPrintedPixels(a0, a1, a2, a3, a4):
+    def setFocus__boolean__(a0, a1):
         raise NotImplementedError()
 
-    def reshape(a0, a1, a2, a3):
+    def _setFont__java_awt_Font__(a0, a1):
         raise NotImplementedError()
 
-    def nativeHandleEvent(a0):
+    def start____(a0):
         raise NotImplementedError()
 
-    def setFocus(a0):
+    def beginValidate____(a0):
         raise NotImplementedError()
 
-    def _dispose():
+    def endValidate____(a0):
         raise NotImplementedError()
 
-    def _setForeground(a0):
+    def addNativeDropTarget____(a0):
         raise NotImplementedError()
 
-    def _setBackground(a0):
+    def removeNativeDropTarget____(a0):
         raise NotImplementedError()
 
-    def _setFont(a0):
+    def nativeHandlesWheelScrolling____(a0):
         raise NotImplementedError()
 
-    def start():
+    def pSetParent__java_awt_peer_ComponentPeer__(a0, a1):
         raise NotImplementedError()
 
-    def beginValidate():
+    def setRectangularShape__int__int__int__int__sun_java2d_pipe_Region__(a0, a1, a2, a3, a4, a5):
         raise NotImplementedError()
 
-    def endValidate():
-        raise NotImplementedError()
-
-    def addNativeDropTarget():
-        raise NotImplementedError()
-
-    def removeNativeDropTarget():
-        raise NotImplementedError()
-
-    def nativeHandlesWheelScrolling():
-        raise NotImplementedError()
-
-    def pSetParent(a0):
-        raise NotImplementedError()
-
-    def setRectangularShape(a0, a1, a2, a3, a4):
-        raise NotImplementedError()
-
-    def setZOrder(a0):
-        raise NotImplementedError()
-
-    clazz.isObscured = isObscured
-    clazz.pShow = pShow
-    clazz.hide = hide
-    clazz.enable = enable
-    clazz.disable = disable
-    clazz.getLocationOnScreen = getLocationOnScreen
-    clazz.reshapeNoCheck = reshapeNoCheck
-    clazz.updateWindow = updateWindow
-    clazz.createPrintedPixels = createPrintedPixels
-    clazz.reshape = reshape
-    clazz.nativeHandleEvent = nativeHandleEvent
-    clazz.setFocus = setFocus
-    clazz._dispose = _dispose
-    clazz._setForeground = _setForeground
-    clazz._setBackground = _setBackground
-    clazz._setFont = _setFont
-    clazz.start = start
-    clazz.beginValidate = beginValidate
-    clazz.endValidate = endValidate
-    clazz.addNativeDropTarget = addNativeDropTarget
-    clazz.removeNativeDropTarget = removeNativeDropTarget
-    clazz.nativeHandlesWheelScrolling = nativeHandlesWheelScrolling
-    clazz.pSetParent = pSetParent
-    clazz.setRectangularShape = setRectangularShape
-    clazz.setZOrder = setZOrder
+    clazz.isObscured____ = isObscured____
+    clazz.hide____ = hide____
+    clazz.enable____ = enable____
+    clazz.disable____ = disable____
+    clazz.getLocationOnScreen____ = getLocationOnScreen____
+    clazz.updateWindow____ = updateWindow____
+    clazz.reshape__int__int__int__int__ = reshape__int__int__int__int__
+    clazz.nativeHandleEvent__java_awt_AWTEvent__ = nativeHandleEvent__java_awt_AWTEvent__
+    clazz.setFocus__boolean__ = setFocus__boolean__
+    clazz._setFont__java_awt_Font__ = _setFont__java_awt_Font__
+    clazz.start____ = start____
+    clazz.beginValidate____ = beginValidate____
+    clazz.endValidate____ = endValidate____
+    clazz.addNativeDropTarget____ = addNativeDropTarget____
+    clazz.removeNativeDropTarget____ = removeNativeDropTarget____
+    clazz.nativeHandlesWheelScrolling____ = nativeHandlesWheelScrolling____
+    clazz.pSetParent__java_awt_peer_ComponentPeer__ = pSetParent__java_awt_peer_ComponentPeer__
+    clazz.setRectangularShape__int__int__int__int__sun_java2d_pipe_Region__ = setRectangularShape__int__int__int__int__sun_java2d_pipe_Region__
 

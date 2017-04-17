@@ -1,10 +1,10 @@
 def add_native_methods(clazz):
-    def floatsToBytes(a0, a1, a2, a3, a4):
+    def floatsToBytes__float____int__byte____int__int__(a0, a1, a2, a3, a4, a5):
         raise NotImplementedError()
 
-    def doublesToBytes(a0, a1, a2, a3, a4):
+    def doublesToBytes__double____int__byte____int__int__(a0, a1, a2, a3, a4, a5):
         raise NotImplementedError()
 
-    clazz.floatsToBytes = staticmethod(floatsToBytes)
-    clazz.doublesToBytes = staticmethod(doublesToBytes)
+    clazz.floatsToBytes__float____int__byte____int__int__ = staticmethod(floatsToBytes__float____int__byte____int__int__)
+    clazz.doublesToBytes__double____int__byte____int__int__ = staticmethod(doublesToBytes__double____int__byte____int__int__)
 

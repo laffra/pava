@@ -1,8 +1,14 @@
-# This is Java package com.sun.xml.internal.ws.policy.sourcemodel
+"""
+This is the Python implementation for the Java package "com.sun.xml.internal.ws.policy.sourcemodel", compiled by Pava.
+"""
 
 import pava
 from pava import nan, inf
 
+pava_classes = {}
+pava.module(__name__)
 
-sourcemodel = pava.JavaPackage("com.sun.xml.internal.ws.policy.sourcemodel")
 
+import sourcemodel
+
+import jaxws

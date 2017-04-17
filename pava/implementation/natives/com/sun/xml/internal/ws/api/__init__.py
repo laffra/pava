@@ -1,8 +1,12 @@
-# This is Java package com.sun.xml.internal.ws.api.policy
+"""
+This is the Python implementation for the Java package "com.sun.xml.internal.ws.api.policy", compiled by Pava.
+"""
 
 import pava
 from pava import nan, inf
 
+pava_classes = {}
+pava.module(__name__)
 
-policy = pava.JavaPackage("com.sun.xml.internal.ws.api.policy")
 
+import policy

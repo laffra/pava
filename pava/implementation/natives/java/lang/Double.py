@@ -1,10 +1,10 @@
 def add_native_methods(clazz):
-    def doubleToRawLongBits(a0):
+    def doubleToRawLongBits__double__(a0):
         raise NotImplementedError()
 
-    def longBitsToDouble(a0):
+    def longBitsToDouble__long__(a0):
         raise NotImplementedError()
 
-    clazz.doubleToRawLongBits = staticmethod(doubleToRawLongBits)
-    clazz.longBitsToDouble = staticmethod(longBitsToDouble)
+    clazz.doubleToRawLongBits__double__ = staticmethod(doubleToRawLongBits__double__)
+    clazz.longBitsToDouble__long__ = staticmethod(longBitsToDouble__long__)
 

@@ -1,10 +1,10 @@
 def add_native_methods(clazz):
-    def getCurrent(a0):
+    def getCurrent__boolean__(a0, a1):
         raise NotImplementedError()
 
-    def getImpersonationToken0():
+    def getImpersonationToken0____(a0):
         raise NotImplementedError()
 
-    clazz.getCurrent = getCurrent
-    clazz.getImpersonationToken0 = getImpersonationToken0
+    clazz.getCurrent__boolean__ = getCurrent__boolean__
+    clazz.getImpersonationToken0____ = getImpersonationToken0____
 

@@ -1,30 +1,26 @@
 def add_native_methods(clazz):
-    def select(a0):
+    def select__int__(a0, a1):
         raise NotImplementedError()
 
-    def removeAll():
+    def removeAll____(a0):
         raise NotImplementedError()
 
-    def remove(a0):
+    def remove__int__(a0, a1):
         raise NotImplementedError()
 
-    def addItems(a0, a1):
+    def addItems__java_lang_String____int__(a0, a1, a2):
         raise NotImplementedError()
 
-    def reshape(a0, a1, a2, a3):
+    def reshape__int__int__int__int__(a0, a1, a2, a3, a4):
         raise NotImplementedError()
 
-    def create(a0):
+    def create__sun_awt_windows_WComponentPeer__(a0, a1):
         raise NotImplementedError()
 
-    def closeList():
-        raise NotImplementedError()
-
-    clazz.select = select
-    clazz.removeAll = removeAll
-    clazz.remove = remove
-    clazz.addItems = addItems
-    clazz.reshape = reshape
-    clazz.create = create
-    clazz.closeList = closeList
+    clazz.select__int__ = select__int__
+    clazz.removeAll____ = removeAll____
+    clazz.remove__int__ = remove__int__
+    clazz.addItems__java_lang_String____int__ = addItems__java_lang_String____int__
+    clazz.reshape__int__int__int__int__ = reshape__int__int__int__int__
+    clazz.create__sun_awt_windows_WComponentPeer__ = create__sun_awt_windows_WComponentPeer__
 

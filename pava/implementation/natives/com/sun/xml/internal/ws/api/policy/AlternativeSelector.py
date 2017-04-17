@@ -1,6 +1,6 @@
 def add_native_methods(clazz):
-    def __init__():
+    def __java_init______(a0):
         raise NotImplementedError()
 
-    clazz.__init__ = __init__
+    clazz.__java_init______ = __java_init______
 

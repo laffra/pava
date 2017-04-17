@@ -5,6 +5,8 @@ import time
 
 start = time.time()
 
+sys.setrecursionlimit(100)
+
 print '1. Number of loaded modules at start:',
 print len(sys.modules)
 
@@ -16,7 +18,7 @@ print '3. Import the Python module that contains the transpiled HelloWorld...'
 import helloworld
 
 print '4. Call HelloWorld.main:'
-helloworld.HelloWorld.main()
+helloworld.HelloWorld.main__java_lang_String____([])
 
 print '5. Number of loaded modules after loading HelloWorld:',
 print len(sys.modules)

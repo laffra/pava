@@ -1,23 +1,14 @@
-# This is Java package jdk.internal.cmm
+"""
+This is the Python implementation for the Java package "jdk.management.resource.internal", compiled by Pava.
+"""
 
 import pava
 from pava import nan, inf
 
-
-import internal
+pava_classes = {}
+pava.module(__name__)
 
 
 import management
 
-
-internal = pava.JavaPackage("internal")
-
-
-management = pava.JavaPackage("management")
-
-
-internal = pava.JavaPackage("jdk.internal")
-
-
-management = pava.JavaPackage("jdk.management")
-
+import internal

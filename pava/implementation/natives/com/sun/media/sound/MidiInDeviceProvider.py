@@ -1,22 +1,22 @@
 def add_native_methods(clazz):
-    def nGetNumDevices():
+    def nGetNumDevices____(a0):
         raise NotImplementedError()
 
-    def nGetName(a0):
+    def nGetName__int__(a0, a1):
         raise NotImplementedError()
 
-    def nGetVendor(a0):
+    def nGetVendor__int__(a0, a1):
         raise NotImplementedError()
 
-    def nGetDescription(a0):
+    def nGetDescription__int__(a0, a1):
         raise NotImplementedError()
 
-    def nGetVersion(a0):
+    def nGetVersion__int__(a0, a1):
         raise NotImplementedError()
 
-    clazz.nGetNumDevices = staticmethod(nGetNumDevices)
-    clazz.nGetName = staticmethod(nGetName)
-    clazz.nGetVendor = staticmethod(nGetVendor)
-    clazz.nGetDescription = staticmethod(nGetDescription)
-    clazz.nGetVersion = staticmethod(nGetVersion)
+    clazz.nGetNumDevices____ = staticmethod(nGetNumDevices____)
+    clazz.nGetName__int__ = staticmethod(nGetName__int__)
+    clazz.nGetVendor__int__ = staticmethod(nGetVendor__int__)
+    clazz.nGetDescription__int__ = staticmethod(nGetDescription__int__)
+    clazz.nGetVersion__int__ = staticmethod(nGetVersion__int__)
 

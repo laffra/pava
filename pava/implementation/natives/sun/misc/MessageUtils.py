@@ -1,10 +1,10 @@
 def add_native_methods(clazz):
-    def toStderr(a0):
+    def toStderr__java_lang_String__(a0):
         raise NotImplementedError()
 
-    def toStdout(a0):
+    def toStdout__java_lang_String__(a0):
         raise NotImplementedError()
 
-    clazz.toStderr = staticmethod(toStderr)
-    clazz.toStdout = staticmethod(toStdout)
+    clazz.toStderr__java_lang_String__ = staticmethod(toStderr__java_lang_String__)
+    clazz.toStdout__java_lang_String__ = staticmethod(toStdout__java_lang_String__)
 

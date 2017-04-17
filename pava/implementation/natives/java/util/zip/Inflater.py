@@ -1,30 +1,30 @@
 def add_native_methods(clazz):
-    def initIDs():
+    def initIDs____(a0):
         raise NotImplementedError()
 
-    def init(a0):
+    def init__boolean__(a0, a1):
         raise NotImplementedError()
 
-    def setDictionary(a0, a1, a2, a3):
+    def setDictionary__long__byte____int__int__(a0, a1, a2, a3, a4):
         raise NotImplementedError()
 
-    def inflateBytes(a0, a1, a2, a3):
+    def inflateBytes__long__byte____int__int__(a0, a1, a2, a3, a4):
         raise NotImplementedError()
 
-    def getAdler(a0):
+    def getAdler__long__(a0, a1):
         raise NotImplementedError()
 
-    def reset(a0):
+    def reset__long__(a0, a1):
         raise NotImplementedError()
 
-    def end(a0):
+    def end__long__(a0, a1):
         raise NotImplementedError()
 
-    clazz.initIDs = staticmethod(initIDs)
-    clazz.init = staticmethod(init)
-    clazz.setDictionary = staticmethod(setDictionary)
-    clazz.inflateBytes = inflateBytes
-    clazz.getAdler = staticmethod(getAdler)
-    clazz.reset = staticmethod(reset)
-    clazz.end = staticmethod(end)
+    clazz.initIDs____ = staticmethod(initIDs____)
+    clazz.init__boolean__ = staticmethod(init__boolean__)
+    clazz.setDictionary__long__byte____int__int__ = staticmethod(setDictionary__long__byte____int__int__)
+    clazz.inflateBytes__long__byte____int__int__ = inflateBytes__long__byte____int__int__
+    clazz.getAdler__long__ = staticmethod(getAdler__long__)
+    clazz.reset__long__ = staticmethod(reset__long__)
+    clazz.end__long__ = staticmethod(end__long__)
 

@@ -1,30 +1,26 @@
 def add_native_methods(clazz):
-    def init():
+    def transformBI__java_awt_image_BufferedImage__java_awt_image_BufferedImage__double____int__(a0, a1, a2, a3):
         raise NotImplementedError()
 
-    def transformBI(a0, a1, a2, a3):
+    def transformRaster__java_awt_image_Raster__java_awt_image_Raster__double____int__(a0, a1, a2, a3):
         raise NotImplementedError()
 
-    def transformRaster(a0, a1, a2, a3):
+    def convolveBI__java_awt_image_BufferedImage__java_awt_image_BufferedImage__java_awt_image_Kernel__int__(a0, a1, a2, a3):
         raise NotImplementedError()
 
-    def convolveBI(a0, a1, a2, a3):
+    def convolveRaster__java_awt_image_Raster__java_awt_image_Raster__java_awt_image_Kernel__int__(a0, a1, a2, a3):
         raise NotImplementedError()
 
-    def convolveRaster(a0, a1, a2, a3):
+    def lookupByteBI__java_awt_image_BufferedImage__java_awt_image_BufferedImage__byte______(a0, a1, a2):
         raise NotImplementedError()
 
-    def lookupByteBI(a0, a1, a2):
+    def lookupByteRaster__java_awt_image_Raster__java_awt_image_Raster__byte______(a0, a1, a2):
         raise NotImplementedError()
 
-    def lookupByteRaster(a0, a1, a2):
-        raise NotImplementedError()
-
-    clazz.init = staticmethod(init)
-    clazz.transformBI = staticmethod(transformBI)
-    clazz.transformRaster = staticmethod(transformRaster)
-    clazz.convolveBI = staticmethod(convolveBI)
-    clazz.convolveRaster = staticmethod(convolveRaster)
-    clazz.lookupByteBI = staticmethod(lookupByteBI)
-    clazz.lookupByteRaster = staticmethod(lookupByteRaster)
+    clazz.transformBI__java_awt_image_BufferedImage__java_awt_image_BufferedImage__double____int__ = staticmethod(transformBI__java_awt_image_BufferedImage__java_awt_image_BufferedImage__double____int__)
+    clazz.transformRaster__java_awt_image_Raster__java_awt_image_Raster__double____int__ = staticmethod(transformRaster__java_awt_image_Raster__java_awt_image_Raster__double____int__)
+    clazz.convolveBI__java_awt_image_BufferedImage__java_awt_image_BufferedImage__java_awt_image_Kernel__int__ = staticmethod(convolveBI__java_awt_image_BufferedImage__java_awt_image_BufferedImage__java_awt_image_Kernel__int__)
+    clazz.convolveRaster__java_awt_image_Raster__java_awt_image_Raster__java_awt_image_Kernel__int__ = staticmethod(convolveRaster__java_awt_image_Raster__java_awt_image_Raster__java_awt_image_Kernel__int__)
+    clazz.lookupByteBI__java_awt_image_BufferedImage__java_awt_image_BufferedImage__byte______ = staticmethod(lookupByteBI__java_awt_image_BufferedImage__java_awt_image_BufferedImage__byte______)
+    clazz.lookupByteRaster__java_awt_image_Raster__java_awt_image_Raster__byte______ = staticmethod(lookupByteRaster__java_awt_image_Raster__java_awt_image_Raster__byte______)
 

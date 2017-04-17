@@ -1,6 +1,6 @@
 def add_native_methods(clazz):
-    def setVerboseClass(a0):
+    def setVerboseClass__boolean__(a0):
         raise NotImplementedError()
 
-    clazz.setVerboseClass = staticmethod(setVerboseClass)
+    clazz.setVerboseClass__boolean__ = staticmethod(setVerboseClass__boolean__)
 

@@ -1,6 +1,6 @@
 def add_native_methods(clazz):
-    def getMetaInfEntryNames():
+    def getMetaInfEntryNames____(a0):
         raise NotImplementedError()
 
-    clazz.getMetaInfEntryNames = getMetaInfEntryNames
+    clazz.getMetaInfEntryNames____ = getMetaInfEntryNames____
 

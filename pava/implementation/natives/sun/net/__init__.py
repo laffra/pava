@@ -1,41 +1,18 @@
-# This is Java package sun.net.dns
+"""
+This is the Python implementation for the Java package "sun.net.dns", compiled by Pava.
+"""
 
 import pava
 from pava import nan, inf
 
+pava_classes = {}
+pava.module(__name__)
+
 
 import dns
 
-
 import sdp
-
 
 import www
 
-
 import spi
-
-
-dns = pava.JavaPackage("dns")
-
-
-sdp = pava.JavaPackage("sdp")
-
-
-www = pava.JavaPackage("www")
-
-
-spi = pava.JavaPackage("spi")
-
-
-dns = pava.JavaPackage("sun.net.dns")
-
-
-sdp = pava.JavaPackage("sun.net.sdp")
-
-
-www = pava.JavaPackage("sun.net.www")
-
-
-spi = pava.JavaPackage("sun.net.spi")
-

@@ -1,10 +1,10 @@
 def add_native_methods(clazz):
-    def getLower0():
+    def getLower0____():
         raise NotImplementedError()
 
-    def getUpper0():
+    def getUpper0____():
         raise NotImplementedError()
 
-    clazz.getLower0 = staticmethod(getLower0)
-    clazz.getUpper0 = staticmethod(getUpper0)
+    clazz.getLower0____ = staticmethod(getLower0____)
+    clazz.getUpper0____ = staticmethod(getUpper0____)
 

@@ -1,42 +1,22 @@
 def add_native_methods(clazz):
-    def loadProfileNative(a0, a1):
+    def getTagNative__long__int__(a0, a1):
         raise NotImplementedError()
 
-    def getProfileSizeNative(a0):
+    def getProfileID__java_awt_color_ICC_Profile__(a0):
         raise NotImplementedError()
 
-    def getProfileDataNative(a0, a1):
+    def colorConvert__sun_java2d_cmm_lcms_LCMSTransform__sun_java2d_cmm_lcms_LCMSImageLayout__sun_java2d_cmm_lcms_LCMSImageLayout__(a0, a1, a2):
         raise NotImplementedError()
 
-    def getTagNative(a0, a1):
+    def freeTransform__long__(a0):
         raise NotImplementedError()
 
-    def setTagDataNative(a0, a1, a2):
+    def initLCMS__java_lang_Class__java_lang_Class__java_lang_Class__(a0, a1, a2):
         raise NotImplementedError()
 
-    def getProfileID(a0):
-        raise NotImplementedError()
-
-    def createNativeTransform(a0, a1, a2, a3, a4, a5, a6):
-        raise NotImplementedError()
-
-    def colorConvert(a0, a1, a2):
-        raise NotImplementedError()
-
-    def freeTransform(a0):
-        raise NotImplementedError()
-
-    def initLCMS(a0, a1, a2):
-        raise NotImplementedError()
-
-    clazz.loadProfileNative = loadProfileNative
-    clazz.getProfileSizeNative = getProfileSizeNative
-    clazz.getProfileDataNative = getProfileDataNative
-    clazz.getTagNative = staticmethod(getTagNative)
-    clazz.setTagDataNative = setTagDataNative
-    clazz.getProfileID = staticmethod(getProfileID)
-    clazz.createNativeTransform = staticmethod(createNativeTransform)
-    clazz.colorConvert = staticmethod(colorConvert)
-    clazz.freeTransform = staticmethod(freeTransform)
-    clazz.initLCMS = staticmethod(initLCMS)
+    clazz.getTagNative__long__int__ = staticmethod(getTagNative__long__int__)
+    clazz.getProfileID__java_awt_color_ICC_Profile__ = staticmethod(getProfileID__java_awt_color_ICC_Profile__)
+    clazz.colorConvert__sun_java2d_cmm_lcms_LCMSTransform__sun_java2d_cmm_lcms_LCMSImageLayout__sun_java2d_cmm_lcms_LCMSImageLayout__ = staticmethod(colorConvert__sun_java2d_cmm_lcms_LCMSTransform__sun_java2d_cmm_lcms_LCMSImageLayout__sun_java2d_cmm_lcms_LCMSImageLayout__)
+    clazz.freeTransform__long__ = staticmethod(freeTransform__long__)
+    clazz.initLCMS__java_lang_Class__java_lang_Class__java_lang_Class__ = staticmethod(initLCMS__java_lang_Class__java_lang_Class__java_lang_Class__)
 

@@ -1,14 +1,14 @@
 def add_native_methods(clazz):
-    def createDragSource(a0, a1, a2, a3, a4, a5):
+    def createDragSource__java_awt_Component__java_awt_datatransfer_Transferable__java_awt_event_InputEvent__int__long____java_util_Map__(a0, a1, a2, a3, a4, a5, a6):
         raise NotImplementedError()
 
-    def doDragDrop(a0, a1, a2, a3, a4, a5, a6):
+    def doDragDrop__long__java_awt_Cursor__int____int__int__int__int__(a0, a1, a2, a3, a4, a5, a6, a7):
         raise NotImplementedError()
 
-    def setNativeCursor(a0, a1, a2):
+    def setNativeCursor__long__java_awt_Cursor__int__(a0, a1, a2, a3):
         raise NotImplementedError()
 
-    clazz.createDragSource = createDragSource
-    clazz.doDragDrop = doDragDrop
-    clazz.setNativeCursor = setNativeCursor
+    clazz.createDragSource__java_awt_Component__java_awt_datatransfer_Transferable__java_awt_event_InputEvent__int__long____java_util_Map__ = createDragSource__java_awt_Component__java_awt_datatransfer_Transferable__java_awt_event_InputEvent__int__long____java_util_Map__
+    clazz.doDragDrop__long__java_awt_Cursor__int____int__int__int__int__ = doDragDrop__long__java_awt_Cursor__int____int__int__int__int__
+    clazz.setNativeCursor__long__java_awt_Cursor__int__ = setNativeCursor__long__java_awt_Cursor__int__
 

@@ -1,22 +1,10 @@
 def add_native_methods(clazz):
-    def getClassContext():
+    def getClassContext____(a0):
         raise NotImplementedError()
 
-    def currentClassLoader0():
+    def classDepth__java_lang_String__(a0, a1):
         raise NotImplementedError()
 
-    def classDepth(a0):
-        raise NotImplementedError()
-
-    def classLoaderDepth0():
-        raise NotImplementedError()
-
-    def currentLoadedClass0():
-        raise NotImplementedError()
-
-    clazz.getClassContext = getClassContext
-    clazz.currentClassLoader0 = currentClassLoader0
-    clazz.classDepth = classDepth
-    clazz.classLoaderDepth0 = classLoaderDepth0
-    clazz.currentLoadedClass0 = currentLoadedClass0
+    clazz.getClassContext____ = getClassContext____
+    clazz.classDepth__java_lang_String__ = classDepth__java_lang_String__
 

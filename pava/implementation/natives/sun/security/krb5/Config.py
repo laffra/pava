@@ -1,6 +1,6 @@
 def add_native_methods(clazz):
-    def getWindowsDirectory(a0):
+    def getWindowsDirectory__boolean__(a0, a1):
         raise NotImplementedError()
 
-    clazz.getWindowsDirectory = staticmethod(getWindowsDirectory)
+    clazz.getWindowsDirectory__boolean__ = staticmethod(getWindowsDirectory__boolean__)
 

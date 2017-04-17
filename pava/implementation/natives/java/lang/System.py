@@ -1,48 +1,35 @@
 def add_native_methods(clazz):
-    def registerNatives():
+    def currentTimeMillis____():
         raise NotImplementedError()
 
-    def setIn0(a0):
-        clazz.__in__ = a0
-
-    def setOut0(a0):
-        clazz.out = a0
-
-    def setErr0(a0):
-        clazz.err = a0
-
-    def currentTimeMillis():
+    def nanoTime____():
         raise NotImplementedError()
 
-    def nanoTime():
+    def arraycopy__java_lang_Object__int__java_lang_Object__int__int__(a0, a1, a2, a3, a4):
+        a2[a3:a3+a4] = a0[a1:a1+a4]
+
+    def identityHashCode__java_lang_Object__(a0):
         raise NotImplementedError()
 
-    def arraycopy(a0, a1, a2, a3, a4):
+    def mapLibraryName__java_lang_String__(a0):
         raise NotImplementedError()
 
-    def identityHashCode(a0):
-        raise NotImplementedError()
+    clazz.currentTimeMillis____ = staticmethod(currentTimeMillis____)
+    clazz.nanoTime____ = staticmethod(nanoTime____)
+    clazz.arraycopy__java_lang_Object__int__java_lang_Object__int__int__ = staticmethod(arraycopy__java_lang_Object__int__java_lang_Object__int__int__)
+    clazz.identityHashCode__java_lang_Object__ = staticmethod(identityHashCode__java_lang_Object__)
+    clazz.mapLibraryName__java_lang_String__ = staticmethod(mapLibraryName__java_lang_String__)
 
-    def initProperties(a0):
-        raise NotImplementedError()
-
-    def mapLibraryName(a0):
-        raise NotImplementedError()
-
-    clazz.registerNatives = staticmethod(registerNatives)
-    clazz.setIn0 = staticmethod(setIn0)
-    clazz.setOut0 = staticmethod(setOut0)
-    clazz.setErr0 = staticmethod(setErr0)
-    clazz.currentTimeMillis = staticmethod(currentTimeMillis)
-    clazz.nanoTime = staticmethod(nanoTime)
-    clazz.arraycopy = staticmethod(arraycopy)
-    clazz.identityHashCode = staticmethod(identityHashCode)
-    clazz.initProperties = staticmethod(initProperties)
-    clazz.mapLibraryName = staticmethod(mapLibraryName)
 
     # Custom initialization code
 
     class PythonPrintStream(object):
-        def println(self, s):
+        def println__boolean__(self, s):
             print s
-    clazz.setOut0(PythonPrintStream())
+        def println__char__(self, s):
+            print s
+        def println__int__(self, s):
+            print s
+        def println__java_lang_String__(self, s):
+            print s
+    clazz.out = PythonPrintStream()

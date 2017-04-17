@@ -1,14 +1,12 @@
-# This is Java package com.sun.demo.jvmti.hprof
+"""
+This is the Python implementation for the Java package "com.sun.corba.se.impl.orb", compiled by Pava.
+"""
 
 import pava
 from pava import nan, inf
 
+pava_classes = {}
+pava.module(__name__)
+
 
 import sun
-
-
-sun = pava.JavaPackage("sun")
-
-
-sun = pava.JavaPackage("com.sun")
-

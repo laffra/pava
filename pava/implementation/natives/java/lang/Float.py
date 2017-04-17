@@ -1,10 +1,10 @@
 def add_native_methods(clazz):
-    def floatToRawIntBits(a0):
+    def floatToRawIntBits__float__(a0):
         raise NotImplementedError()
 
-    def intBitsToFloat(a0):
+    def intBitsToFloat__int__(a0):
         raise NotImplementedError()
 
-    clazz.floatToRawIntBits = staticmethod(floatToRawIntBits)
-    clazz.intBitsToFloat = staticmethod(intBitsToFloat)
+    clazz.floatToRawIntBits__float__ = staticmethod(floatToRawIntBits__float__)
+    clazz.intBitsToFloat__int__ = staticmethod(intBitsToFloat__int__)
 

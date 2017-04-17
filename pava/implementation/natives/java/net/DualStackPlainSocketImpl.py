@@ -1,70 +1,70 @@
 def add_native_methods(clazz):
-    def initIDs():
+    def initIDs____():
         raise NotImplementedError()
 
-    def socket0(a0, a1):
+    def socket0__boolean__boolean__(a0, a1):
         raise NotImplementedError()
 
-    def bind0(a0, a1, a2, a3):
+    def bind0__int__java_net_InetAddress__int__boolean__(a0, a1, a2, a3):
         raise NotImplementedError()
 
-    def connect0(a0, a1, a2):
+    def connect0__int__java_net_InetAddress__int__(a0, a1, a2):
         raise NotImplementedError()
 
-    def waitForConnect(a0, a1):
+    def waitForConnect__int__int__(a0, a1):
         raise NotImplementedError()
 
-    def localPort0(a0):
+    def localPort0__int__(a0):
         raise NotImplementedError()
 
-    def localAddress(a0, a1):
+    def localAddress__int__java_net_InetAddressContainer__(a0, a1):
         raise NotImplementedError()
 
-    def listen0(a0, a1):
+    def listen0__int__int__(a0, a1):
         raise NotImplementedError()
 
-    def accept0(a0, a1):
+    def accept0__int__java_net_InetSocketAddress____(a0, a1):
         raise NotImplementedError()
 
-    def waitForNewConnection(a0, a1):
+    def waitForNewConnection__int__int__(a0, a1):
         raise NotImplementedError()
 
-    def available0(a0):
+    def available0__int__(a0):
         raise NotImplementedError()
 
-    def close0(a0):
+    def close0__int__(a0):
         raise NotImplementedError()
 
-    def shutdown0(a0, a1):
+    def shutdown0__int__int__(a0, a1):
         raise NotImplementedError()
 
-    def setIntOption(a0, a1, a2):
+    def setIntOption__int__int__int__(a0, a1, a2):
         raise NotImplementedError()
 
-    def getIntOption(a0, a1):
+    def getIntOption__int__int__(a0, a1):
         raise NotImplementedError()
 
-    def sendOOB(a0, a1):
+    def sendOOB__int__int__(a0, a1):
         raise NotImplementedError()
 
-    def configureBlocking(a0, a1):
+    def configureBlocking__int__boolean__(a0, a1):
         raise NotImplementedError()
 
-    clazz.initIDs = staticmethod(initIDs)
-    clazz.socket0 = staticmethod(socket0)
-    clazz.bind0 = staticmethod(bind0)
-    clazz.connect0 = staticmethod(connect0)
-    clazz.waitForConnect = staticmethod(waitForConnect)
-    clazz.localPort0 = staticmethod(localPort0)
-    clazz.localAddress = staticmethod(localAddress)
-    clazz.listen0 = staticmethod(listen0)
-    clazz.accept0 = staticmethod(accept0)
-    clazz.waitForNewConnection = staticmethod(waitForNewConnection)
-    clazz.available0 = staticmethod(available0)
-    clazz.close0 = staticmethod(close0)
-    clazz.shutdown0 = staticmethod(shutdown0)
-    clazz.setIntOption = staticmethod(setIntOption)
-    clazz.getIntOption = staticmethod(getIntOption)
-    clazz.sendOOB = staticmethod(sendOOB)
-    clazz.configureBlocking = staticmethod(configureBlocking)
+    clazz.initIDs____ = staticmethod(initIDs____)
+    clazz.socket0__boolean__boolean__ = staticmethod(socket0__boolean__boolean__)
+    clazz.bind0__int__java_net_InetAddress__int__boolean__ = staticmethod(bind0__int__java_net_InetAddress__int__boolean__)
+    clazz.connect0__int__java_net_InetAddress__int__ = staticmethod(connect0__int__java_net_InetAddress__int__)
+    clazz.waitForConnect__int__int__ = staticmethod(waitForConnect__int__int__)
+    clazz.localPort0__int__ = staticmethod(localPort0__int__)
+    clazz.localAddress__int__java_net_InetAddressContainer__ = staticmethod(localAddress__int__java_net_InetAddressContainer__)
+    clazz.listen0__int__int__ = staticmethod(listen0__int__int__)
+    clazz.accept0__int__java_net_InetSocketAddress____ = staticmethod(accept0__int__java_net_InetSocketAddress____)
+    clazz.waitForNewConnection__int__int__ = staticmethod(waitForNewConnection__int__int__)
+    clazz.available0__int__ = staticmethod(available0__int__)
+    clazz.close0__int__ = staticmethod(close0__int__)
+    clazz.shutdown0__int__int__ = staticmethod(shutdown0__int__int__)
+    clazz.setIntOption__int__int__int__ = staticmethod(setIntOption__int__int__int__)
+    clazz.getIntOption__int__int__ = staticmethod(getIntOption__int__int__)
+    clazz.sendOOB__int__int__ = staticmethod(sendOOB__int__int__)
+    clazz.configureBlocking__int__boolean__ = staticmethod(configureBlocking__int__boolean__)
 

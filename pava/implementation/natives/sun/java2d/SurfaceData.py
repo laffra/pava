@@ -1,10 +1,6 @@
 def add_native_methods(clazz):
-    def initIDs():
+    def isOpaqueGray__java_awt_image_IndexColorModel__(a0):
         raise NotImplementedError()
 
-    def isOpaqueGray(a0):
-        raise NotImplementedError()
-
-    clazz.initIDs = staticmethod(initIDs)
-    clazz.isOpaqueGray = staticmethod(isOpaqueGray)
+    clazz.isOpaqueGray__java_awt_image_IndexColorModel__ = staticmethod(isOpaqueGray__java_awt_image_IndexColorModel__)
 

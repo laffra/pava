@@ -1,150 +1,106 @@
 def add_native_methods(clazz):
-    def setNativePrintService(a0):
+    def validatePaper__java_awt_print_Paper__java_awt_print_Paper__(a0, a1, a2):
         raise NotImplementedError()
 
-    def getNativePrintService():
+    def initPrinter____(a0):
         raise NotImplementedError()
 
-    def getDefaultPage(a0):
+    def endDoc____(a0):
         raise NotImplementedError()
 
-    def validatePaper(a0, a1):
+    def abortDoc____(a0):
         raise NotImplementedError()
 
-    def setNativeCopies(a0):
+    def deviceStartPage__java_awt_print_PageFormat__java_awt_print_Printable__int__boolean__(a0, a1, a2, a3, a4):
         raise NotImplementedError()
 
-    def jobSetup(a0, a1):
+    def deviceEndPage__java_awt_print_PageFormat__java_awt_print_Printable__int__(a0, a1, a2, a3):
         raise NotImplementedError()
 
-    def initPrinter():
+    def printBand__byte____int__int__int__int__(a0, a1, a2, a3, a4, a5):
         raise NotImplementedError()
 
-    def _startDoc(a0, a1):
+    def beginPath__long__(a0, a1):
         raise NotImplementedError()
 
-    def endDoc():
+    def endPath__long__(a0, a1):
         raise NotImplementedError()
 
-    def abortDoc():
+    def closeFigure__long__(a0, a1):
         raise NotImplementedError()
 
-    def deleteDC(a0, a1, a2):
+    def fillPath__long__(a0, a1):
         raise NotImplementedError()
 
-    def deviceStartPage(a0, a1, a2, a3):
+    def moveTo__long__float__float__(a0, a1, a2, a3):
         raise NotImplementedError()
 
-    def deviceEndPage(a0, a1, a2):
+    def lineTo__long__float__float__(a0, a1, a2, a3):
         raise NotImplementedError()
 
-    def printBand(a0, a1, a2, a3, a4):
+    def polyBezierTo__long__float__float__float__float__float__float__(a0, a1, a2, a3, a4, a5, a6, a7):
         raise NotImplementedError()
 
-    def beginPath(a0):
+    def setPolyFillMode__long__int__(a0, a1, a2):
         raise NotImplementedError()
 
-    def endPath(a0):
+    def selectSolidBrush__long__int__int__int__(a0, a1, a2, a3, a4):
         raise NotImplementedError()
 
-    def closeFigure(a0):
+    def getPenX__long__(a0, a1):
         raise NotImplementedError()
 
-    def fillPath(a0):
+    def getPenY__long__(a0, a1):
         raise NotImplementedError()
 
-    def moveTo(a0, a1, a2):
+    def selectClipPath__long__(a0, a1):
         raise NotImplementedError()
 
-    def lineTo(a0, a1, a2):
+    def frameRect__long__float__float__float__float__(a0, a1, a2, a3, a4, a5):
         raise NotImplementedError()
 
-    def polyBezierTo(a0, a1, a2, a3, a4, a5, a6):
+    def fillRect__long__float__float__float__float__int__int__int__(a0, a1, a2, a3, a4, a5, a6, a7, a8):
         raise NotImplementedError()
 
-    def setPolyFillMode(a0, a1):
+    def selectPen__long__float__int__int__int__(a0, a1, a2, a3, a4, a5):
         raise NotImplementedError()
 
-    def selectSolidBrush(a0, a1, a2, a3):
+    def selectStylePen__long__long__long__float__int__int__int__(a0, a1, a2, a3, a4, a5, a6, a7):
         raise NotImplementedError()
 
-    def getPenX(a0):
+    def setFont__long__java_lang_String__float__boolean__boolean__int__float__(a0, a1, a2, a3, a4, a5, a6, a7):
         raise NotImplementedError()
 
-    def getPenY(a0):
+    def setTextColor__long__int__int__int__(a0, a1, a2, a3, a4):
         raise NotImplementedError()
 
-    def selectClipPath(a0):
+    def textOut__long__java_lang_String__int__boolean__float__float__float____(a0, a1, a2, a3, a4, a5, a6, a7):
         raise NotImplementedError()
 
-    def frameRect(a0, a1, a2, a3, a4):
-        raise NotImplementedError()
-
-    def fillRect(a0, a1, a2, a3, a4, a5, a6, a7):
-        raise NotImplementedError()
-
-    def selectPen(a0, a1, a2, a3, a4):
-        raise NotImplementedError()
-
-    def selectStylePen(a0, a1, a2, a3, a4, a5, a6):
-        raise NotImplementedError()
-
-    def setFont(a0, a1, a2, a3, a4, a5, a6):
-        raise NotImplementedError()
-
-    def setTextColor(a0, a1, a2, a3):
-        raise NotImplementedError()
-
-    def textOut(a0, a1, a2, a3, a4, a5, a6):
-        raise NotImplementedError()
-
-    def getGDIAdvance(a0, a1):
-        raise NotImplementedError()
-
-    def drawDIBImage(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11):
-        raise NotImplementedError()
-
-    def showDocProperties(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11):
-        raise NotImplementedError()
-
-    def initIDs():
-        raise NotImplementedError()
-
-    clazz.setNativePrintService = setNativePrintService
-    clazz.getNativePrintService = getNativePrintService
-    clazz.getDefaultPage = getDefaultPage
-    clazz.validatePaper = validatePaper
-    clazz.setNativeCopies = setNativeCopies
-    clazz.jobSetup = jobSetup
-    clazz.initPrinter = initPrinter
-    clazz._startDoc = _startDoc
-    clazz.endDoc = endDoc
-    clazz.abortDoc = abortDoc
-    clazz.deleteDC = staticmethod(deleteDC)
-    clazz.deviceStartPage = deviceStartPage
-    clazz.deviceEndPage = deviceEndPage
-    clazz.printBand = printBand
-    clazz.beginPath = beginPath
-    clazz.endPath = endPath
-    clazz.closeFigure = closeFigure
-    clazz.fillPath = fillPath
-    clazz.moveTo = moveTo
-    clazz.lineTo = lineTo
-    clazz.polyBezierTo = polyBezierTo
-    clazz.setPolyFillMode = setPolyFillMode
-    clazz.selectSolidBrush = selectSolidBrush
-    clazz.getPenX = getPenX
-    clazz.getPenY = getPenY
-    clazz.selectClipPath = selectClipPath
-    clazz.frameRect = frameRect
-    clazz.fillRect = fillRect
-    clazz.selectPen = selectPen
-    clazz.selectStylePen = selectStylePen
-    clazz.setFont = setFont
-    clazz.setTextColor = setTextColor
-    clazz.textOut = textOut
-    clazz.getGDIAdvance = getGDIAdvance
-    clazz.drawDIBImage = drawDIBImage
-    clazz.showDocProperties = showDocProperties
-    clazz.initIDs = staticmethod(initIDs)
+    clazz.validatePaper__java_awt_print_Paper__java_awt_print_Paper__ = validatePaper__java_awt_print_Paper__java_awt_print_Paper__
+    clazz.initPrinter____ = initPrinter____
+    clazz.endDoc____ = endDoc____
+    clazz.abortDoc____ = abortDoc____
+    clazz.deviceStartPage__java_awt_print_PageFormat__java_awt_print_Printable__int__boolean__ = deviceStartPage__java_awt_print_PageFormat__java_awt_print_Printable__int__boolean__
+    clazz.deviceEndPage__java_awt_print_PageFormat__java_awt_print_Printable__int__ = deviceEndPage__java_awt_print_PageFormat__java_awt_print_Printable__int__
+    clazz.printBand__byte____int__int__int__int__ = printBand__byte____int__int__int__int__
+    clazz.beginPath__long__ = beginPath__long__
+    clazz.endPath__long__ = endPath__long__
+    clazz.closeFigure__long__ = closeFigure__long__
+    clazz.fillPath__long__ = fillPath__long__
+    clazz.moveTo__long__float__float__ = moveTo__long__float__float__
+    clazz.lineTo__long__float__float__ = lineTo__long__float__float__
+    clazz.polyBezierTo__long__float__float__float__float__float__float__ = polyBezierTo__long__float__float__float__float__float__float__
+    clazz.setPolyFillMode__long__int__ = setPolyFillMode__long__int__
+    clazz.selectSolidBrush__long__int__int__int__ = selectSolidBrush__long__int__int__int__
+    clazz.getPenX__long__ = getPenX__long__
+    clazz.getPenY__long__ = getPenY__long__
+    clazz.selectClipPath__long__ = selectClipPath__long__
+    clazz.frameRect__long__float__float__float__float__ = frameRect__long__float__float__float__float__
+    clazz.fillRect__long__float__float__float__float__int__int__int__ = fillRect__long__float__float__float__float__int__int__int__
+    clazz.selectPen__long__float__int__int__int__ = selectPen__long__float__int__int__int__
+    clazz.selectStylePen__long__long__long__float__int__int__int__ = selectStylePen__long__long__long__float__int__int__int__
+    clazz.setFont__long__java_lang_String__float__boolean__boolean__int__float__ = setFont__long__java_lang_String__float__boolean__boolean__int__float__
+    clazz.setTextColor__long__int__int__int__ = setTextColor__long__int__int__int__
+    clazz.textOut__long__java_lang_String__int__boolean__float__float__float____ = textOut__long__java_lang_String__int__boolean__float__float__float____
 

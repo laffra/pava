@@ -1,10 +1,6 @@
 def add_native_methods(clazz):
-    def initAgentProperties(a0):
+    def getVMTemporaryDirectory____():
         raise NotImplementedError()
 
-    def getVMTemporaryDirectory():
-        raise NotImplementedError()
-
-    clazz.initAgentProperties = staticmethod(initAgentProperties)
-    clazz.getVMTemporaryDirectory = staticmethod(getVMTemporaryDirectory)
+    clazz.getVMTemporaryDirectory____ = staticmethod(getVMTemporaryDirectory____)
 

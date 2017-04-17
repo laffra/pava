@@ -1,78 +1,74 @@
 def add_native_methods(clazz):
-    def initIDs():
+    def initIDs____():
         raise NotImplementedError()
 
-    def appendPoly(a0, a1, a2, a3, a4):
+    def appendPoly__int____int____int__int__int__(a0, a1, a2, a3, a4, a5):
         raise NotImplementedError()
 
-    def setNormalize(a0):
+    def setOutputAreaXYXY__int__int__int__int__(a0, a1, a2, a3, a4):
         raise NotImplementedError()
 
-    def setOutputAreaXYXY(a0, a1, a2, a3):
+    def setRule__int__(a0, a1):
         raise NotImplementedError()
 
-    def setRule(a0):
+    def addSegment__int__float____(a0, a1, a2):
         raise NotImplementedError()
 
-    def addSegment(a0, a1):
+    def getPathBox__int____(a0, a1):
         raise NotImplementedError()
 
-    def getPathBox(a0):
+    def intersectClipBox__int__int__int__int__(a0, a1, a2, a3, a4):
         raise NotImplementedError()
 
-    def intersectClipBox(a0, a1, a2, a3):
+    def nextSpan__int____(a0, a1):
         raise NotImplementedError()
 
-    def nextSpan(a0):
+    def skipDownTo__int__(a0, a1):
         raise NotImplementedError()
 
-    def skipDownTo(a0):
+    def getNativeIterator____(a0):
         raise NotImplementedError()
 
-    def getNativeIterator():
+    def dispose____(a0):
         raise NotImplementedError()
 
-    def dispose():
+    def moveTo__float__float__(a0, a1, a2):
         raise NotImplementedError()
 
-    def moveTo(a0, a1):
+    def lineTo__float__float__(a0, a1, a2):
         raise NotImplementedError()
 
-    def lineTo(a0, a1):
+    def quadTo__float__float__float__float__(a0, a1, a2, a3, a4):
         raise NotImplementedError()
 
-    def quadTo(a0, a1, a2, a3):
+    def curveTo__float__float__float__float__float__float__(a0, a1, a2, a3, a4, a5, a6):
         raise NotImplementedError()
 
-    def curveTo(a0, a1, a2, a3, a4, a5):
+    def closePath____(a0):
         raise NotImplementedError()
 
-    def closePath():
+    def pathDone____(a0):
         raise NotImplementedError()
 
-    def pathDone():
+    def getNativeConsumer____(a0):
         raise NotImplementedError()
 
-    def getNativeConsumer():
-        raise NotImplementedError()
-
-    clazz.initIDs = staticmethod(initIDs)
-    clazz.appendPoly = appendPoly
-    clazz.setNormalize = setNormalize
-    clazz.setOutputAreaXYXY = setOutputAreaXYXY
-    clazz.setRule = setRule
-    clazz.addSegment = addSegment
-    clazz.getPathBox = getPathBox
-    clazz.intersectClipBox = intersectClipBox
-    clazz.nextSpan = nextSpan
-    clazz.skipDownTo = skipDownTo
-    clazz.getNativeIterator = getNativeIterator
-    clazz.dispose = dispose
-    clazz.moveTo = moveTo
-    clazz.lineTo = lineTo
-    clazz.quadTo = quadTo
-    clazz.curveTo = curveTo
-    clazz.closePath = closePath
-    clazz.pathDone = pathDone
-    clazz.getNativeConsumer = getNativeConsumer
+    clazz.initIDs____ = staticmethod(initIDs____)
+    clazz.appendPoly__int____int____int__int__int__ = appendPoly__int____int____int__int__int__
+    clazz.setOutputAreaXYXY__int__int__int__int__ = setOutputAreaXYXY__int__int__int__int__
+    clazz.setRule__int__ = setRule__int__
+    clazz.addSegment__int__float____ = addSegment__int__float____
+    clazz.getPathBox__int____ = getPathBox__int____
+    clazz.intersectClipBox__int__int__int__int__ = intersectClipBox__int__int__int__int__
+    clazz.nextSpan__int____ = nextSpan__int____
+    clazz.skipDownTo__int__ = skipDownTo__int__
+    clazz.getNativeIterator____ = getNativeIterator____
+    clazz.dispose____ = dispose____
+    clazz.moveTo__float__float__ = moveTo__float__float__
+    clazz.lineTo__float__float__ = lineTo__float__float__
+    clazz.quadTo__float__float__float__float__ = quadTo__float__float__float__float__
+    clazz.curveTo__float__float__float__float__float__float__ = curveTo__float__float__float__float__float__float__
+    clazz.closePath____ = closePath____
+    clazz.pathDone____ = pathDone____
+    clazz.getNativeConsumer____ = getNativeConsumer____
 

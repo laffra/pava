@@ -1,6 +1,6 @@
 def add_native_methods(clazz):
-    def getOGLIdString():
+    def getOGLIdString____():
         raise NotImplementedError()
 
-    clazz.getOGLIdString = staticmethod(getOGLIdString)
+    clazz.getOGLIdString____ = staticmethod(getOGLIdString____)
 

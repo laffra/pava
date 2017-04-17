@@ -1,6 +1,6 @@
 def add_native_methods(clazz):
-    def acquireDefaultNativeCreds(a0):
+    def acquireDefaultNativeCreds__int____(a0, a1):
         raise NotImplementedError()
 
-    clazz.acquireDefaultNativeCreds = staticmethod(acquireDefaultNativeCreds)
+    clazz.acquireDefaultNativeCreds__int____ = staticmethod(acquireDefaultNativeCreds__int____)
 

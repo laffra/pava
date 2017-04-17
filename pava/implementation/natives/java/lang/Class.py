@@ -1,110 +1,58 @@
 def add_native_methods(clazz):
-    def registerNatives():
+    def isInstance__java_lang_Object__(a0, a1):
         raise NotImplementedError()
 
-    def forName0(a0, a1, a2, a3):
+    def isAssignableFrom__java_lang_Class_____(a0, a1):
         raise NotImplementedError()
 
-    def isInstance(a0):
+    def isInterface____(a0):
         raise NotImplementedError()
 
-    def isAssignableFrom(a0):
+    def isArray____(a0):
         raise NotImplementedError()
 
-    def isInterface():
+    def isPrimitive____(a0):
         raise NotImplementedError()
 
-    def isArray():
+    def getSuperclass____(a0):
         raise NotImplementedError()
 
-    def isPrimitive():
+    def getComponentType____(a0):
         raise NotImplementedError()
 
-    def getName0():
+    def getModifiers____(a0):
         raise NotImplementedError()
 
-    def getSuperclass():
+    def getSigners____(a0):
         raise NotImplementedError()
 
-    def getInterfaces0():
+    def setSigners__java_lang_Object____(a0, a1):
         raise NotImplementedError()
 
-    def getComponentType():
+    def getPrimitiveClass__java_lang_String__(a0):
         raise NotImplementedError()
 
-    def getModifiers():
+    def getRawAnnotations____(a0):
         raise NotImplementedError()
 
-    def getSigners():
+    def getRawTypeAnnotations____(a0):
         raise NotImplementedError()
 
-    def setSigners(a0):
+    def getConstantPool____(a0):
         raise NotImplementedError()
 
-    def getEnclosingMethod0():
-        raise NotImplementedError()
-
-    def getDeclaringClass0():
-        raise NotImplementedError()
-
-    def getProtectionDomain0():
-        raise NotImplementedError()
-
-    def getPrimitiveClass(a0):
-        raise NotImplementedError()
-
-    def getGenericSignature0():
-        raise NotImplementedError()
-
-    def getRawAnnotations():
-        raise NotImplementedError()
-
-    def getRawTypeAnnotations():
-        raise NotImplementedError()
-
-    def getConstantPool():
-        raise NotImplementedError()
-
-    def getDeclaredFields0(a0):
-        raise NotImplementedError()
-
-    def getDeclaredMethods0(a0):
-        raise NotImplementedError()
-
-    def getDeclaredConstructors0(a0):
-        raise NotImplementedError()
-
-    def getDeclaredClasses0():
-        raise NotImplementedError()
-
-    def desiredAssertionStatus0(a0):
-        raise NotImplementedError()
-
-    clazz.registerNatives = staticmethod(registerNatives)
-    clazz.forName0 = staticmethod(forName0)
-    clazz.isInstance = isInstance
-    clazz.isAssignableFrom = isAssignableFrom
-    clazz.isInterface = isInterface
-    clazz.isArray = isArray
-    clazz.isPrimitive = isPrimitive
-    clazz.getName0 = getName0
-    clazz.getSuperclass = getSuperclass
-    clazz.getInterfaces0 = getInterfaces0
-    clazz.getComponentType = getComponentType
-    clazz.getModifiers = getModifiers
-    clazz.getSigners = getSigners
-    clazz.setSigners = setSigners
-    clazz.getEnclosingMethod0 = getEnclosingMethod0
-    clazz.getDeclaringClass0 = getDeclaringClass0
-    clazz.getProtectionDomain0 = getProtectionDomain0
-    clazz.getPrimitiveClass = staticmethod(getPrimitiveClass)
-    clazz.getGenericSignature0 = getGenericSignature0
-    clazz.getRawAnnotations = getRawAnnotations
-    clazz.getRawTypeAnnotations = getRawTypeAnnotations
-    clazz.getConstantPool = getConstantPool
-    clazz.getDeclaredFields0 = getDeclaredFields0
-    clazz.getDeclaredMethods0 = getDeclaredMethods0
-    clazz.getDeclaredConstructors0 = getDeclaredConstructors0
-    clazz.getDeclaredClasses0 = getDeclaredClasses0
-    clazz.desiredAssertionStatus0 = staticmethod(desiredAssertionStatus0)
+    clazz.isInstance__java_lang_Object__ = isInstance__java_lang_Object__
+    clazz.isAssignableFrom__java_lang_Class_____ = isAssignableFrom__java_lang_Class_____
+    clazz.isInterface____ = isInterface____
+    clazz.isArray____ = isArray____
+    clazz.isPrimitive____ = isPrimitive____
+    clazz.getSuperclass____ = getSuperclass____
+    clazz.getComponentType____ = getComponentType____
+    clazz.getModifiers____ = getModifiers____
+    clazz.getSigners____ = getSigners____
+    clazz.setSigners__java_lang_Object____ = setSigners__java_lang_Object____
+    clazz.getPrimitiveClass__java_lang_String__ = staticmethod(getPrimitiveClass__java_lang_String__)
+    clazz.getRawAnnotations____ = getRawAnnotations____
+    clazz.getRawTypeAnnotations____ = getRawTypeAnnotations____
+    clazz.getConstantPool____ = getConstantPool____
 

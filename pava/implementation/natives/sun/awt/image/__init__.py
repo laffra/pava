@@ -1,14 +1,12 @@
-# This is Java package sun.awt.image.codec
+"""
+This is the Python implementation for the Java package "sun.awt.image.codec", compiled by Pava.
+"""
 
 import pava
 from pava import nan, inf
 
+pava_classes = {}
+pava.module(__name__)
+
 
 import codec
-
-
-codec = pava.JavaPackage("codec")
-
-
-codec = pava.JavaPackage("sun.awt.image.codec")
-

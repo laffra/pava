@@ -1,10 +1,10 @@
 def add_native_methods(clazz):
-    def initIDs():
+    def initIDs____(a0):
         raise NotImplementedError()
 
-    def finalizeImpl(a0):
+    def finalizeImpl__long__(a0, a1):
         raise NotImplementedError()
 
-    clazz.initIDs = staticmethod(initIDs)
-    clazz.finalizeImpl = staticmethod(finalizeImpl)
+    clazz.initIDs____ = staticmethod(initIDs____)
+    clazz.finalizeImpl__long__ = staticmethod(finalizeImpl__long__)
 

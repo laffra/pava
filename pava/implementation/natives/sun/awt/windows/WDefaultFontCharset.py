@@ -1,10 +1,10 @@
 def add_native_methods(clazz):
-    def canConvert(a0):
+    def canConvert__char__(a0, a1):
         raise NotImplementedError()
 
-    def initIDs():
+    def initIDs____(a0):
         raise NotImplementedError()
 
-    clazz.canConvert = canConvert
-    clazz.initIDs = staticmethod(initIDs)
+    clazz.canConvert__char__ = canConvert__char__
+    clazz.initIDs____ = staticmethod(initIDs____)
 

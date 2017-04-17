@@ -1,34 +1,22 @@
 def add_native_methods(clazz):
-    def initIDs():
+    def initIDs____():
         raise NotImplementedError()
 
-    def create(a0):
+    def create__sun_awt_windows_WComponentPeer__(a0, a1):
         raise NotImplementedError()
 
-    def getOffset(a0):
+    def getOffset__int__(a0, a1):
         raise NotImplementedError()
 
-    def setInsets():
+    def setScrollPosition__int__int__(a0, a1, a2):
         raise NotImplementedError()
 
-    def setScrollPosition(a0, a1):
+    def setSpans__int__int__int__int__(a0, a1, a2, a3, a4):
         raise NotImplementedError()
 
-    def _getHScrollbarHeight():
-        raise NotImplementedError()
-
-    def _getVScrollbarWidth():
-        raise NotImplementedError()
-
-    def setSpans(a0, a1, a2, a3):
-        raise NotImplementedError()
-
-    clazz.initIDs = staticmethod(initIDs)
-    clazz.create = create
-    clazz.getOffset = getOffset
-    clazz.setInsets = setInsets
-    clazz.setScrollPosition = setScrollPosition
-    clazz._getHScrollbarHeight = _getHScrollbarHeight
-    clazz._getVScrollbarWidth = _getVScrollbarWidth
-    clazz.setSpans = setSpans
+    clazz.initIDs____ = staticmethod(initIDs____)
+    clazz.create__sun_awt_windows_WComponentPeer__ = create__sun_awt_windows_WComponentPeer__
+    clazz.getOffset__int__ = getOffset__int__
+    clazz.setScrollPosition__int__int__ = setScrollPosition__int__int__
+    clazz.setSpans__int__int__int__int__ = setSpans__int__int__int__int__
 

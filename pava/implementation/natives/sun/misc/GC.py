@@ -1,6 +1,6 @@
 def add_native_methods(clazz):
-    def maxObjectInspectionAge():
+    def maxObjectInspectionAge____():
         raise NotImplementedError()
 
-    clazz.maxObjectInspectionAge = staticmethod(maxObjectInspectionAge)
+    clazz.maxObjectInspectionAge____ = staticmethod(maxObjectInspectionAge____)
 

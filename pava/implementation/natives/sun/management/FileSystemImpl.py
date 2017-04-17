@@ -1,14 +1,14 @@
 def add_native_methods(clazz):
-    def init0():
+    def init0____():
         raise NotImplementedError()
 
-    def isSecuritySupported0(a0):
+    def isSecuritySupported0__java_lang_String__(a0):
         raise NotImplementedError()
 
-    def isAccessUserOnly0(a0):
+    def isAccessUserOnly0__java_lang_String__(a0):
         raise NotImplementedError()
 
-    clazz.init0 = staticmethod(init0)
-    clazz.isSecuritySupported0 = staticmethod(isSecuritySupported0)
-    clazz.isAccessUserOnly0 = staticmethod(isAccessUserOnly0)
+    clazz.init0____ = staticmethod(init0____)
+    clazz.isSecuritySupported0__java_lang_String__ = staticmethod(isSecuritySupported0__java_lang_String__)
+    clazz.isAccessUserOnly0__java_lang_String__ = staticmethod(isAccessUserOnly0__java_lang_String__)
 

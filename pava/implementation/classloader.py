@@ -1,39 +1,32 @@
 import datetime
 import new
 import os
+import profiler
 import subprocess
 import sys
+import time
 import traceback
 import zipfile
-from itertools import islice
-from collections import namedtuple
 
-import peak.util.assembler as asm
-from javaruntime import decompile_java_class_file
+from itertools import islice
+
 from javaruntime import decompile_java_classes
+from javaruntime import Instruction
 
 import opcodes
 
-VERBOSE = opcodes.VERBOSE
-DEBUG = opcodes.DEBUG
+DEBUG = False
+
 HOME = os.path.join(os.path.expanduser("~"), os.path.join('pava', 'classes'))
+
+CLASS_PATH_CHUNK_SIZE = 400
 
 sys.path.append(HOME)
 loaded_classes = set()
 
-RESERVED_WORDS = {
-    'and', 'assert', 'break', 'class', 'continue',
-    'def', 'del', 'elif', 'else', 'except',
-    'exec', 'finally', 'for', 'from', 'global',
-    'if', 'import', 'in', 'is', 'lambda',
-    'not', 'or', 'pass', 'print', 'raise',
-    'return', 'try', 'while',
-    # some specific ones for pava
-    'set', 'dict', 'with', 'yield'
-}
+INDENT = '    '
 
 JAVA = 'C:/Program Files/Java/jdk1.8.0_121/bin/java'
-
 
 def get_boot_path():
     java = subprocess.Popen([JAVA, '-verbose', '-version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -42,10 +35,11 @@ def get_boot_path():
             return [ (line[8:-2]) ]
 
 
-def set_classpath(cp):
+def set_classpath(cp, debug_class=None):
     assert isinstance(cp, list), 'classpath should be a list of directories and archives'
     try:
-        index_class_path(list(set(get_boot_path() + cp)))
+        classpath_elements = list(set(get_boot_path() + cp))
+        profiler.profile('index_class_path(classpath_elements, debug_class)', globals(), locals())
     except Exception as e:
         print '##### ERROR:', traceback.format_exc(e)
 
@@ -55,9 +49,13 @@ def chunk(it, size):
     return iter(lambda: tuple(islice(it, size)), ())
 
 
-CLASS_PATH_CHUNK_SIZE = 400
+def index_class_path(path, debug_class):
+    compile_class_files(find_class_files(path, debug_class), ';'.join(path))
+    for p in path:
+        add_classpath_marker(p)
 
-def index_class_path(path):
+
+def find_class_files(path, debug_class):
     classes = []
     for p in path:
         if not os.path.exists(p):
@@ -68,18 +66,25 @@ def index_class_path(path):
             classes.extend(add_directory(p))
         else:
             classes.extend(add_jar(p))
-        add_classpath_marker(p)
-    cp = ';'.join(path)
+    if debug_class:
+        classes = [debug_class]
+    if DEBUG:
+        print('Found %d Java classes' % len(classes))
+    return classes
+
+
+def compile_class_files(classes, cp):
     count = 0
+    start = time.time()
+    print 'Loading %d classes:' % len(classes)
     for n, class_names in enumerate(chunk(classes, CLASS_PATH_CHUNK_SIZE)):
         for class_file in decompile_java_classes(class_names, cp):
-            try:
-                save_class(class_file)
-            except Exception as e:
-                if DEBUG:
-                    raise e
+            if DEBUG:
+                print('%s %s' % (class_file.package, class_file.class_name))
+            save_class(class_file)
         count += len(class_names)
-        print 'Loaded %d classes - %d%%' % (count, count * 100 / len(classes))
+        seconds = time.time() - start
+        print 'Loaded %d classes - %d%% - %s' % (count, count * 100 / len(classes), "%02d:%02d" % divmod(seconds, 60))
 
 
 def get_classpath_marker(p):
@@ -88,8 +93,10 @@ def get_classpath_marker(p):
     marker = os.path.join(HOME, marker + '.log')
     return marker
 
+
 def classpath_already_marked(path):
     return os.path.exists(get_classpath_marker(path))
+
 
 def add_classpath_marker(path):
     marker = get_classpath_marker(path)
@@ -98,8 +105,7 @@ def add_classpath_marker(path):
 
 
 def add_jar(jar_path):
-    if DEBUG:
-        print 'add classpath: ', jar_path
+    print 'Loading ', jar_path
     class_names = []
     with zipfile.ZipFile(jar_path, 'r') as jar:
         for n, entry in enumerate(jar.infolist()):
@@ -109,8 +115,7 @@ def add_jar(jar_path):
 
 
 def add_directory(dir_path):
-    if DEBUG:
-        print 'add classpath: ', dir_path
+    print 'Loading ', dir_path
     class_names = []
     def visit(arg, dir_name, file_names):
         for file_name in file_names:
@@ -123,12 +128,11 @@ def add_directory(dir_path):
 
 
 def fix_dollar_sign(class_name):
-    return class_name.replace('$', '__')
+    return class_name.replace('$', '_')
 
 
 def get_module_path(module_name, home=HOME):
     path = os.path.join(home)
-    parent_path = None
     package_name = ''
     for fragment in module_name.split('.'):
         fragment = replace_reserved_names(fragment)
@@ -138,130 +142,71 @@ def get_module_path(module_name, home=HOME):
             os.makedirs(path)
             init = os.path.join(path, '__init__.py')
             with open(init, 'w') as fout:
-                fout.write('')
-        if parent_path:
-            init = os.path.join(parent_path, '__init__.py')
-            with open(init, 'r') as fin:
-                contents = fin.read() or init_module(module_name)
-                package = '%s = pava.JavaPackage("%s")\n\n' % (fragment, package_name)
-                if not package in contents:
-                    with open(init, 'w') as fout:
-                        fout.write(contents + '\n' + package)
-        parent_path = path
+                fout.write(init_module(module_name))
     return os.path.join(path, '__init__.py')
 
 
-def get_class_header(class_name):
-    return 'class %s(object):' % class_name
+def get_class_header(class_name, super_class):
+    return 'from %s import %s\n' % (class_name, class_name)
+
+
+def get_super_class_header(super_class):
+    return 'class %s(' % (super_class)
 
 
 def init_module(module_name):
-    return '# This is Java package %s\n\nimport pava\nfrom pava import nan, inf\n\n' % module_name
+    return '''"""
+This is the Python implementation for the Java package "%s", compiled by Pava.
+"""
 
-def save_class(java_class_file):
+import pava
+pava.LazyModule(__name__, __file__)
+
+''' % module_name
+
+
+def save_class(java_class_file, force=False):
     module_name = replace_reserved_names(java_class_file.package)
     class_name = replace_reserved_names(java_class_file.class_name)
-    header = get_class_header(class_name)
+    super_class = replace_reserved_names(java_class_file.super_class)
+    if module_name == 'java.lang' and class_name == 'String':
+        super_class = "str"
+    class_header = get_class_header(class_name, super_class)
     module_path = get_module_path(module_name)
-    if not os.path.exists(module_path):
-        with open(module_path, 'w') as fout:
-            fout.write('')
     with open(module_path, 'r') as fin:
-        contents = fin.read() or init_module(module_name)
-    if not header in contents:
-        contents += transpile_class(module_name, class_name, java_class_file)
-        with open(module_path, 'w') as fout:
-            fout.write(contents)
+        contents = fin.read()
+    if force or not class_header in contents:
+        # with open(module_path, 'a') as fout: fout.write(class_header)
+        class_file_path = os.path.join(os.path.dirname(get_module_path(module_name)), '%s.py' % class_name)
+        with open(class_file_path, 'w') as fout:
+            fout.write(transpile_class(module_name, class_name, super_class, java_class_file))
 
 
 def replace_reserved_names(name):
-    if name in RESERVED_WORDS:
-        return '__%s__' % name
-    if name == '<init>': return '__init__'
-    if name == '<clinit>': return '__clinit__'
-    name = name.replace('$', '__')
-    name = name.replace('-', '__')
-    return name
+    return opcodes.replace_reserved_names(name)
 
 
-def transpile_class(module_name, class_name, java_class_file):
+def transpile_class(module_name, class_name, super_class, java_class_file):
     if DEBUG:
         print 'Load Java class %s.%s' % (module_name, class_name)
-    class_object = generate_python_class(module_name, class_name, java_class_file)
-    lines = ['', get_class_header(class_name)]
-    for field in class_object.fields:
-        if field.static:
-            lines.append('    %s = None # %s' % (replace_reserved_names(field.name), field.type_name))
-    for fn in class_object.functions:
-        name = replace_reserved_names(fn.name)
-        definition = ', '.join(repr(value)for value in [
-            fn.argcount, fn.nlocals, fn.stacksize, fn.flags, fn.codestring, fn.constants,
-            fn.names, fn.varnames, fn.filename, name, fn.firstlineno, fn.lnotab,
-            fn.modules, fn.static
-        ])
-        lines.append('    %s = pava.method(%s)' % (name, definition))
-    if len(lines) == 2:
-        lines.append('    pass')
-    lines.append('')
-    if class_object.natives:
-        full_name = '%s.%s' % (module_name, class_name)
-        lines.append('pava.load_natives("%s", %s)' % (full_name, class_name))
-        lines.append('')
-    return '\n'.join(lines)
+    return PythonClass(module_name, class_name, super_class, java_class_file).get_source()
 
 
-def run_java_method(input_file, method_name):
-    java_class_file = decompile_java_class_file(input_file)
-    class_object = generate_python_class('test', 'Test', java_class_file)
-    for fn in class_object.functions:
-        if fn.name == method_name:
-            code = new.code(fn.argcount, fn.nlocals, fn.stacksize, fn.flags, fn.codestring, fn.constants, fn.names,
-                            fn.varnames, fn.filename, fn.name, fn.firstlineno, fn.lnotab)
-            return code()
+JAVA_DEFAULT_VALUE_BY_TYPE = {
+    'byte': 0,
+    'char' : 0,
+    'double' : 0.0,
+    'float' : float(0.0),
+    'int' : 0,
+    'long' : 0,
+    'short' : 0,
+    'boolean' : False,
+    'java.lang.String': '""',
+}
 
 
-Class = namedtuple('Class', [
-    'fields', 'functions', 'natives'
-])
-Field = namedtuple('Field', [
-    'name', 'type_name', 'static'
-])
-Function = namedtuple('Function', [
-    'argcount', 'nlocals', 'stacksize', 'flags', 'codestring',
-    'constants', 'names', 'varnames', 'filename', 'name',
-    'firstlineno', 'lnotab', 'modules', 'static'
-])
-NativeMethod = namedtuple('NativeMethod', [
-    'name', 'args', 'static'
-])
-
-
-def generate_python_class(module_name, class_name, class_file):
-    class_object = Class([], [], [])
-    for field in class_file.fields:
-        class_object.fields.append(Field(field.name, field.type_name, field.static))
-    for method in class_file.methods:
-        file_name = class_name + '.java'
-        method_name = replace_reserved_names(method.name)
-        code, imports = compile_method('%s.%s' % (module_name, class_name), method, file_name, method.static)
-        if method.native:
-            class_object.natives.append(NativeMethod(method_name, method.args, method.static))
-        else:
-            method = create_function(code, imports, method.static)
-            class_object.functions.append(method)
-    add_native_methods(module_name, class_name, class_object.natives)
-    return class_object
-
-
-def create_function(code, imports, is_static):
-    return Function(
-        code.co_argcount, len(code.co_varnames),
-        code.co_stacksize, code.co_flags, code.co_code.tostring(),
-        tuple(code.co_consts), tuple(code.co_names),
-        tuple(code.co_varnames), code.co_filename,
-        code.co_name, code.co_firstlineno, code.co_lnotab.tostring(),
-        imports, is_static
-    )
+def get_default_value(type_name):
+    return JAVA_DEFAULT_VALUE_BY_TYPE.get(type_name)
 
 
 def add_native_methods(module_name, class_name, methods):
@@ -275,95 +220,378 @@ def add_native_methods(module_name, class_name, methods):
     with open(native_path, 'a') as fout:
         fout.write('def add_native_methods(clazz):\n')
         for method in methods:
-            fout.write('    def %s(%s):\n' % (method.name, ', '.join(['a%d' %n for n in range(len(method.args))])))
-            fout.write('        raise NotImplementedError()\n\n')
+            fout.write('%sdef %s(%s):\n' % (INDENT, method.name, ', '.join(['a%d' %n for n in range(len(method.args))])))
+            fout.write('%sraise NotImplementedError()\n\n' % (INDENT * 2))
         for method in methods:
-            target = 'staticmethod(%s)' % method.name if method.static else method.name
-            fout.write('    clazz.%s = %s\n' % (method.name, target))
+            target = 'classmethod(%s)' % method.name if method.is_static else method.name
+            fout.write('%sclazz.%s = %s\n' % (INDENT, method.name, target))
         fout.write('\n')
 
 
-def compile_method(class_name, method, filename, is_static):
-    if DEBUG:
-        print 'compile', class_name, method.name
-    code = asm.Code()
-    code.co_name = replace_reserved_names(str(method.name))
-    code.co_filename = str(filename)
+class PythonModule(object):
+    def __init__(self, file_name):
+        self.file_name = file_name
 
-    # parameters added to code by pava
-    code.stack_depth = []
-    code.java_bytecodes = []
-    code.module_names = set()
-    code.jumps = []
 
-    first_exception_index = method.exceptions[0].target_index if method.exceptions else -1
+class PythonClass(object):
+    def __init__(self, module_name, class_name, super_class_name, java_class):
+        self.module_name = module_name
+        self.class_name = class_name
+        self.full_name = '%s.%s' % (module_name, class_name)
+        self.super_class_name = super_class_name
+        self.fields = map(self.compile_field, java_class.fields)
+        self.has_natives = False
+        self.methods = filter(None, map(self.compile_method, java_class.methods))
 
-    if not method.code:
-        asm.Return(None, code)
-    else:
-        for n,ins in enumerate(method.code):
-            if ins.index == first_exception_index:
-                break
-            try:
-                if ins.operands is not None:
-                    opcodes.convert(ins.opcode, code, ins.index, ins.operands)
-                else:
-                    opcodes.convert(ins.opcode, code, ins.index)
-            except Exception as e:
-                print '%s.%s()' % (class_name, method.name), len(loaded_classes)
-                dump(code)
-                try:
-                    for ins in method.code[n:n+7]:
-                        operands = repr(ins.operands) if ins.operands is not None else ''
-                        print ' '*51, '###', str(ins.index).rjust(3), ins.opcode, operands
-                except Exception:
-                    pass
-                print '##### ERROR:', traceback.format_exc(e)
-                raise e
-    if DEBUG:
-        dump(code)
-    return code, code.module_names
+    def get_source(self, indent=0):
+        modules = set()
+        for method in self.methods:
+            modules.update(method.imports)
+        modules = [m for m in modules if m and not '[' in m and m != self.class_name]
+        if self.super_class_name == 'pava.JavaClass':
+            modules.append('pava')
+        imports = '\n'.join('import %s' % module for module in sorted(modules))
 
-def dump(code):
-    """Disassemble code in a symbolic manner, i.e., without offsets"""
-    co_names = code.co_names
-    co_consts = [repr(x) for x in code.co_consts]
-    co_varnames = code.co_varnames
-    cmp_ops = asm.cmp_op
-    free = code.co_cellvars + code.co_freevars
-    labels = {}
-    instructions = list(asm.iter_code(code.co_code.tostring()))
-    lbl = [jump for start, op, arg, jump, end in instructions if jump is not None]
-    lbl.sort()
-    for jump in lbl:
-        labels.setdefault(jump, "L%d:" % (len(labels)+1))
+        class_def = '%sclass %s(%s):\n%s\n%s' % (
+            INDENT * indent,
+            self.class_name,
+            self.super_class_name,
+            '\n'.join('%s' % field.get_source(indent + 1) for field in self.fields),
+            '\n\n'.join('%s' % method.get_source(indent + 1) for method in self.methods),
+        )
+        if self.has_natives:
+            class_def += '\nimport implementation.natives.%s\nimplementation.natives.%s.add_native_methods(%s)\n' % (
+                self.full_name, self.full_name, self.class_name
+            )
+        return imports + '\n\n\n' + class_def
 
-    i = 0
-    while i<len(instructions):
-        start, op, arg, jump, end = instructions[i]
-        ln = labels.get(start, '').ljust(4)
-        if i<len(instructions)-1 and op==asm.DUP_TOP and instructions[i+1][1] in (asm.POP_JUMP_IF_FALSE, asm.POP_JUMP_IF_TRUE):
-            s, op, arg, jump, end = instructions[i+1]
-            ln+=' '+str(start).rjust(3)+' '+['JUMP_IF_FALSE', 'JUMP_IF_TRUE'][op==asm.POP_JUMP_IF_TRUE].ljust(13)
-            i+=1
-        elif op in (asm.JUMP_IF_TRUE_OR_POP, asm.JUMP_IF_FALSE_OR_POP):
-            ln += ' ' + str(start).rjust(3) + ' ' + asm.opname[op][:-7].ljust(13)
+    def compile_field(self, java_field):
+        return PythonField(java_field.type_name, java_field.name)
+
+    def compile_method(self, java_method):
+        if DEBUG:
+            print(INDENT + java_method.name)
+        python_method = PythonMethod(self, java_method)
+        first_exception_index = java_method.exceptions[0].target_index if java_method.exceptions else -1
+        python_method.previous_ins = None
+        if java_method.is_native:
+            self.has_natives = True
+            return None
+        if not java_method.code:
+            python_method.code = 'pass'
         else:
-            ln += ' ' + str(start).rjust(3) + ' ' + asm.opname[op].ljust(13)
-        if jump is not None:
-            ln += ' ' + (labels[jump][:-1] + '(%d)' % jump).rjust(12)
-        elif arg is not None:
-            ln += ' ' + repr(arg).rjust(10)
-            if op in asm.argtype:
-                try:
-                    ln += ' %s' % (locals()[asm.argtype[op]][arg].ljust(10))
-                except:
-                    ln += ' %s %s ??????' % (asm.argtype[op], arg)
-        ln += ' ' * (52 - len(ln))
-        for index, (bytecode, pos, args) in code.java_bytecodes:
-            if index == start:
-                ln += '### %s %s %s' % (str(pos).rjust(3), bytecode, args)
-        print(ln)
-        if op in (asm.JUMP_IF_TRUE_OR_POP, asm.JUMP_IF_FALSE_OR_POP):
-            print('        '+''.ljust(7) + ' POP_TOP')
-        i+=1
+            n = 0
+            while n < len(java_method.code):  # the code array grows while we process it
+                ins = java_method.code[n]
+                python_method.java_bytecode = (n, ins)
+                if ins.index == first_exception_index:
+                    break
+                if ins.operands is not None:
+                    opcodes.convert(ins.opcode, python_method, ins.index, ins.operands)
+                else:
+                    opcodes.convert(ins.opcode, python_method, ins.index)
+                while java_method.code[n] != ins:
+                    n += 1
+                n += 1
+                python_method.previous_ins = ins
+        return python_method
+
+
+class PythonField(object):
+    def __init__(self, type_name, name):
+        self.type_name = type_name
+        self.name = replace_reserved_names(name)
+
+    def get_source(self, indent=1):
+        return '%s%s = %s # %s' % (
+            INDENT * indent,
+            self.name,
+            'None',
+            self.type_name,
+        )
+
+
+def add_indent(indent, line):
+    return '%s%s' % (INDENT * max(0, indent), line)
+
+
+def cleanup(line):
+    if DEBUG:
+        return line
+    if '# ' in line:
+        line = line[:line.index('# ')]
+    return line.strip()
+
+
+class PythonMethod(object):
+    def __init__(self, python_class, java_method):
+        self.name = replace_reserved_names(str(java_method.name))
+        self.args = java_method.args
+        self.java_method = java_method
+        self.is_static = java_method.is_static
+        self.java_bytecodes = {}
+        self.java_bytecode = ''
+        self.module_names = set()
+        self.python_class = python_class
+        self.stack = []
+        self.ifs = []
+        self.if_indents = {}
+        self.elses = []
+        self.temp_index = 0
+        self.imports = set()
+
+    def get_source(self, indent=1):
+        return '%s%sdef %s(%s):\n%s\n%s' % (
+            INDENT * indent + '@classmethod\n' if self.is_static else '',
+            INDENT * indent,
+            self.name,
+            ', '.join(self.args),
+            self.format(indent),
+            self.format_exceptions(indent + 1)
+        )
+
+    def format_exceptions(self, indent):
+        return '\n'.join([
+            '%s# %s' % (INDENT * indent, exc) for exc in self.java_method.exceptions
+        ])
+
+    def add_class_reference(self, class_name):
+        module_name, _, _ = class_name.partition('.')
+        self.imports.add(module_name)
+
+    def add_java_bytecode(self, line, java_index, indent):
+        if java_index != -1:
+            bytecode = self.java_bytecodes.get(java_index)
+            if bytecode:
+                line = '%s # %s %s' % (line.ljust(55 - len(INDENT)*indent), str(java_index).rjust(4), bytecode)
+        return line
+
+    def format(self, indent=1):
+        if DEBUG:
+            print 'format ', self.name
+            print '-'*120
+            for key in sorted(self.java_bytecodes.keys()):
+                print '    ', key, self.java_bytecodes[key]
+            print '-'*120
+        lines = []
+        n = 0
+        last_java_index = -1
+        while n < len(self.stack):
+            java_index, line, is_static = self.stack[n]
+            line = str(line)
+            if DEBUG:
+                print ' '*8, java_index, ' ', line
+            indent, line = self.compute_indent_before(indent, line)
+            output_line = cleanup(line)
+            for missing_index in range(last_java_index + 1, java_index):
+                if missing_index in self.java_bytecodes:
+                    lines.append(add_indent(indent - 1, self.add_java_bytecode('', missing_index, indent)))
+            if output_line:
+                lines.append(add_indent(indent - 1, self.add_java_bytecode(output_line, java_index, indent)))
+            indent, line = self.compute_indent_after(indent, line)
+            last_java_index = java_index
+            n += 1
+        return '\n'.join([add_indent(indent + 1, line) for line in lines])
+
+    def get_indent_for_if(self, if_, indent, line):
+        try:
+            indent = min(indent, self.if_indents[if_])
+        except KeyError as e:
+            line = 'raise NotImplementedError("do-while loops not yet implemented")'
+        return indent, line
+
+    def extract_if(self, line, label):
+        fragments = line[line.index(label):].split('=')[:4]
+        return fragments[1], fragments[2], fragments[3]
+
+    def compute_indent_before(self, indent, line):
+        if '# IF=' in line:
+            if_, else_, end_ = self.extract_if(line, '# IF=')
+            self.if_indents[if_] = indent
+        elif '# ELSE=' in line:
+            if_, else_, end_ = self.extract_if(line, '# ELSE=')
+            indent, line = self.get_indent_for_if(if_, indent, 'else: ' + line)
+        elif '# ENDIF=' in line:
+            if_, else_, end_ = self.extract_if(line, '# ENDIF=')
+            indent, line = self.get_indent_for_if(if_, indent, line)
+        elif '# CASE=' in line:
+            if_, key, tmp = self.extract_if(line, '# CASE=')
+            indent, line = self.get_indent_for_if(if_, indent, 'elif %s == %s: ' % (tmp, key) + line)
+        elif '# DEFAULT=' in line:
+            if_, key, tmp = self.extract_if(line, '# DEFAULT=')
+            indent, line = self.get_indent_for_if(if_, indent, 'else: ' + line)
+        elif '# WHILE=' in line:
+            if_, else_, end_ = self.extract_if(line, '# WHILE=')
+            indent, line = self.get_indent_for_if(if_, indent, 'while' + line[2:])
+        elif '# ENDWHILE=' in line:
+            if_, _, _ = self.extract_if(line, '# ENDWHILE=')
+            indent, line = self.get_indent_for_if(if_, indent, line)
+        return indent, line
+
+    def compute_indent_after(self, indent, line):
+        if '# IF=' in line:
+            indent += 1
+            if not DEBUG:
+                line = line[:line.index('# IF=')]
+        elif '# ELSE=' in line:
+            indent += 1
+            if not DEBUG:
+                line = line[:line.index('# ELSE=')]
+        elif '# ENDIF=' in line:
+            if not DEBUG:
+                line = ''
+        elif '# CASE=' in line:
+            indent += 1
+            if not DEBUG:
+                line = line[:line.index('# CASE=')]
+        elif '# DEFAULT=' in line:
+            indent += 1
+            if not DEBUG:
+                line = line[:line.index('# DEFAULT=')]
+        elif '# WHILE=' in line:
+            indent += 1
+            if not DEBUG:
+                line = line[:line.index('# WHILE=')]
+        elif line.startswith('raise '):
+            indent -= 1
+        return indent, line
+
+    def check_if(self, java_index):
+        for if_, else_, end_ in self.ifs:
+            if else_ != end_ and end_ == java_index:
+                self.push(-1, '# ENDIF=%d=%d=%d' % (if_, else_, end_), True)
+
+
+    #
+    # The following Java if-statements:
+    #
+    #  if (a) { stmt-1; }       if (a) { stmt-1; } else { stmt-2; }
+    #
+    # Become this in bytecodes:
+    #
+    #  if not a: goto L1        if not a: goto L1
+    #  stmt-1                   stmt-1
+    #  L1: ...                  goto L2
+    #                           L1: stmt-2
+    #                           L2: ...
+    #
+    def add_if(self, if_index, else_index):
+        before = self.java_method.code[self.find_instruction(else_index) - 1]
+        end_index = before.operands if before.opcode == 'goto' else else_index
+        self.ifs.append([if_index, else_index, end_index])
+        label = 'IF' if end_index > if_index else 'WHILE'
+        if label == 'WHILE' and end_index not in self.if_indents:
+            index = self.find_instruction(end_index)
+            tmp = self.next_temp()
+            self.stack.insert(index, Instruction(-1, '%s = True  # condition for %d' % (tmp, end_index), None))
+            self.stack.insert(index, Instruction(-1, 'while %s:  # condition for %d' % (tmp, end_index), None))
+        return '# %s=%d=%d=%d' % (label, if_index, else_index, end_index)
+
+    def add_else(self, else_index, end_index):
+        for if_, else_, end_ in self.ifs:
+            if else_ == else_index + 3 and end_ == end_index:
+                return '# ELSE=%d=%d=%d' % (if_, else_, end_)
+        return '# GOTO=%d' % end_index
+
+    def add_loop(self, java_index, while_index):
+        for if_, else_, end_ in self.ifs:
+            if end_ == while_index:
+                return '# ENDWHILE=%d=%d=%d' % (if_, else_, end_)
+        return '# ENDWHILE=%d=%d=%d' % (while_index, while_index, while_index)
+
+
+    def find_end_switch(self, java_index):
+        index = self.find_instruction(int(java_index) - 3)
+        if index != -1:
+            ins = self.java_method.code[index]
+            if ins.opcode == 'goto':
+                return ins.operands
+        return -1
+
+    def add_lookup_switch(self, java_index, lookup_dict):
+        # key is on the stack
+        # lookup_dict looks like {0: 68, 1: 74, 2: 80, 5: 86, 'default': 107, 47: 92, 59: 98, 61: 104}
+        # keys compared with the top of the stack, values are target indexes
+        tmp = self.next_temp()
+        self.push(java_index, '%s = %s' % (tmp, self.pop()), is_statement=True)
+        cases = sorted(lookup_dict.iteritems(), key=lambda item: item[1])
+        for n, (key, java_target_index) in enumerate(cases):
+            index = self.find_instruction(java_target_index)
+            operands = (java_index, key, tmp)
+            if n == 0:
+                label = self.add_if(java_index, int(java_target_index))
+                self.push(java_index, 'if %s == %s: %s' % (tmp, key, label), is_statement=True)
+            elif n == len(cases) - 1:
+                self.java_method.code.insert(index, Instruction(-1, 'default', operands))
+            else:
+                self.java_method.code.insert(index, Instruction(-1, 'case', operands))
+                end_switch_index = self.find_end_switch(java_target_index)
+                if end_switch_index != -1:
+                    for if_statement in self.ifs:
+                        if if_statement[0] == java_index:
+                            if_statement[2] = end_switch_index
+                            index = self.find_instruction(end_switch_index)
+                            ins = Instruction(-1, 'switchend', operands)
+                            if self.java_method.code[index - 1] != ins:
+                                self.java_method.code.insert(index, ins)
+
+    def find_instruction(self, java_index):
+        for n, ins in enumerate(self.java_method.code):
+            if ins.index == int(java_index):
+                return n
+        return -1
+
+    def push(self, java_index, expression, is_statement=False):
+        self.stack.append((java_index, expression, is_statement))
+        if DEBUG:
+            print '=' * 120
+            print 'push', java_index, is_statement, expression
+            for n, item in enumerate(self.stack):
+                print '  ', n, item
+            print '=' * 120
+
+    def pop_args(self, count=1):
+        if count > 1:
+            return self.pop(count)
+        elif count == 1:
+            return [self.pop(1)]
+        else:
+            return []
+
+    def pop(self, count=1):
+        if count > 1:
+            return list(reversed([self.pop() for _ in range(count)]))
+        else:
+            index = len(self.stack) - 1
+            while index > 0 and self.stack[index][2]: # search for the first real expression on the stack
+                index -= 1
+            if self.stack:
+                value = self.pop_expression(index)
+                if DEBUG:
+                    print '=' * 120
+                    print 'POP', index, value
+                    for n, item in enumerate(self.stack):
+                        print '  ', n, item
+                    print '=' * 120
+                return value
+
+    def pop_expression(self, index):
+        top = self.stack.pop(index)[1]
+        if index > 2:
+            pos_1, value_1, is_stmt_1 = self.stack[index - 1]
+            pos_2, value_2, is_stmt_2 = self.stack[index - 2]
+            pos_3, value_3, is_stmt_3 = self.stack[index - 3]
+            if isinstance(value_1, str) and value_1.startswith('# ELSE=') and \
+                           isinstance(value_3, str) and ': # IF=' in value_3 and not is_stmt_2:
+                self.stack.pop()
+                self.stack.pop()
+                self.stack.pop()
+                value_3 = value_3[:value_3.index(': # IF=')]
+                top = '%s %s else %s' % (value_2, value_3, top)
+        return top
+
+    def next_temp(self):
+        self.temp_index += 1
+        return 't%d' % self.temp_index
+
+

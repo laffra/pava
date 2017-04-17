@@ -1,70 +1,58 @@
 def add_native_methods(clazz):
-    def dispose():
+    def dispose____(a0):
         raise NotImplementedError()
 
-    def setDash(a0, a1):
+    def setDash__float____float__(a0, a1, a2):
         raise NotImplementedError()
 
-    def setDashT4(a0):
+    def setDashT4__float____(a0, a1):
         raise NotImplementedError()
 
-    def setOutputT6(a0):
+    def setOutputT6__float____(a0, a1):
         raise NotImplementedError()
 
-    def setOutputConsumer(a0):
+    def setOutputConsumer__sun_dc_path_PathConsumer__(a0, a1):
         raise NotImplementedError()
 
-    def reset():
+    def reset____(a0):
         raise NotImplementedError()
 
-    def beginPath():
+    def beginPath____(a0):
         raise NotImplementedError()
 
-    def beginSubpath(a0, a1):
+    def beginSubpath__float__float__(a0, a1, a2):
         raise NotImplementedError()
 
-    def appendLine(a0, a1):
+    def appendLine__float__float__(a0, a1, a2):
         raise NotImplementedError()
 
-    def appendQuadratic(a0, a1, a2, a3):
+    def appendQuadratic__float__float__float__float__(a0, a1, a2, a3, a4):
         raise NotImplementedError()
 
-    def appendCubic(a0, a1, a2, a3, a4, a5):
+    def appendCubic__float__float__float__float__float__float__(a0, a1, a2, a3, a4, a5, a6):
         raise NotImplementedError()
 
-    def closedSubpath():
+    def closedSubpath____(a0):
         raise NotImplementedError()
 
-    def endPath():
+    def endPath____(a0):
         raise NotImplementedError()
 
-    def getCPathConsumer():
+    def getCPathConsumer____(a0):
         raise NotImplementedError()
 
-    def cClassInitialize():
-        raise NotImplementedError()
-
-    def cClassFinalize():
-        raise NotImplementedError()
-
-    def cInitialize(a0):
-        raise NotImplementedError()
-
-    clazz.dispose = dispose
-    clazz.setDash = setDash
-    clazz.setDashT4 = setDashT4
-    clazz.setOutputT6 = setOutputT6
-    clazz.setOutputConsumer = setOutputConsumer
-    clazz.reset = reset
-    clazz.beginPath = beginPath
-    clazz.beginSubpath = beginSubpath
-    clazz.appendLine = appendLine
-    clazz.appendQuadratic = appendQuadratic
-    clazz.appendCubic = appendCubic
-    clazz.closedSubpath = closedSubpath
-    clazz.endPath = endPath
-    clazz.getCPathConsumer = getCPathConsumer
-    clazz.cClassInitialize = staticmethod(cClassInitialize)
-    clazz.cClassFinalize = staticmethod(cClassFinalize)
-    clazz.cInitialize = cInitialize
+    clazz.dispose____ = dispose____
+    clazz.setDash__float____float__ = setDash__float____float__
+    clazz.setDashT4__float____ = setDashT4__float____
+    clazz.setOutputT6__float____ = setOutputT6__float____
+    clazz.setOutputConsumer__sun_dc_path_PathConsumer__ = setOutputConsumer__sun_dc_path_PathConsumer__
+    clazz.reset____ = reset____
+    clazz.beginPath____ = beginPath____
+    clazz.beginSubpath__float__float__ = beginSubpath__float__float__
+    clazz.appendLine__float__float__ = appendLine__float__float__
+    clazz.appendQuadratic__float__float__float__float__ = appendQuadratic__float__float__float__float__
+    clazz.appendCubic__float__float__float__float__float__float__ = appendCubic__float__float__float__float__float__float__
+    clazz.closedSubpath____ = closedSubpath____
+    clazz.endPath____ = endPath____
+    clazz.getCPathConsumer____ = getCPathConsumer____
 
