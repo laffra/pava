@@ -1,0 +1,10 @@
+def add_native_methods(clazz):
+    def createPolicyAlternatives__com_sun_xml_internal_ws_policy_sourcemodel_PolicySourceModel__(a0, a1):
+        raise NotImplementedError()
+
+    def normalizeRawAlternative__com_sun_xml_internal_ws_policy_sourcemodel_PolicyModelTranslator_RawAlternative__(a0, a1):
+        raise NotImplementedError()
+
+    clazz.createPolicyAlternatives__com_sun_xml_internal_ws_policy_sourcemodel_PolicySourceModel__ = createPolicyAlternatives__com_sun_xml_internal_ws_policy_sourcemodel_PolicySourceModel__
+    clazz.normalizeRawAlternative__com_sun_xml_internal_ws_policy_sourcemodel_PolicyModelTranslator_RawAlternative__ = normalizeRawAlternative__com_sun_xml_internal_ws_policy_sourcemodel_PolicyModelTranslator_RawAlternative__
+
