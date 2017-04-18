@@ -260,7 +260,7 @@ class PythonClass(object):
             '\n\n'.join('%s' % method.get_source(indent + 1) for method in self.methods),
         )
         if self.has_natives:
-            class_def += '\nimport implementation.natives.%s\nimplementation.natives.%s.add_native_methods(%s)\n' % (
+            class_def += '\nimport pava.implementation.natives.%s\npava.implementation.natives.%s.add_native_methods(%s)\n' % (
                 self.full_name, self.full_name, self.class_name
             )
         return imports + '\n\n\n' + class_def

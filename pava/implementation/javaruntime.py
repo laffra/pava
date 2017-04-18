@@ -3,7 +3,6 @@ import dis
 import opcodes
 import os
 import pava
-import profiler
 import re
 import sys
 import StringIO
@@ -304,10 +303,6 @@ def run_java_class(class_name):
 
 
 def run_java_test(return_type, expression):
-    profiler.profile('profile_run_java_test(return_type, expression)', globals(), locals(), 10)
-
-
-def profile_run_java_test(return_type, expression):
     sys.setrecursionlimit(1000)
     opcodes.DEBUG = True
     opcodes.TRACE = False
@@ -354,11 +349,11 @@ def compile_and_run_java_test(return_type, expression):
             exec(python_class_text, globals())
         except Exception as e:
             print '####### EXEC FAILED:'
+            traceback.print_exc()
             raise e
         actual = 'Unknown'
         try:
-            description = globals()['pava_classes']['PavaTest']
-            classobj = pava.implementation.create_class_from_description(description, '', 'PavaTest', reload=True)
+            classobj = globals()['PavaTest']
             method = getattr(classobj, 'test____')
             setattr(sys.modules[__name__], 'PavaTest', classobj)
             globals()['PavaTest'] = classobj
