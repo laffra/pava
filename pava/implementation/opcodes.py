@@ -106,7 +106,7 @@ def convert_pop2(python_method, java_index):
 
 
 def convert_areturn(python_method, java_index):
-    python_method.push(java_index, 'return %s' % python_method.pop())
+    python_method.push(java_index, 'return %s' % python_method.pop(), is_statement=True)
 
 
 def convert_dup(python_method, java_index):
@@ -153,26 +153,26 @@ def convert_dup2_x1(python_method, java_index):
 
 
 def convert_ireturn(python_method, java_index):
-    python_method.push(java_index, 'return %s' % python_method.pop())
+    python_method.push(java_index, 'return %s' % python_method.pop(), is_statement=True)
 
 
 def convert_dreturn(python_method, java_index):
-    python_method.push(java_index, 'return %s' % python_method.pop())
+    python_method.push(java_index, 'return %s' % python_method.pop(), is_statement=True)
 
 
 def convert_freturn(python_method, java_index):
-    python_method.push(java_index, 'return %s' % python_method.pop())
+    python_method.push(java_index, 'return %s' % python_method.pop(), is_statement=True)
 
 
 def convert_lreturn(python_method, java_index):
-    python_method.push(java_index, 'return %s' % python_method.pop())
+    python_method.push(java_index, 'return %s' % python_method.pop(), is_statement=True)
 
 
 def convert_return(python_method, java_index):
     if '__java_init__' in python_method.name:
-        python_method.push(java_index, 'return self')
+        python_method.push(java_index, 'return self', is_statement=True)
     else:
-        python_method.push(java_index, 'return None')
+        python_method.push(java_index, 'return None', is_statement=True)
 
 
 def convert_aastore(python_method, java_index):
@@ -824,6 +824,12 @@ def convert_goto(python_method, java_index, java_target_index):
         expression = python_method.add_else(java_index, java_target_index)
     else:
         expression = python_method.add_loop(java_index, java_target_index)
+    python_method.push(java_index, expression, is_statement=True)
+
+
+def convert_ifreturn(python_method, java_index, operands):
+    if_index, else_index, end_index = operands
+    expression = python_method.add_else(else_index, end_index)
     python_method.push(java_index, expression, is_statement=True)
 
 

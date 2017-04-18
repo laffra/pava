@@ -15,7 +15,7 @@ from javaruntime import Instruction
 
 import opcodes
 
-DEBUG = False
+DEBUG = True
 
 HOME = os.path.join(os.path.expanduser("~"), os.path.join('pava', 'classes'))
 
@@ -27,6 +27,15 @@ loaded_classes = set()
 INDENT = '    '
 
 JAVA = 'C:/Program Files/Java/jdk1.8.0_121/bin/java'
+
+RETURN_OPCODES = [
+    'areturn',
+    'ireturn',
+    'dreturn',
+    'freturn',
+    'lreturn',
+    'return',
+]
 
 def get_boot_path():
     java = subprocess.Popen([JAVA, '-verbose', '-version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -480,16 +489,23 @@ class PythonMethod(object):
         end_index = before.operands if before.opcode == 'goto' else else_index
         self.ifs.append([if_index, else_index, end_index])
         label = 'IF' if end_index > if_index else 'WHILE'
+        print 'add if' , label, if_index, else_index, end_index
+        if before.opcode in RETURN_OPCODES:
+            index = self.find_instruction(else_index)
+            ins = Instruction(else_index, 'ifreturn', (if_index, else_index, end_index))
+            self.java_method.code.insert(index, ins)
         if label == 'WHILE' and end_index not in self.if_indents:
             index = self.find_instruction(end_index)
             tmp = self.next_temp()
             self.stack.insert(index, Instruction(-1, '%s = True  # condition for %d' % (tmp, end_index), None))
             self.stack.insert(index, Instruction(-1, 'while %s:  # condition for %d' % (tmp, end_index), None))
+        self.dump_stack()
         return '# %s=%d=%d=%d' % (label, if_index, else_index, end_index)
+
 
     def add_else(self, else_index, end_index):
         for if_, else_, end_ in self.ifs:
-            if else_ == else_index + 3 and end_ == end_index:
+            if (else_ == else_index or else_ == else_index + 3) and end_ == end_index:
                 return '# ELSE=%d=%d=%d' % (if_, else_, end_)
         return '# GOTO=%d' % end_index
 
@@ -589,6 +605,12 @@ class PythonMethod(object):
                 value_3 = value_3[:value_3.index(': # IF=')]
                 top = '%s %s else %s' % (value_2, value_3, top)
         return top
+
+    def dump_stack(self):
+        print '-' * 80
+        for n, item in enumerate(self.stack):
+            print str(n).rjust(4), item
+        print '-' * 80
 
     def next_temp(self):
         self.temp_index += 1
