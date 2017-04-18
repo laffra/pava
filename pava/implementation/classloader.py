@@ -558,11 +558,7 @@ class PythonMethod(object):
     def push(self, java_index, expression, is_statement=False):
         self.stack.append((java_index, expression, is_statement))
         if DEBUG:
-            print '=' * 120
-            print 'push', java_index, is_statement, expression
-            for n, item in enumerate(self.stack):
-                print '  ', n, item
-            print '=' * 120
+            self.dump_stack('PUSH %d %s' % (java_index, expression))
 
     def pop_args(self, count=1):
         if count > 1:
@@ -582,11 +578,7 @@ class PythonMethod(object):
             if self.stack:
                 value = self.pop_expression(index)
                 if DEBUG:
-                    print '=' * 120
-                    print 'POP', index, value
-                    for n, item in enumerate(self.stack):
-                        print '  ', n, item
-                    print '=' * 120
+                    self.dump_stack('POP %d %s' % (index, value))
                 return value
 
     def pop_expression(self, index):
@@ -597,15 +589,18 @@ class PythonMethod(object):
             pos_3, value_3, is_stmt_3 = self.stack[index - 3]
             if isinstance(value_1, str) and value_1.startswith('# ELSE=') and \
                            isinstance(value_3, str) and ': # IF=' in value_3 and not is_stmt_2:
-                self.stack.pop()
-                self.stack.pop()
-                self.stack.pop()
+                self.stack.pop(index - 1)
+                self.stack.pop(index - 2)
+                self.stack.pop(index - 3)
                 value_3 = value_3[:value_3.index(': # IF=')]
                 top = '%s %s else %s' % (value_2, value_3, top)
+                if self.stack[-1][1].startswith('# ENDIF='):
+                    self.stack.pop()
         return top
 
-    def dump_stack(self):
+    def dump_stack(self, label):
         print '-' * 80
+        print label
         for n, item in enumerate(self.stack):
             print str(n).rjust(4), item
         print '-' * 80
