@@ -489,7 +489,6 @@ class PythonMethod(object):
         end_index = before.operands if before.opcode == 'goto' else else_index
         self.ifs.append([if_index, else_index, end_index])
         label = 'IF' if end_index > if_index else 'WHILE'
-        print 'add if' , label, if_index, else_index, end_index
         if before.opcode in RETURN_OPCODES:
             index = self.find_instruction(else_index)
             ins = Instruction(else_index, 'ifreturn', (if_index, else_index, end_index))
@@ -499,7 +498,6 @@ class PythonMethod(object):
             tmp = self.next_temp()
             self.stack.insert(index, Instruction(-1, '%s = True  # condition for %d' % (tmp, end_index), None))
             self.stack.insert(index, Instruction(-1, 'while %s:  # condition for %d' % (tmp, end_index), None))
-        self.dump_stack()
         return '# %s=%d=%d=%d' % (label, if_index, else_index, end_index)
 
 
