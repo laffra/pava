@@ -728,7 +728,7 @@ def convert_lneg(python_method, java_index):
 
 
 def convert_isub(python_method, java_index):
-    binary_operator(python_method, '/', java_index)
+    binary_operator(python_method, '-', java_index)
 
 
 def convert_dsub(python_method, java_index):
