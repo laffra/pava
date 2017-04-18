@@ -340,11 +340,12 @@ def compile_and_run_java_test(return_type, expression):
         except Exception as e:
             pass # Interpret the result as a string
         class_file = decompile_java_class(binary_path)
-        python_class_text = classloader.init_module('tests')
+        python_class_text = classloader.init_module('tests').replace('__name__', '"PavaTest"')
         python_class_text += classloader.transpile_class('tests', 'PavaTest', 'java.lang.Object', class_file)
         python_class_text = python_class_text.replace("'PavaTest']", ']')
 
         globals()['pava'] = __import__('pava')
+        print python_class_text
         try:
             exec(python_class_text, globals())
         except Exception as e:

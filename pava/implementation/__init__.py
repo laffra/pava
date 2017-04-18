@@ -37,6 +37,7 @@ def load_natives(module_name, clazz):
 
 class LazyModule(object):
     def __init__(self, name, file_name):
+        assert not name.startswith('pava.'), "Lazy modules are just for Java classes, not pava runtime."
         self.name = name
         self.file_name = file_name
         self.cache = {}
@@ -67,6 +68,12 @@ class LazyModule(object):
                 return module
             else:
                 raise ImportError('Cannot load ' + item_file_name)
+
+    def __str__(self):
+        return '<LazyModule %s>' % self.__getattribute__('name')
+
+    def __repr__(self):
+        return 'LazyModule("%s")' % self.__getattribute__('name')
 
 
 class JavaClass(object):
