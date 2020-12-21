@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 def add_native_methods(clazz):
     def currentTimeMillis____():
         raise NotImplementedError()
@@ -25,11 +27,11 @@ def add_native_methods(clazz):
 
     class PythonPrintStream(object):
         def println__boolean__(self, s):
-            print s
+            print(s)
         def println__char__(self, s):
-            print s
+            print(s)
         def println__int__(self, s):
-            print s
+            print(s)
         def println__java_lang_String__(self, s):
-            print s
+            print(s)
     clazz.out = PythonPrintStream()

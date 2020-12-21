@@ -153,26 +153,26 @@ def convert_dup2_x1(python_method, java_index):
 
 
 def convert_ireturn(python_method, java_index):
-    python_method.push(java_index, 'return %s' % python_method.pop(), is_statement=True)
+    python_method.push(java_index, 'return %s #RETURN' % python_method.pop(), is_statement=True)
 
 
 def convert_dreturn(python_method, java_index):
-    python_method.push(java_index, 'return %s' % python_method.pop(), is_statement=True)
+    python_method.push(java_index, 'return %s #RETURN' % python_method.pop(), is_statement=True)
 
 
 def convert_freturn(python_method, java_index):
-    python_method.push(java_index, 'return %s' % python_method.pop(), is_statement=True)
+    python_method.push(java_index, 'return %s #RETURN' % python_method.pop(), is_statement=True)
 
 
 def convert_lreturn(python_method, java_index):
-    python_method.push(java_index, 'return %s' % python_method.pop(), is_statement=True)
+    python_method.push(java_index, 'return %s #RETURN' % python_method.pop(), is_statement=True)
 
 
 def convert_return(python_method, java_index):
     if '__java_init__' in python_method.name:
-        python_method.push(java_index, 'return self', is_statement=True)
+        python_method.push(java_index, 'return self #RETURN', is_statement=True)
     else:
-        python_method.push(java_index, 'return None', is_statement=True)
+        python_method.push(java_index, 'return None #RETURN', is_statement=True)
 
 
 def convert_aastore(python_method, java_index):
@@ -767,6 +767,10 @@ def convert_irem(python_method, java_index):
     binary_operator(python_method, '%', java_index)
 
 
+def convert_frem(python_method, java_index):
+    binary_operator(python_method, '%', java_index)
+
+
 def convert_lrem(python_method, java_index):
     binary_operator(python_method, '%', java_index)
 
@@ -846,16 +850,16 @@ def convert_lookupswitch(python_method, java_index, lookup_dict):
 
 
 def convert_case(python_method, java_index, operands):
-    python_method.push(java_index, '# CASE=%s=%s=%s' % operands)
+    python_method.push(java_index, '# CASE=%s=%s=%s=' % operands)
 
 
 def convert_default(python_method, java_index, operands):
     if python_method.previous_ins.opcode != 'switchend':
-        python_method.push(java_index, '# DEFAULT=%s=%s=%s' % operands)
+        python_method.push(java_index, '# DEFAULT=%s=%s=%s=' % operands)
 
 
 def convert_switchend(python_method, java_index, operands):
-    python_method.push(java_index, '# ENDSWITCH=%s=%s=%s' % operands)
+    python_method.push(java_index, '# ENDSWITCH=%s=%s=%s=' % operands)
 
 
 def convert_tableswitch(python_method, java_index, table_dict):
@@ -975,28 +979,28 @@ def convert_if_icmpgt(python_method, java_index, java_target_index):
 def handle_comparison(python_method, java_index, java_target_index, operand1, operand2, comparison_operator):
     if_label = python_method.add_if(java_index, java_target_index)
     python_method.push(java_index, 'if %s %s %s: %s' % (
-        operand1, comparison_operator, operand2, if_label
+        operand2, comparison_operator, operand1, if_label
     ), True)
 
 
 def convert_lcmp(python_method, java_index):
-    python_method.push(java_index, 'cmp(%s, %s)' % (python_method.pop(), python_method.pop()))
+    python_method.push(java_index, 'pava.cmp(%s, %s)' % (python_method.pop(), python_method.pop()))
 
 
 def convert_fcmpg(python_method, java_index):
-    python_method.push(java_index, 'cmp(%s, %s)' % (python_method.pop(), python_method.pop()))
+    python_method.push(java_index, 'pava.cmp(%s, %s)' % (python_method.pop(), python_method.pop()))
 
 
 def convert_dcmpg(python_method, java_index):
-    python_method.push(java_index, 'cmp(%s, %s)' % (python_method.pop(), python_method.pop()))
+    python_method.push(java_index, 'pava.cmp(%s, %s)' % (python_method.pop(), python_method.pop()))
 
 
 def convert_fcmpl(python_method, java_index):
-    python_method.push(java_index, '-cmp(%s, %s)' % (python_method.pop(), python_method.pop()))
+    python_method.push(java_index, '-pava.cmp(%s, %s)' % (python_method.pop(), python_method.pop()))
 
 
 def convert_dcmpl(python_method, java_index):
-    python_method.push(java_index, '-cmp(%s, %s)' % (python_method.pop(), python_method.pop()))
+    python_method.push(java_index, '-pava.cmp(%s, %s)' % (python_method.pop(), python_method.pop()))
 
 
 def convert_monitorenter(python_method, java_index):
@@ -1070,10 +1074,10 @@ def convert(java_opcode, python_method, java_index, *operands):
     python_method.java_bytecodes[java_index] = '%s %s' % (java_opcode, format_operands(operands))
     # handle_jumps(python_method, java_index)
     # code.pava_file.set_lineno(code)
-    python_method.check_if(java_index)
     if DEBUG:
         print('        %s %s %s' % (str(java_index).rjust(4), opcode_map[java_opcode].__name__[8:], format_operands(operands)))
     opcode_map[java_opcode](python_method, java_index, *operands)
+    python_method.check_endif(java_index)
     # code.last_code_length = len(code.co_code)
     # code.stack_depth.append((len(code.co_code), code.get_stack_size()))
 

@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 def add_native_methods(clazz):
     def getClass____(a0):
         raise NotImplementedError()
@@ -27,8 +29,8 @@ def add_native_methods(clazz):
     # Custom methods
 
     def no___java_init______(self):
-        print '='*120
-        print 'java.lang.Object.init'
-        print '='*120
+        print('='*120)
+        print('java.lang.Object.init')
+        print('='*120)
         import traceback
-        print traceback.format_stack()
+        print(traceback.format_stack())

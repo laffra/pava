@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import imp
 import importlib
 import os
@@ -63,7 +65,8 @@ class LazyModule(object):
                 sys.modules[name + '.' + item] = module
                 if hasattr(module, item):
                     module = getattr(module, item)
-                print 'Loaded ', item, module
+                if DEBUG:
+                    print('Loaded ', item, module)
                 cache[item] = module
                 return module
             else:
@@ -78,4 +81,4 @@ class LazyModule(object):
 
 class JavaClass(object):
     def __init__(self):
-        print 'Init', type(self)
+        print('Init', type(self))

@@ -1,7 +1,8 @@
+from __future__ import print_function
+
 import datetime
-import new
+import re
 import os
-import profiler
 import subprocess
 import sys
 import time
@@ -15,7 +16,8 @@ from javaruntime import Instruction
 
 import opcodes
 
-DEBUG = True
+DEBUG = False
+VERIFY_OUTPUT = DEBUG
 
 HOME = os.path.join(os.path.expanduser("~"), os.path.join('pava', 'classes'))
 
@@ -26,7 +28,7 @@ loaded_classes = set()
 
 INDENT = '    '
 
-JAVA = 'C:/Program Files/Java/jdk1.8.0_121/bin/java'
+JAVA = '/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home/bin/java'
 
 RETURN_OPCODES = [
     'areturn',
@@ -37,6 +39,19 @@ RETURN_OPCODES = [
     'return',
 ]
 
+def get_already_compiled_classes():
+    class_names = []
+    def visit(arg, dir_name, file_names):
+        for file_name in file_names:
+            if file_name.endswith('.py'):
+                dir_name = dir_name[len(HOME)+1:]
+                class_names.append('%s%s%s' % (dir_name.replace('/', '.'), "." if dir_name else "", file_name[:-3]))
+    os.path.walk(HOME, visit, '')
+    return class_names
+
+COMPILED_CLASSES = set(get_already_compiled_classes())
+
+
 def get_boot_path():
     java = subprocess.Popen([JAVA, '-verbose', '-version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     for line in java.stdout.readlines():
@@ -45,12 +60,15 @@ def get_boot_path():
 
 
 def set_classpath(cp, debug_class=None):
+    print("Java classpath:", cp)
     assert isinstance(cp, list), 'classpath should be a list of directories and archives'
     try:
         classpath_elements = list(set(get_boot_path() + cp))
-        profiler.profile('index_class_path(classpath_elements, debug_class)', globals(), locals())
+        # profiler.profile('index_class_path(classpath_elements, debug_class)', globals(), locals())
+        index_class_path(classpath_elements, debug_class)
     except Exception as e:
-        print '##### ERROR:', traceback.format_exc(e)
+        print('##### ERROR:', traceback.format_exc(e))
+        raise e
 
 
 def chunk(it, size):
@@ -59,7 +77,7 @@ def chunk(it, size):
 
 
 def index_class_path(path, debug_class):
-    compile_class_files(find_class_files(path, debug_class), ';'.join(path))
+    compile_class_files(find_class_files(path, debug_class), ';'.join(p for p in path if not p.endswith(".jar")))
     for p in path:
         add_classpath_marker(p)
 
@@ -82,24 +100,33 @@ def find_class_files(path, debug_class):
     return classes
 
 
+def is_already_compiled(full_class_name):
+    parts = full_class_name.split(".")
+    module_name = ".".join(parts[:-1])
+    class_name = parts[-1]
+    class_file_path = os.path.join(os.path.dirname(get_module_path(module_name)), '%s.py' % class_name.replace('$', '_'))
+    return os.path.exists(class_file_path)
+
 def compile_class_files(classes, cp):
     count = 0
     start = time.time()
-    print 'Loading %d classes:' % len(classes)
+    print('Loading %d classes:' % len(classes))
     for n, class_names in enumerate(chunk(classes, CLASS_PATH_CHUNK_SIZE)):
-        for class_file in decompile_java_classes(class_names, cp):
+        new_class_names = [name for name in class_names if not is_already_compiled(name)]
+        for class_file in decompile_java_classes(new_class_names, cp):
             if DEBUG:
                 print('%s %s' % (class_file.package, class_file.class_name))
             save_class(class_file)
         count += len(class_names)
         seconds = time.time() - start
-        print 'Loaded %d classes - %d%% - %s' % (count, count * 100 / len(classes), "%02d:%02d" % divmod(seconds, 60))
+        print('Loaded %d classes - %d%% - %s' % (count, count * 100 / len(classes), "%02d:%02d" % divmod(seconds, 60)))
 
 
 def get_classpath_marker(p):
     marker = os.path.normpath(p)
-    marker = marker.replace('\\', '_').replace(' ', '_').replace(':', '_').replace('.', '_')
+    marker = marker.replace(os.path.sep, '_').replace(' ', '_').replace(':', '_').replace('.', '_')
     marker = os.path.join(HOME, marker + '.log')
+    print(marker)
     return marker
 
 
@@ -114,17 +141,21 @@ def add_classpath_marker(path):
 
 
 def add_jar(jar_path):
-    print 'Loading ', jar_path
+    print('Loading ', jar_path)
     class_names = []
-    with zipfile.ZipFile(jar_path, 'r') as jar:
-        for n, entry in enumerate(jar.infolist()):
-            if entry.filename.endswith('.class'):
-                class_names.append(entry.filename[:-6].replace('/', '.'))
+    try:
+        with zipfile.ZipFile(jar_path, 'r') as jar:
+            for n, entry in enumerate(jar.infolist()):
+                if entry.filename.endswith('.class'):
+                    class_name = entry.filename[:-6].replace('/', '.')
+                    class_names.append(class_name)
+    except Exception as e:
+        print("#### Skip %s: %s" % (jar_path, e))
     return class_names
 
 
 def add_directory(dir_path):
-    print 'Loading ', dir_path
+    print('Loading ', dir_path)
     class_names = []
     def visit(arg, dir_name, file_names):
         for file_name in file_names:
@@ -189,6 +220,11 @@ def save_class(java_class_file, force=False):
         class_file_path = os.path.join(os.path.dirname(get_module_path(module_name)), '%s.py' % class_name)
         with open(class_file_path, 'w') as fout:
             fout.write(transpile_class(module_name, class_name, super_class, java_class_file))
+        # if module_name == 'java.lang' and class_name == 'Object' or VERIFY_OUTPUT:
+        if VERIFY_OUTPUT:
+            pythonOutput = subprocess.Popen(["python", class_file_path], stderr=subprocess.PIPE).stderr.read()
+            if "IndentationError" in pythonOutput:
+                raise RuntimeError("Bad file: %s" % pythonOutput)
 
 
 def replace_reserved_names(name):
@@ -197,7 +233,10 @@ def replace_reserved_names(name):
 
 def transpile_class(module_name, class_name, super_class, java_class_file):
     if DEBUG:
-        print 'Load Java class %s.%s' % (module_name, class_name)
+        print("@" * 80)
+        print('Load Java class %s.%s' % (module_name, class_name))
+        print(len(java_class_file.methods), len(java_class_file.fields))
+        print("@" * 80)
     return PythonClass(module_name, class_name, super_class, java_class_file).get_source()
 
 
@@ -261,12 +300,18 @@ class PythonClass(object):
             modules.append('pava')
         imports = '\n'.join('import %s' % module for module in sorted(modules))
 
-        class_def = '%sclass %s(%s):\n%s\n%s' % (
+        if not self.fields and not self.methods:
+            body = "%spass" % (INDENT * (indent + 1))
+        else:
+            body = "\n".join([
+                '\n'.join('%s' % field.get_source(indent + 1) for field in self.fields),
+                '\n\n'.join('%s' % method.get_source(indent + 1) for method in self.methods)
+            ])
+        class_def = '%sclass %s(%s):\n\n%s' % (
             INDENT * indent,
             self.class_name,
             self.super_class_name,
-            '\n'.join('%s' % field.get_source(indent + 1) for field in self.fields),
-            '\n\n'.join('%s' % method.get_source(indent + 1) for method in self.methods),
+            body
         )
         if self.has_natives:
             class_def += '\nimport pava.implementation.natives.%s\npava.implementation.natives.%s.add_native_methods(%s)\n' % (
@@ -323,13 +368,16 @@ class PythonField(object):
 def add_indent(indent, line):
     return '%s%s' % (INDENT * max(0, indent), line)
 
-
 def cleanup(line):
     if DEBUG:
         return line
-    if '# ' in line:
-        line = line[:line.index('# ')]
-    return line.strip()
+    line = re.sub("#[A-Z]+[=0-9]* ", "", line)
+    try:
+        expression, comment = line.split('#')
+        line = '%s#%s' % (expression.rstrip().ljust(45), comment)
+    except ValueError:
+        pass
+    return line
 
 
 class PythonMethod(object):
@@ -375,100 +423,141 @@ class PythonMethod(object):
                 line = '%s # %s %s' % (line.ljust(55 - len(INDENT)*indent), str(java_index).rjust(4), bytecode)
         return line
 
-    def format(self, indent=1):
+    def format(self, format_indent=1):
         if DEBUG:
-            print 'format ', self.name
-            print '-'*120
+            print('format ', self.name)
+            print('-'*120)
             for key in sorted(self.java_bytecodes.keys()):
-                print '    ', key, self.java_bytecodes[key]
-            print '-'*120
+                print('    ', key, self.java_bytecodes[key])
+            print('-'*120)
         lines = []
         n = 0
         last_java_index = -1
+        indent = format_indent
+        previous_line = ""
         while n < len(self.stack):
-            java_index, line, is_static = self.stack[n]
+            java_index, line, is_statement = self.stack[n]
             line = str(line)
             if DEBUG:
-                print ' '*8, java_index, ' ', line
+                print("compare", n, java_index)
+                print("  ", line)
+                print("  ", previous_line)
+            if line.startswith("# ELSE=") and previous_line.startswith("if "):
+                if DEBUG:
+                    print("YES, insert pass")
+                lines.append(add_indent(indent - 1, "pass"))
             indent, line = self.compute_indent_before(indent, line)
-            output_line = cleanup(line)
+            output_line = line
             for missing_index in range(last_java_index + 1, java_index):
                 if missing_index in self.java_bytecodes:
                     lines.append(add_indent(indent - 1, self.add_java_bytecode('', missing_index, indent)))
             if output_line:
                 lines.append(add_indent(indent - 1, self.add_java_bytecode(output_line, java_index, indent)))
-            indent, line = self.compute_indent_after(indent, line)
+            if DEBUG:
+                print(INDENT * indent, java_index, ' ', output_line, "# indent:", indent)
+            indent, line = self.compute_indent_after(indent, output_line)
+            if DEBUG:
+                print(INDENT * indent, java_index, ' ', output_line, "# indent:", indent)
             last_java_index = java_index
+            previous_line = line
             n += 1
-        return '\n'.join([add_indent(indent + 1, line) for line in lines])
+
+        if not lines:
+            lines = ["pass"]
+
+        return '\n'.join([add_indent(format_indent + 1, cleanup(line)) for line in lines])
 
     def get_indent_for_if(self, if_, indent, line):
         try:
             indent = min(indent, self.if_indents[if_])
+            if DEBUG:
+                print('INDENT %d for %s %s' % (indent, if_, self.if_indents[if_]))
         except KeyError as e:
-            line = 'raise NotImplementedError("do-while loops not yet implemented")'
+            if DEBUG:
+                print('do-while loops not yet implemented')
         return indent, line
 
     def extract_if(self, line, label):
         fragments = line[line.index(label):].split('=')[:4]
-        return fragments[1], fragments[2], fragments[3]
+        try:
+            return int(fragments[1]), int(fragments[2]), int(fragments[3])
+        except ValueError as e:
+            return fragments[1], fragments[2], fragments[3]
+
 
     def compute_indent_before(self, indent, line):
-        if '# IF=' in line:
-            if_, else_, end_ = self.extract_if(line, '# IF=')
+        if '#IF=' in line:
+            if_, else_, end_ = self.extract_if(line, '#IF=')
             self.if_indents[if_] = indent
-        elif '# ELSE=' in line:
-            if_, else_, end_ = self.extract_if(line, '# ELSE=')
-            indent, line = self.get_indent_for_if(if_, indent, 'else: ' + line)
-        elif '# ENDIF=' in line:
-            if_, else_, end_ = self.extract_if(line, '# ENDIF=')
+        elif '#ELSE=' in line:
+            if_, else_, end_ = self.extract_if(line, '#ELSE=')
+            if end_ > else_:
+                indent, line = self.get_indent_for_if(if_, indent, "else: %s" % line)
+        elif '#ENDIF=' in line:
+            if_, else_, end_ = self.extract_if(line, '#ENDIF=')
             indent, line = self.get_indent_for_if(if_, indent, line)
-        elif '# CASE=' in line:
-            if_, key, tmp = self.extract_if(line, '# CASE=')
+        elif '#CASE=' in line:
+            if_, key, tmp = self.extract_if(line, '#CASE=')
             indent, line = self.get_indent_for_if(if_, indent, 'elif %s == %s: ' % (tmp, key) + line)
-        elif '# DEFAULT=' in line:
-            if_, key, tmp = self.extract_if(line, '# DEFAULT=')
+        elif '#DEFAULT=' in line:
+            if_, key, tmp = self.extract_if(line, '#DEFAULT=')
             indent, line = self.get_indent_for_if(if_, indent, 'else: ' + line)
-        elif '# WHILE=' in line:
-            if_, else_, end_ = self.extract_if(line, '# WHILE=')
-            indent, line = self.get_indent_for_if(if_, indent, 'while' + line[2:])
-        elif '# ENDWHILE=' in line:
-            if_, _, _ = self.extract_if(line, '# ENDWHILE=')
+        elif '#WHILE=' in line:
+            while_, _, _ = self.extract_if(line, '#WHILE=')
+            indent, line = self.get_indent_for_if(while_, indent, line)
+        elif '#ENDWHILE=' in line:
+            if_, _, _ = self.extract_if(line, '#ENDWHILE=')
             indent, line = self.get_indent_for_if(if_, indent, line)
         return indent, line
 
     def compute_indent_after(self, indent, line):
-        if '# IF=' in line:
+        original = line
+        if '#IF=' in line:
             indent += 1
             if not DEBUG:
-                line = line[:line.index('# IF=')]
-        elif '# ELSE=' in line:
-            indent += 1
+                line = line[:line.index('#IF=')]
+        elif '#ELSE=' in line:
+            _, else_, end_ = self.extract_if(line, '#ELSE=')
+            if end_ > else_:
+                indent += 1
             if not DEBUG:
-                line = line[:line.index('# ELSE=')]
-        elif '# ENDIF=' in line:
+                line = line[:line.index('#ELSE=')]
+        elif '#ENDIF=' in line:
             if not DEBUG:
                 line = ''
-        elif '# CASE=' in line:
+        elif '#CASE=' in line:
             indent += 1
             if not DEBUG:
-                line = line[:line.index('# CASE=')]
-        elif '# DEFAULT=' in line:
+                line = line[:line.index('#CASE=')]
+        elif '#DEFAULT=' in line:
             indent += 1
             if not DEBUG:
-                line = line[:line.index('# DEFAULT=')]
-        elif '# WHILE=' in line:
+                line = line[:line.index('#DEFAULT=')]
+        elif '#WHILE=' in line:
             indent += 1
             if not DEBUG:
-                line = line[:line.index('# WHILE=')]
+                line = line[:line.index('#WHILE=')]
+        elif line.startswith("return "):
+            indent -= 1
         elif line.startswith('raise '):
             indent -= 1
+        if DEBUG:
+            print("compute indent", original)
         return indent, line
 
-    def check_if(self, java_index):
+    def is_return_instruction(self, java_index):
+        if java_index < 1:
+            return False
+        instruction = self.java_method.code[self.find_instruction(java_index)]
+        return instruction.opcode in RETURN_OPCODES
+
+    def check_endif(self, java_index):
         for if_, else_, end_ in self.ifs:
-            if else_ != end_ and end_ == java_index:
-                self.push(-1, '# ENDIF=%d=%d=%d' % (if_, else_, end_), True)
+            # if not self.is_return_instruction(java_index - 1) and end_ == java_index:
+            if end_ == java_index:
+                index, expression, is_statement = self.stack[-1]
+                expression +=  ' #%s=%d=%d=%d= ' % ("ENDIF", if_, else_, end_)
+                self.stack[-1] = index, expression, is_statement 
 
 
     #
@@ -489,6 +578,8 @@ class PythonMethod(object):
         end_index = before.operands if before.opcode == 'goto' else else_index
         self.ifs.append([if_index, else_index, end_index])
         label = 'IF' if end_index > if_index else 'WHILE'
+        if DEBUG:
+            print("add_if", if_index, else_index, end_index, label)
         if before.opcode in RETURN_OPCODES:
             index = self.find_instruction(else_index)
             ins = Instruction(else_index, 'ifreturn', (if_index, else_index, end_index))
@@ -496,22 +587,23 @@ class PythonMethod(object):
         if label == 'WHILE' and end_index not in self.if_indents:
             index = self.find_instruction(end_index)
             tmp = self.next_temp()
-            self.stack.insert(index, Instruction(-1, '%s = True  # condition for %d' % (tmp, end_index), None))
-            self.stack.insert(index, Instruction(-1, 'while %s:  # condition for %d' % (tmp, end_index), None))
-        return '# %s=%d=%d=%d' % (label, if_index, else_index, end_index)
+            self.stack.insert(index, Instruction(end_index, '%s = False' % tmp, None))
+            self.stack.insert(index, Instruction(end_index, 'while %s:  # WHILE=%d=%s=%s' % (tmp, index, tmp, tmp), None))
+            self.stack.insert(index, Instruction(end_index, '%s = True' % tmp, None))
+        return '#%s=%d=%d=%d=' % (label, if_index, else_index, end_index)
 
 
     def add_else(self, else_index, end_index):
         for if_, else_, end_ in self.ifs:
             if (else_ == else_index or else_ == else_index + 3) and end_ == end_index:
-                return '# ELSE=%d=%d=%d' % (if_, else_, end_)
-        return '# GOTO=%d' % end_index
+                return '#ELSE=%d=%d=%d=' % (if_, else_, end_)
+        return '#GOTO=%d' % end_index
 
     def add_loop(self, java_index, while_index):
         for if_, else_, end_ in self.ifs:
             if end_ == while_index:
-                return '# ENDWHILE=%d=%d=%d' % (if_, else_, end_)
-        return '# ENDWHILE=%d=%d=%d' % (while_index, while_index, while_index)
+                return '#ENDWHILE=%d=%d=%d=' % (if_, else_, end_)
+        return '#ENDWHILE=%d=%d=%d=' % (while_index, while_index, while_index)
 
 
     def find_end_switch(self, java_index):
@@ -532,8 +624,9 @@ class PythonMethod(object):
         for n, (key, java_target_index) in enumerate(cases):
             index = self.find_instruction(java_target_index)
             operands = (java_index, key, tmp)
+            next_java_target_index = cases[n+1][1] if n < len(cases) - 1 else -1
             if n == 0:
-                label = self.add_if(java_index, int(java_target_index))
+                label = self.add_if(int(java_target_index), int(next_java_target_index))
                 self.push(java_index, 'if %s == %s: %s' % (tmp, key, label), is_statement=True)
             elif n == len(cases) - 1:
                 self.java_method.code.insert(index, Instruction(-1, 'default', operands))
@@ -556,6 +649,7 @@ class PythonMethod(object):
         return -1
 
     def push(self, java_index, expression, is_statement=False):
+        expression = str(expression)
         self.stack.append((java_index, expression, is_statement))
         if DEBUG:
             self.dump_stack('PUSH %d %s' % (java_index, expression))
@@ -587,23 +681,26 @@ class PythonMethod(object):
             pos_1, value_1, is_stmt_1 = self.stack[index - 1]
             pos_2, value_2, is_stmt_2 = self.stack[index - 2]
             pos_3, value_3, is_stmt_3 = self.stack[index - 3]
-            if isinstance(value_1, str) and value_1.startswith('# ELSE=') and \
+            if isinstance(value_1, str) and value_1.startswith('#ELSE=') and \
                            isinstance(value_3, str) and ': # IF=' in value_3 and not is_stmt_2:
                 self.stack.pop(index - 1)
                 self.stack.pop(index - 2)
                 self.stack.pop(index - 3)
                 value_3 = value_3[:value_3.index(': # IF=')]
                 top = '%s %s else %s' % (value_2, value_3, top)
-                if self.stack[-1][1].startswith('# ENDIF='):
-                    self.stack.pop()
+                try:
+                    if self.stack and self.stack[-1][1].startswith('#ENDIF='):
+                        self.stack.pop()
+                except Exception as e:
+                    self.dump_stack('POP expression %d %s %s' % (index, top, e))
         return top
 
     def dump_stack(self, label):
-        print '-' * 80
-        print label
+        print('-' * 80)
+        print(label)
         for n, item in enumerate(self.stack):
-            print str(n).rjust(4), item
-        print '-' * 80
+            print(str(n).rjust(4), item)
+        print('-' * 80)
 
     def next_temp(self):
         self.temp_index += 1

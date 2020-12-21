@@ -1,16 +1,17 @@
+from __future__ import print_function
+
 from collections import namedtuple
-import dis
 import opcodes
 import os
-import pava
 import re
 import sys
 import StringIO
 import subprocess
 import traceback
 
+DEBUG = False
 
-JDK = 'C:/Program Files/Java/jdk1.8.0_121'
+JDK = '/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home/'
 JAVA = JDK + '/bin/java'
 JAVAC = JDK + '/bin/javac'
 JAVAP = JDK + '/bin/javap'
@@ -22,6 +23,7 @@ Instruction = namedtuple('Instruction', ['index', 'opcode', 'operands'])
 ExceptionHandler = namedtuple('ExceptionHandler', ['from_index', 'to_index', 'target_index', 'type_name'])
 FieldReference = namedtuple('FieldReference', ['class_name', 'field_name', 'signature'])
 MethodReference = namedtuple('MethodReference', ['class_name', 'method_name', 'return_type', 'args'])
+DynamicMethod = namedtuple('DynamicMethod', ['class_name', 'method_name'])
 
 JAVA_TO_PYTHON_RENAME_RE = re.compile('[^a-zA-Z0-9]|\).*')
 
@@ -37,6 +39,30 @@ JAVA_SIGNATURE_TYPES = {
     'Z': 'boolean',
     '[': '[',
     ']': ']'
+}
+
+DYNAMIC_METHODS = {
+    "#0:makeConcatWithConstants": DynamicMethod("java.lang.String", "_dynamic__makeConcatWithConstants"),
+    "#0:run": DynamicMethod("java.lang.Thread", "_dynamic__run"),
+    "#0:newThread": DynamicMethod("java.lang.Thread", "_dynamic__newThread"),
+    "#0:apply": DynamicMethod("java.lang.Object", "_dynamic__apply"),
+
+    "#0:applyAsDouble": DynamicMethod("java.lang.Object", "_dynamic__applyAsDouble"),
+    "#0:applyAsInt": DynamicMethod("java.lang.Object", "_dynamic__applyAsInt"),
+    "#0:applyAsLong": DynamicMethod("java.lang.Object", "_dynamic__applyAsLong"),
+    "#0:accept": DynamicMethod("java.lang.Object", "_dynamic__accept"),
+    "#0:compare": DynamicMethod("java.lang.Object", "_dynamic__compare"),
+    "#0:queryFrom": DynamicMethod("java.lang.Object", "_dynamic__queryFrom"),
+    "#0:adjustInto": DynamicMethod("java.lang.Object", "_dynamic__adjustInto"),
+    "#0:test": DynamicMethod("java.lang.Object", "_dynamic__test"),
+    "#0:get": DynamicMethod("java.lang.Object", "_dynamic__get"),
+    "#0:createValue": DynamicMethod("java.lang.Object", "_dynamic__createValue"),
+    "#0:checkInput": DynamicMethod("java.lang.Object", "_dynamic__checkInput"),
+    "#0:imageUpdate": DynamicMethod("java.lang.Object", "_dynamic__imageUpdate"),
+    "#0:setValidator": DynamicMethod("java.lang.Object", "_dynamic__setValidator"),
+    "#0:updateSystemColors": DynamicMethod("java.lang.Object", "_dynamic__updateSystemColors"),
+    "#0:repaintPerformed": DynamicMethod("java.lang.Object", "_dynamic__repaintPerformed"),
+    "#0:evaluate": DynamicMethod("java.lang.Object", "_dynamic__evaluate"),
 }
 
 
@@ -98,9 +124,17 @@ def extract_type_list(encoded_type_string):
 
 class ClassFile(object):
     def __init__(self, file_input):
+        if DEBUG:
+            content = file_input.read()
+            file_input = StringIO.StringIO(content)
+            print("=" * 80)
+            print(content)
+            print("=" * 80)
+
         details = self.parse_details(file_input)
         self.source_file, self.full_name, self.package, self.class_name, self.super_class = details
         self.fields, self.methods = self.parse_items(file_input)
+
 
     def parse_details(self, file_input):
         tokens = file_input.readline().split()
@@ -163,9 +197,13 @@ class ClassFile(object):
         else:
             return_type, name = tokens[-2:]
         code, exceptions = self.parse_code(name, lines)
-        args = signature.split(', ') if signature else []
         is_static, is_public, is_native = 'static' in prefix, 'public' in prefix, 'native' in prefix
-        args = ['cls' if is_static else 'self'] + ['a%d' % (n+1) for n in range(len(args))]
+        java_args = signature.split(', ') if signature else []
+        args = ['cls' if is_static else 'self']
+        index = 1
+        for arg in java_args:
+            args.append('a%d' % index)
+            index += 2 if arg in ["long", "double"] else 1
         python_method_name = get_python_method_name(name, signature)
         return Method(python_method_name, args, return_type, code, exceptions, is_static, is_public, is_native)
 
@@ -220,6 +258,12 @@ class ClassFile(object):
                         class_name, method_name = target.split('.') if '.' in target else ('', target)
                         class_name = class_name.replace('/', '.')
                         method_name = '__java_init__' if method_name == '"<init>"' else method_name
+                        dynamic_method = DYNAMIC_METHODS.get(method_name)
+                        if dynamic_method:
+                            class_name = dynamic_method.class_name
+                            method_name = dynamic_method.method_name
+                        if "#0:" in method_name:
+                            raise RuntimeError("Unhandled dynamic method", method_name, class_name)
                         return_type, method_args = get_types_from_signature(signature)
                         python_class_name = get_python_class_name(class_name) or self.class_name
                         python_method_name = get_python_method_name(method_name, signature)
@@ -278,7 +322,7 @@ class ClassFile(object):
 
 
 def compile_java_source(file_name):
-    print subprocess.Popen([JAVAC, file_name], stdout=subprocess.PIPE).stdout.read()
+    print(subprocess.Popen([JAVAC, file_name], stdout=subprocess.PIPE).stdout.read())
 
 
 def decompile_java_class(class_name):
@@ -286,7 +330,10 @@ def decompile_java_class(class_name):
 
 
 def decompile_java_classes(class_names, classpath):
-    cmd = [JAVAP, '-cp', classpath, '-c', '-p'] + list(class_names)
+    if not class_names:
+        return []
+    javap = [JAVAP, '-cp', classpath, '-c', '-p']
+    cmd = javap + list(class_names)
     javap_output = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout.readlines()
     class_files = []
     lines = []
@@ -345,11 +392,11 @@ def compile_and_run_java_test(return_type, expression):
         python_class_text = python_class_text.replace("'PavaTest']", ']')
 
         globals()['pava'] = __import__('pava')
-        print python_class_text
+        print(python_class_text)
         try:
             exec(python_class_text, globals())
         except Exception as e:
-            print '####### EXEC FAILED:'
+            print('####### EXEC FAILED:')
             traceback.print_exc()
             raise e
         actual = 'Unknown'
@@ -361,13 +408,13 @@ def compile_and_run_java_test(return_type, expression):
             actual = method()
         except Exception as e:
             actual = str(e)
-            print '##### ERROR:', traceback.format_exc(e)
+            print('##### ERROR:', traceback.format_exc(e))
         finally:
-            print '='*100
-            print '#### Expression:', expression
-            print '####   Expected:', repr(expected)
-            print '####     Actual:', repr(actual)
-            print '='*100
+            print('='*100)
+            print('#### Expression:', expression)
+            print('####   Expected:', repr(expected))
+            print('####     Actual:', repr(actual))
+            print('='*100)
             return expected, actual
     finally:
         if os.path.exists(source_path):
